@@ -6,7 +6,7 @@ compatibility_date = "2024-09-01"
 #   wrangler kv namespace create SYNC_KV0
 [[kv_namespaces]]
 binding = "SYNC_KV"
-id = "4e5127e365c5427b969e0b980d47e5ac0"
+id = "4e5127e365c5427b969e0b980d47e5ac"
 
 [vars]
 # Origen exacto de tu GitHub Pages. Sin barra final.
