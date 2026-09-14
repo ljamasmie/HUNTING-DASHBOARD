@@ -2,9 +2,8 @@ name: Refrescar datos de Apollo
 
 on:
   schedule:
-    # Todos los días a las 06:00 UTC (08:00 hora de España en horario de verano).
-    # Ajusta el cron si quieres otra frecuencia, p. ej. cada 6 horas: "0 */6 * * *"
-    - cron: "0 6 * * *"
+    # Cada hora, en el minuto 0.
+    - cron: "0 * * * *"
   workflow_dispatch: {}  # permite lanzarlo manualmente desde la pestaña Actions
 
 permissions:
