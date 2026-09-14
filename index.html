@@ -133,6 +133,50 @@
   .badge.extrapolated{background:#FFF4DC; color:var(--amber);}
   .pill{display:inline-block; padding:3px 9px; border-radius:999px; font-size:10.5px; font-weight:600; background:var(--lavender-light); color:var(--lavender-dark); margin:1px 2px 1px 0;}
   .company-link{color:var(--fuchsia-dark); font-weight:700; cursor:pointer;}
+
+  /* ---- HubSpot integration ---- */
+  .hs-btn{
+    display:inline-flex; align-items:center; gap:6px; border:1px solid var(--fuchsia);
+    background:#fff; color:var(--fuchsia-dark); border-radius:8px; padding:6px 11px;
+    font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap;
+  }
+  .hs-btn:hover{background:var(--fuchsia-light);}
+  .hs-btn:disabled{opacity:.55; cursor:default;}
+  .hs-status{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; white-space:nowrap;}
+  .hs-status.ok{color:var(--green);}
+  .hs-status.err{color:var(--red);}
+  .hs-status.pending{color:var(--ink-soft);}
+  .hs-view-link{color:var(--lavender-dark); font-size:11px; text-decoration:none; font-weight:600; margin-left:4px;}
+  .hs-view-link:hover{text-decoration:underline;}
+  .hs-cell{display:flex; flex-direction:column; gap:3px; align-items:flex-start;}
+  .hs-err-msg{font-size:10.5px; color:var(--red); max-width:180px;}
+  .hs-retry{font-size:10.5px; color:var(--ink-soft); text-decoration:underline; cursor:pointer; background:none; border:none; padding:0;}
+
+  .hs-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    margin-bottom:12px; padding:10px 14px; background:var(--lavender-light); border-radius:10px;
+  }
+  .hs-toolbar-left{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .hs-conn-pill{
+    display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700;
+    background:#fff; border:1px solid var(--line); border-radius:999px; padding:5px 12px;
+  }
+  .hs-conn-dot{width:8px; height:8px; border-radius:50%; background:var(--ink-soft);}
+  .hs-conn-dot.on{background:var(--green);}
+  .hs-conn-dot.off{background:var(--red);}
+  .hs-bulk-btn{
+    border:none; background:var(--fuchsia); color:#fff; border-radius:9px; padding:9px 16px;
+    font-size:12.5px; font-weight:700; cursor:pointer;
+  }
+  .hs-bulk-btn:disabled{opacity:.5; cursor:default;}
+  .hs-selected-count{font-size:11.5px; color:var(--ink-soft);}
+
+  .hs-toast{
+    position:fixed; bottom:24px; right:24px; background:var(--ink); color:#fff; padding:14px 18px;
+    border-radius:10px; font-size:12.5px; max-width:340px; box-shadow:0 8px 24px rgba(0,0,0,.2); z-index:200;
+    line-height:1.5;
+  }
+  .hs-toast b{color:var(--fuchsia-light);}
   .company-link:hover{text-decoration:underline;}
 
   .empty-state{padding:50px 20px; text-align:center; color:var(--ink-soft); font-size:13px;}
@@ -296,15 +340,25 @@
       <select id="contactos-email"><option value="">Email: todos</option><option value="verified">Verificado</option><option value="unavailable">No disponible</option><option value="extrapolated">Extrapolado</option></select>
       <button class="btn-reset" id="contactos-reset">Reset filtros</button>
     </div>
+
+    <div class="hs-toolbar">
+      <div class="hs-toolbar-left">
+        <button class="hs-bulk-btn" id="hs-bulk-btn" disabled>Crear seleccionados en HubSpot</button>
+        <span class="hs-selected-count" id="hs-selected-count">0 seleccionados</span>
+      </div>
+      <span class="hs-conn-pill" id="hs-conn-pill"><span class="hs-conn-dot" id="hs-conn-dot"></span><span id="hs-conn-label">Comprobando HubSpot…</span></span>
+    </div>
+
     <div class="result-count" id="contactos-count"></div>
     <div class="card" style="padding:0;">
       <div class="table-scroll">
         <table id="contactos-table">
           <thead>
             <tr>
+              <th style="width:28px;"><input type="checkbox" id="hs-select-all"></th>
               <th data-sort="name">Nombre</th><th data-sort="title">Cargo</th><th data-sort="role">Perfil</th>
               <th data-sort="company">Empresa</th><th data-sort="city">Ciudad</th><th data-sort="country">País</th>
-              <th data-sort="email_status">Email</th><th>Teléfono</th><th>LinkedIn</th>
+              <th data-sort="email_status">Email</th><th>Teléfono</th><th>LinkedIn</th><th>HubSpot</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -570,8 +624,10 @@ function render(DATA, REPLIES){
       return true;
     });
     document.getElementById('contactos-count').textContent = rows.length.toLocaleString('es-ES')+' contactos';
-    document.querySelector('#contactos-table tbody').innerHTML = rows.slice(0,500).map(c=>`
+    contactosRowsRendered = rows.slice(0,500);
+    document.querySelector('#contactos-table tbody').innerHTML = contactosRowsRendered.map(c=>`
       <tr>
+        <td><input type="checkbox" class="hs-row-check" data-id="${c.id}" ${selectedContactIds.has(c.id)?'checked':''}></td>
         <td><b>${c.name}</b></td>
         <td>${c.title}</td>
         <td><span class="pill">${c.role}</span></td>
@@ -581,9 +637,23 @@ function render(DATA, REPLIES){
         <td><span class="badge ${c.email_status}">${c.email_status}</span></td>
         <td>${c.phone || '—'}</td>
         <td>${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="color:var(--fuchsia-dark); text-decoration:none;">Perfil ↗</a>` : '—'}</td>
-      </tr>`).join('') || `<tr><td colspan="9" class="empty-state">Sin resultados con estos filtros</td></tr>`;
+        <td>${hubspotCellHTML(c.id)}</td>
+      </tr>`).join('') || `<tr><td colspan="11" class="empty-state">Sin resultados con estos filtros</td></tr>`;
     document.querySelectorAll('#contactos-table .company-link').forEach(el=>{
       el.addEventListener('click', ()=> openCompanyModal(decodeURIComponent(el.dataset.company)));
+    });
+    document.querySelectorAll('.hs-row-check').forEach(el=>{
+      el.addEventListener('change', ()=>{
+        const id = el.dataset.id;
+        if(el.checked) selectedContactIds.add(id); else selectedContactIds.delete(id);
+        updateBulkButton();
+      });
+    });
+    document.querySelectorAll('.hs-create-btn').forEach(el=>{
+      el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
+    });
+    document.querySelectorAll('.hs-retry').forEach(el=>{
+      el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
     });
   }
   ['contactos-search','contactos-lista','contactos-rubro','contactos-role','contactos-pais','contactos-email']
@@ -593,6 +663,159 @@ function render(DATA, REPLIES){
       .forEach(id=> document.getElementById(id).value='');
     renderContactos();
   });
+
+  // ---------- HubSpot integration ----------
+  // Rellena esto con la URL de tu Worker tras desplegarlo (ver hubspot-worker/README).
+  const HUBSPOT_WORKER_URL = 'https://REEMPLAZA-CON-TU-WORKER.workers.dev';
+
+  let hubspotState = {};          // { apolloContactId: {status, hubspot_contact_id, hubspot_url, error, ...} }
+  let selectedContactIds = new Set();
+  let contactosRowsRendered = [];
+
+  function showToast(html, ms=6000){
+    const existing = document.querySelector('.hs-toast');
+    if(existing) existing.remove();
+    const el = document.createElement('div');
+    el.className = 'hs-toast';
+    el.innerHTML = html;
+    document.body.appendChild(el);
+    setTimeout(()=> el.remove(), ms);
+  }
+
+  function hubspotCellHTML(contactId){
+    const st = hubspotState[contactId];
+    if(!st || st.status === 'not_created'){
+      return `<button class="hs-btn hs-create-btn" data-id="${contactId}">Crear en HubSpot</button>`;
+    }
+    if(st.status === 'pending'){
+      return `<span class="hs-status pending">⏳ Creando...</span>`;
+    }
+    if(st.status === 'created' || st.status === 'already_exists'){
+      const label = st.status === 'created' ? '✓ En HubSpot' : '↔ Ya existía';
+      const link = st.hubspot_url ? `<a class="hs-view-link" href="${st.hubspot_url}" target="_blank">Ver en HubSpot ↗</a>` : '';
+      return `<div class="hs-cell"><span class="hs-status ok">${label}</span>${link}</div>`;
+    }
+    if(st.status === 'error'){
+      return `<div class="hs-cell">
+        <span class="hs-status err">⚠ Error</span>
+        <span class="hs-err-msg">${(st.error||'Error desconocido').slice(0,90)}</span>
+        <button class="hs-retry" data-id="${contactId}">↻ Reintentar</button>
+      </div>`;
+    }
+    return `<button class="hs-btn hs-create-btn" data-id="${contactId}">Crear en HubSpot</button>`;
+  }
+
+  async function loadHubspotState(){
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/status', {cache:'no-store'});
+      if(res.ok) hubspotState = await res.json();
+    }catch(err){
+      // el Worker puede no estar desplegado todavía; los botones simplemente
+      // se quedarán en "Crear en HubSpot" hasta que lo esté.
+    }
+    renderContactos();
+  }
+
+  async function checkHubspotHealth(){
+    const dot = document.getElementById('hs-conn-dot');
+    const label = document.getElementById('hs-conn-label');
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/health', {cache:'no-store'});
+      const data = await res.json();
+      if(data.connected){
+        dot.className = 'hs-conn-dot on';
+        label.textContent = '🟢 HubSpot connected';
+      }else{
+        dot.className = 'hs-conn-dot off';
+        label.textContent = '🔴 HubSpot not connected';
+      }
+    }catch(err){
+      dot.className = 'hs-conn-dot off';
+      label.textContent = '🔴 Worker no disponible';
+    }
+  }
+
+  function updateBulkButton(){
+    const btn = document.getElementById('hs-bulk-btn');
+    const count = document.getElementById('hs-selected-count');
+    btn.disabled = selectedContactIds.size === 0;
+    count.textContent = selectedContactIds.size + ' seleccionados';
+  }
+
+  document.getElementById('hs-select-all').addEventListener('change', (e)=>{
+    contactosRowsRendered.forEach(c=>{
+      if(e.target.checked) selectedContactIds.add(c.id); else selectedContactIds.delete(c.id);
+    });
+    renderContactos();
+    updateBulkButton();
+  });
+
+  async function createSingleInHubspot(contactId){
+    const c = contacts.find(x=> x.id === contactId);
+    if(!c) return;
+    hubspotState[contactId] = { status: 'pending' };
+    renderContactos();
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/upsert', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ contacts: [c] })
+      });
+      const data = await res.json();
+      const result = data.results && data.results[contactId];
+      if(result){
+        hubspotState[contactId] = result;
+        if(result.status === 'error'){
+          showToast(`⚠ Unable to create contact. ${result.error || 'Please check the required fields.'}`);
+        }else if(result.status === 'already_exists'){
+          showToast(`This contact is already in HubSpot.`);
+        }else{
+          showToast(`The contact was created successfully.`);
+        }
+      }else{
+        hubspotState[contactId] = { status: 'error', error: 'Sin respuesta del servidor' };
+      }
+    }catch(err){
+      hubspotState[contactId] = { status: 'error', error: 'HubSpot connection expired. Please reconnect your account.' };
+      showToast('⚠ No se pudo contactar con el Worker de HubSpot.');
+    }
+    renderContactos();
+  }
+
+  document.getElementById('hs-bulk-btn').addEventListener('click', async ()=>{
+    const ids = Array.from(selectedContactIds);
+    if(!ids.length) return;
+    const selectedContacts = ids.map(id=> contacts.find(c=> c.id===id)).filter(Boolean);
+    ids.forEach(id=> hubspotState[id] = { status:'pending' });
+    renderContactos();
+    document.getElementById('hs-bulk-btn').disabled = true;
+
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/upsert', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ contacts: selectedContacts })
+      });
+      const data = await res.json();
+      let created=0, existed=0, errored=0;
+      Object.entries(data.results || {}).forEach(([id, st])=>{
+        hubspotState[id] = st;
+        if(st.status==='created') created++;
+        else if(st.status==='already_exists') existed++;
+        else if(st.status==='error') errored++;
+      });
+      showToast(`<b>${ids.length} contactos seleccionados</b><br>✓ ${created} creados<br>↔ ${existed} ya existían<br>⚠ ${errored} tuvieron errores`, 9000);
+    }catch(err){
+      ids.forEach(id=> hubspotState[id] = { status:'error', error:'HubSpot connection expired. Please reconnect your account.' });
+      showToast('⚠ No se pudo contactar con el Worker de HubSpot.');
+    }
+    selectedContactIds.clear();
+    updateBulkButton();
+    renderContactos();
+  });
+
+  loadHubspotState();
+  checkHubspotHealth();
 
   // ---------- Company modal ----------
   function openCompanyModal(name){

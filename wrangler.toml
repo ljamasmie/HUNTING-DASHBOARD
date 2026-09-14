@@ -1,0 +1,16 @@
+name = "apprecio-hubspot-sync"
+main = "src/index.js"
+compatibility_date = "2024-09-01"
+
+# Se rellena tras crear el namespace con:
+#   wrangler kv namespace create SYNC_KV
+[[kv_namespaces]]
+binding = "SYNC_KV"
+id = "REEMPLAZA_CON_EL_ID_QUE_TE_DA_WRANGLER"
+
+[vars]
+# Origen exacto de tu GitHub Pages. Sin barra final.
+ALLOWED_ORIGIN = "https://ljamasmie.github.io"
+
+# El token NO va aquí. Se sube como secret:
+#   wrangler secret put HUBSPOT_TOKEN
