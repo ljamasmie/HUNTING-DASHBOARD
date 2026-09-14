@@ -260,7 +260,7 @@ async function ensureProperty(objectType, prop, env) {
 
 // ---------- route handlers ----------
 
-async function handleHealth(env) {
+async function async function handleHealth(env) { const tokenDiag = { present: !!env.HUBSPOT_TOKEN, length: env.HUBSPOT_TOKEN ? env.HUBSPOT_TOKEN.length : 0, prefix: env.HUBSPOT_TOKEN ? env.HUBSPOT_TOKEN.slice(0, 12) : null, suffix: env.HUBSPOT_TOKEN ? env.HUBSPOT_TOKEN.slice(-4) : null, }; try { const portalId = await getPortalId(env); const account = await hubspotFetch("/account-info/v3/details", env).catch((e) => ({ __error: e.message, __status: e.status })); return { connected: true, portalId, accountName: account?.companyName || null, account, tokenDiag }; } catch (e) { return { connected: false, error: e.message, tokenDiag }; } } {
   try {
     const portalId = await getPortalId(env);
     const account = await hubspotFetch("/account-info/v3/details", env).catch(() => null);
@@ -321,7 +321,7 @@ export default {
 
     try {
       if (url.pathname === "/health" && request.method === "GET") {
-        return json(await handleHealth(env), env);
+        return json(await async function handleHealth(env) { const tokenDiag = { present: !!env.HUBSPOT_TOKEN, length: env.HUBSPOT_TOKEN ? env.HUBSPOT_TOKEN.length : 0, prefix: env.HUBSPOT_TOKEN ? env.HUBSPOT_TOKEN.slice(0, 12) : null, suffix: env.HUBSPOT_TOKEN ? env.HUBSPOT_TOKEN.slice(-4) : null, }; try { const portalId = await getPortalId(env); const account = await hubspotFetch("/account-info/v3/details", env).catch((e) => ({ __error: e.message, __status: e.status })); return { connected: true, portalId, accountName: account?.companyName || null, account, tokenDiag }; } catch (e) { return { connected: false, error: e.message, tokenDiag }; } }, env);
       }
       if (url.pathname === "/status" && request.method === "GET") {
         return json(await handleStatus(env), env);
