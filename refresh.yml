@@ -1,0 +1,40 @@
+name: Refrescar datos de Apollo
+
+on:
+  schedule:
+    # Todos los días a las 06:00 UTC (08:00 hora de España en horario de verano).
+    # Ajusta el cron si quieres otra frecuencia, p. ej. cada 6 horas: "0 */6 * * *"
+    - cron: "0 6 * * *"
+  workflow_dispatch: {}  # permite lanzarlo manualmente desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Ejecutar refresh_data.py
+        env:
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+        run: python3 scripts/refresh_data.py
+
+      - name: Commit data.json si hubo cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data.json; then
+            echo "Sin cambios en data.json"
+          else
+            git add data.json
+            git commit -m "chore: refresh Apollo data ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi
