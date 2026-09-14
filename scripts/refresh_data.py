@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Refresca data.json consultando la API de Apollo para las 4 listas de
+Refresca data.json consultando la API de Apollo para las listas de
 Lorenzo Jamasmie y regenera el archivo que consume el dashboard.
 
 Requiere la variable de entorno APOLLO_API_KEY (Settings > Integrations > API
@@ -27,16 +27,16 @@ if not APOLLO_API_KEY:
     print("ERROR: falta la variable de entorno APOLLO_API_KEY", file=sys.stderr)
     sys.exit(1)
 
-# IDs de las 4 listas de Lorenzo Jamasmie (owner_id 6a97347e1365fe0010e7b200).
+# IDs de las listas de Lorenzo Jamasmie (owner_id 6a97347e1365fe0010e7b200).
 # El nombre visible se consulta en vivo a Apollo en cada corrida (ver fetch_label_names),
 # así que si renombras una lista en Apollo, el dashboard se actualiza solo.
 # El "rubro" queda fijo por ID (no por nombre) para que un renombre no lo desordene.
-# Si Lorenzo crea o borra una lista, actualiza este diccionario con el ID nuevo
-# (visible en Apollo en la URL de la lista) y su rubro.
+# Si Lorenzo crea una lista nueva, agrégala aquí con su ID y rubro.
+# Si Lorenzo BORRA una lista, sácala de aquí (de los dos diccionarios) o va a
+# seguir apareciendo fantasma en el dashboard con 0 contactos.
 RUBRO_BY_ID = {
     "6a99928f1cd4ac001c899834": "Contact Centers",
     "6aa282ee44d9a9001880e704": "Seguros",
-    "6aa28f870fef560018f928e8": "Outsourcing (Top 10)",
     "6aa7c0082e331500105b6388": "Outsourcing",
 }
 # Nombres de respaldo, solo se usan si la consulta a /labels falla (p.ej. la API
@@ -44,7 +44,6 @@ RUBRO_BY_ID = {
 FALLBACK_NAMES = {
     "6a99928f1cd4ac001c899834": "CEOs, COOs y Cargos Comerciales - Contact Center España",
     "6aa282ee44d9a9001880e704": "Aseguradoras España - Comercial y RRHH",
-    "6aa28f870fef560018f928e8": "RRHH - Top 10 Outsourcing España",
     "6aa7c0082e331500105b6388": "Líderes RRHH - Outsourcing España",
 }
 OWNER_NAME = "Lorenzo Jamasmie"
