@@ -1,12 +1,12 @@
-name = "apprecio-hubspot-sync"
+name = "hunting-dashboard"
 main = "src/index.js"
 compatibility_date = "2024-09-01"
 
 # Se rellena tras crear el namespace con:
-#   wrangler kv namespace create SYNC_KV
+#   wrangler kv namespace create SYNC_KV0
 [[kv_namespaces]]
 binding = "SYNC_KV"
-id = "REEMPLAZA_CON_EL_ID_QUE_TE_DA_WRANGLER"
+id = "4e5127e365c5427b969e0b980d47e5ac0"
 
 [vars]
 # Origen exacto de tu GitHub Pages. Sin barra final.
