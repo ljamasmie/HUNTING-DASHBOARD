@@ -28,7 +28,7 @@ const CONTACT_PROPS = [
   { name: "apollo_original_list", label: "Original List", type: "string", fieldType: "text" },
   { name: "apollo_industry_segment", label: "Industry Segment", type: "string", fieldType: "text" },
   { name: "apollo_dashboard_source", label: "Dashboard Source", type: "string", fieldType: "text" },
-  { name: "apollo_linkedin_url", label: "LinkedIn URL", type: "string", fieldType: "text" },
+  { name: "apollo_linkedin_url", label: "Apollo LinkedIn URL", type: "string", fieldType: "text" },
 ];
 
 const COMPANY_PROPS = [
