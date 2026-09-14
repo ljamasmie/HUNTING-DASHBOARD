@@ -1,0 +1,46 @@
+name: Refrescar datos de Apollo
+
+on:
+  schedule:
+    # Cada hora, en el minuto 0.
+    - cron: "0 * * * *"
+  workflow_dispatch: {}  # permite lanzarlo manualmente desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Ejecutar refresh_data.py (Apollo)
+        env:
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+        run: python3 scripts/refresh_data.py
+
+      - name: Ejecutar refresh_replies.py (Gmail)
+        env:
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        run: python3 scripts/refresh_replies.py
+
+      - name: Commit data.json y replies.json si hubo cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- data.json replies.json; then
+            echo "Sin cambios"
+          else
+            git add data.json replies.json
+            git commit -m "chore: refresh Apollo + Gmail data ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi
