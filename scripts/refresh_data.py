@@ -28,21 +28,56 @@ if not APOLLO_API_KEY:
     sys.exit(1)
 
 # IDs de las 4 listas de Lorenzo Jamasmie (owner_id 6a97347e1365fe0010e7b200).
-# Si Lorenzo crea o renombra listas, actualiza este mapeo (nombre visible en
-# Apollo -> id de la lista, visible en la URL https://app.apollo.io/#/lists/<id>).
-LABEL_MAP = {
+# El nombre visible se consulta en vivo a Apollo en cada corrida (ver fetch_label_names),
+# así que si renombras una lista en Apollo, el dashboard se actualiza solo.
+# El "rubro" queda fijo por ID (no por nombre) para que un renombre no lo desordene.
+# Si Lorenzo crea o borra una lista, actualiza este diccionario con el ID nuevo
+# (visible en Apollo en la URL de la lista) y su rubro.
+RUBRO_BY_ID = {
+    "6a99928f1cd4ac001c899834": "Contact Centers",
+    "6aa282ee44d9a9001880e704": "Seguros",
+    "6aa28f870fef560018f928e8": "Outsourcing (Top 10)",
+    "6aa7c0082e331500105b6388": "Outsourcing",
+}
+# Nombres de respaldo, solo se usan si la consulta a /labels falla (p.ej. la API
+# key no es "master key" y Apollo bloquea ese endpoint con 403).
+FALLBACK_NAMES = {
     "6a99928f1cd4ac001c899834": "CEOs, COOs y Cargos Comerciales - Contact Center España",
     "6aa282ee44d9a9001880e704": "Aseguradoras España - Comercial y RRHH",
     "6aa28f870fef560018f928e8": "RRHH - Top 10 Outsourcing España",
     "6aa7c0082e331500105b6388": "Líderes RRHH - Outsourcing España",
 }
-RUBRO_MAP = {
-    "CEOs, COOs y Cargos Comerciales - Contact Center España": "Contact Centers",
-    "Aseguradoras España - Comercial y RRHH": "Seguros",
-    "RRHH - Top 10 Outsourcing España": "Outsourcing (Top 10)",
-    "Líderes RRHH - Outsourcing España": "Outsourcing",
-}
 OWNER_NAME = "Lorenzo Jamasmie"
+
+LABELS_URL = "https://api.apollo.io/api/v1/labels"
+
+
+def fetch_label_names():
+    """Consulta los nombres actuales de las listas en Apollo. Si la API key
+    no es master key, este endpoint da 403 y usamos los nombres de respaldo."""
+    req = urllib.request.Request(
+        LABELS_URL,
+        headers={"Accept": "application/json", "x-api-key": APOLLO_API_KEY},
+        method="GET",
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            all_labels = json.loads(resp.read().decode("utf-8"))
+        names = {}
+        for lid in RUBRO_BY_ID:
+            match = next((l for l in all_labels if l.get("id") == lid or l.get("_id") == lid), None)
+            names[lid] = match["name"] if match else FALLBACK_NAMES[lid]
+        return names
+    except urllib.error.HTTPError as e:
+        print(f"Aviso: no se pudo leer /labels ({e.code}), uso nombres de respaldo.", file=sys.stderr)
+        return dict(FALLBACK_NAMES)
+    except Exception as e:
+        print(f"Aviso: no se pudo leer /labels ({e}), uso nombres de respaldo.", file=sys.stderr)
+        return dict(FALLBACK_NAMES)
+
+
+LABEL_MAP = fetch_label_names()
+RUBRO_MAP = {LABEL_MAP[lid]: rubro for lid, rubro in RUBRO_BY_ID.items()}
 
 API_URL = "https://api.apollo.io/api/v1/contacts/search"
 PER_PAGE = 100
