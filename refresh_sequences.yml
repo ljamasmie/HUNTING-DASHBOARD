@@ -1,0 +1,39 @@
+name: Refrescar secuencias de Apollo
+
+on:
+  schedule:
+    # Cada hora, en el minuto 30 (para no chocar con Apollo en :00 ni Gmail en :15).
+    - cron: "30 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-sequences:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Ejecutar refresh_sequences.py
+        env:
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
+        run: python3 scripts/refresh_sequences.py
+
+      - name: Commit sequences.json si hubo cambios
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- sequences.json; then
+            echo "Sin cambios en sequences.json"
+          else
+            git add sequences.json
+            git commit -m "chore: refresh Apollo sequences ($(date -u +'%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi

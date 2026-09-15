@@ -233,6 +233,7 @@
   <button class="tab-btn" data-view="empresas">Empresas</button>
   <button class="tab-btn" data-view="contactos">Contactos</button>
   <button class="tab-btn" data-view="respuestas">📩 Respuestas</button>
+  <button class="tab-btn" data-view="secuencias">📈 Secuencias</button>
 </div>
 
 <div class="wrap">
@@ -259,10 +260,6 @@
       <div class="card">
         <h3>Top 10 empresas por nº de contactos</h3>
         <div class="chart-box"><canvas id="chart-companies"></canvas></div>
-      </div>
-      <div class="card">
-        <h3>Contactos por país</h3>
-        <div class="chart-box"><canvas id="chart-country"></canvas></div>
       </div>
     </div>
 
@@ -336,7 +333,6 @@
       <select id="contactos-lista"><option value="">Todas las listas</option></select>
       <select id="contactos-rubro"><option value="">Todos los rubros</option></select>
       <select id="contactos-role"><option value="">Todos los perfiles</option></select>
-      <select id="contactos-pais"><option value="">Todos los países</option></select>
       <select id="contactos-email"><option value="">Email: todos</option><option value="verified">Verificado</option><option value="unavailable">No disponible</option><option value="extrapolated">Extrapolado</option></select>
       <button class="btn-reset" id="contactos-reset">Reset filtros</button>
     </div>
@@ -396,6 +392,39 @@
     </p>
   </div>
 
+  <div class="view" id="view-secuencias">
+    <div class="kpi-grid" id="secuencias-kpi-grid"></div>
+
+    <div class="section-title"><span class="dot"></span>Secuencias de Apollo</div>
+    <div class="filters">
+      <input type="text" id="secuencias-search" placeholder="Buscar secuencia...">
+      <select id="secuencias-estado">
+        <option value="">Todos los estados</option>
+        <option value="active">Activas</option>
+        <option value="inactive">Pausadas</option>
+      </select>
+      <button class="btn-reset" id="secuencias-reset">Reset filtros</button>
+    </div>
+    <div class="result-count" id="secuencias-count"></div>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="secuencias-table">
+          <thead>
+            <tr>
+              <th data-sort="name">Secuencia</th><th>Estado</th><th>Pasos</th>
+              <th>Programados</th><th>Entregados</th><th>Abiertos</th><th>Clics</th>
+              <th>Respuestas</th><th>Interesados</th><th>% Apertura</th><th>% Respuesta</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <p id="secuencias-empty-note" style="font-size:11.5px; color:var(--ink-soft); margin-top:12px; display:none;">
+      Sin secuencias registradas todavía. Este dashboard consulta las secuencias de tu cuenta de Apollo (requiere una API key "master") y se actualiza cada hora.
+    </p>
+  </div>
+
   </div><!-- /dashboard-root -->
 
 </div>
@@ -413,6 +442,14 @@
   <div class="modal">
     <button class="modal-close" id="reply-modal-close">✕</button>
     <div id="reply-modal-content"></div>
+  </div>
+</div>
+
+<!-- Sequence detail modal -->
+<div class="modal-bg" id="sequence-modal">
+  <div class="modal">
+    <button class="modal-close" id="sequence-modal-close">✕</button>
+    <div id="sequence-modal-content"></div>
   </div>
 </div>
 
@@ -438,12 +475,20 @@
     // replies.json es opcional; si no carga, seguimos con la pestaña vacía sin romper el resto
   }
 
+  let SEQUENCES = { sequences: [], meta: { total_sequences: 0, active_sequences: 0, total_delivered: 0, total_replied: 0 } };
+  try{
+    const res3 = await fetch('sequences.json', {cache:'no-store'});
+    if(res3.ok) SEQUENCES = await res3.json();
+  }catch(err){
+    // sequences.json es opcional; si no carga, seguimos con la pestaña vacía sin romper el resto
+  }
+
   document.getElementById('load-status').style.display = 'none';
   document.getElementById('dashboard-root').style.display = 'block';
-  render(DATA, REPLIES);
+  render(DATA, REPLIES, SEQUENCES);
 }
 
-function render(DATA, REPLIES){
+function render(DATA, REPLIES, SEQUENCES){
   const contacts = DATA.contacts;
   const companies = DATA.companies;
   const lists = DATA.lists;
@@ -522,15 +567,6 @@ function render(DATA, REPLIES){
     options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#EFEAFB'}}, y:{grid:{display:false}, ticks:{font:{size:10.5}}}} }
   });
 
-  // ---------- Chart: country ----------
-  const countryEntries = Object.entries(meta.country_counts);
-  new Chart(document.getElementById('chart-country'), {
-    type:'bar',
-    data:{ labels: countryEntries.map(e=>e[0]),
-      datasets:[{ data: countryEntries.map(e=>e[1]), backgroundColor: FUCHSIA_D, borderRadius:6, maxBarThickness:30 }]},
-    options:{ plugins:{legend:{display:false}}, scales:{y:{grid:{color:'#EFEAFB'}}, x:{grid:{display:false}, ticks:{font:{size:10}}}} }
-  });
-
   // ---------- Overview lists table ----------
   function listRow(l){
     const pctV = Math.round(l.verified_email/l.contacts*100);
@@ -603,15 +639,12 @@ function render(DATA, REPLIES){
   rubros.forEach(r=> rubroSel.innerHTML += `<option value="${r}">${r}</option>`);
   const roleSel = document.getElementById('contactos-role');
   Object.keys(meta.role_counts).forEach(r=> roleSel.innerHTML += `<option value="${r}">${r}</option>`);
-  const paisSel = document.getElementById('contactos-pais');
-  Object.keys(meta.country_counts).forEach(p=> paisSel.innerHTML += `<option value="${p}">${p}</option>`);
 
   function renderContactos(){
     const q = document.getElementById('contactos-search').value.toLowerCase();
     const lista = document.getElementById('contactos-lista').value;
     const rubro = document.getElementById('contactos-rubro').value;
     const role = document.getElementById('contactos-role').value;
-    const pais = document.getElementById('contactos-pais').value;
     const emailF = document.getElementById('contactos-email').value;
 
     let rows = contacts.filter(c=>{
@@ -619,7 +652,6 @@ function render(DATA, REPLIES){
       if(lista && !c.lists.includes(lista)) return false;
       if(rubro && !c.rubros.includes(rubro)) return false;
       if(role && c.role !== role) return false;
-      if(pais && c.country !== pais) return false;
       if(emailF && c.email_status !== emailF) return false;
       return true;
     });
@@ -656,10 +688,10 @@ function render(DATA, REPLIES){
       el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
     });
   }
-  ['contactos-search','contactos-lista','contactos-rubro','contactos-role','contactos-pais','contactos-email']
+  ['contactos-search','contactos-lista','contactos-rubro','contactos-role','contactos-email']
     .forEach(id=> document.getElementById(id).addEventListener('input', renderContactos));
   document.getElementById('contactos-reset').addEventListener('click', ()=>{
-    ['contactos-search','contactos-lista','contactos-rubro','contactos-role','contactos-pais','contactos-email']
+    ['contactos-search','contactos-lista','contactos-rubro','contactos-role','contactos-email']
       .forEach(id=> document.getElementById(id).value='');
     renderContactos();
   });
@@ -935,10 +967,90 @@ function render(DATA, REPLIES){
     if(e.target.id==='reply-modal') e.target.classList.remove('active');
   });
 
+  // ---------- Secuencias tab ----------
+  const sequences = SEQUENCES.sequences || [];
+  const seqMeta = SEQUENCES.meta || {};
+
+  const avgOpenPct = sequences.length ? Math.round(sequences.reduce((s,x)=>s+x.open_pct,0)/sequences.length) : 0;
+  const avgReplyPct = sequences.length ? Math.round(sequences.reduce((s,x)=>s+x.reply_pct,0)/sequences.length) : 0;
+
+  const seqKpis = [
+    {label:'Secuencias totales', value: seqMeta.total_sequences || 0, sub: (seqMeta.active_sequences||0)+' activas', hi:true},
+    {label:'Total entregados', value: seqMeta.total_delivered || 0, sub: 'Emails entregados'},
+    {label:'% Apertura promedio', value: avgOpenPct, sub: 'Entre todas las secuencias', isPct:true},
+    {label:'% Respuesta promedio', value: avgReplyPct, sub: 'Entre todas las secuencias', isPct:true},
+  ];
+  document.getElementById('secuencias-kpi-grid').innerHTML = seqKpis.map(k=>`
+    <div class="kpi ${k.hi?'hi':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.isPct ? k.value+'%' : k.value.toLocaleString('es-ES')}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  function renderSecuencias(){
+    const q = document.getElementById('secuencias-search').value.toLowerCase();
+    const estado = document.getElementById('secuencias-estado').value;
+    let rows = sequences.filter(s=>{
+      if(q && !(s.name||'').toLowerCase().includes(q)) return false;
+      if(estado==='active' && !s.active) return false;
+      if(estado==='inactive' && s.active) return false;
+      return true;
+    });
+    document.getElementById('secuencias-count').textContent = rows.length.toLocaleString('es-ES')+' secuencias';
+    document.getElementById('secuencias-empty-note').style.display = sequences.length===0 ? 'block' : 'none';
+    document.querySelector('#secuencias-table tbody').innerHTML = rows.map((s,i)=>`
+      <tr class="seq-row" data-idx="${sequences.indexOf(s)}">
+        <td><b>${s.name}</b></td>
+        <td>${s.active ? '<span class="badge verified">Activa</span>' : '<span class="badge unavailable">Pausada</span>'}</td>
+        <td>${s.num_steps}</td>
+        <td>${s.scheduled.toLocaleString('es-ES')}</td>
+        <td>${s.delivered.toLocaleString('es-ES')}</td>
+        <td>${s.opened.toLocaleString('es-ES')}</td>
+        <td>${s.clicked.toLocaleString('es-ES')}</td>
+        <td>${s.replied.toLocaleString('es-ES')}</td>
+        <td>${s.interested.toLocaleString('es-ES')}</td>
+        <td>${s.open_pct}%</td>
+        <td>${s.reply_pct}%</td>
+      </tr>`).join('') || `<tr><td colspan="11" class="empty-state">Sin secuencias con estos filtros</td></tr>`;
+    document.querySelectorAll('.seq-row').forEach(row=>{
+      row.addEventListener('click', ()=> openSequenceModal(sequences[parseInt(row.dataset.idx)]));
+    });
+  }
+  ['secuencias-search','secuencias-estado'].forEach(id=>
+    document.getElementById(id).addEventListener('input', renderSecuencias));
+  document.getElementById('secuencias-reset').addEventListener('click', ()=>{
+    ['secuencias-search','secuencias-estado'].forEach(id=> document.getElementById(id).value='');
+    renderSecuencias();
+  });
+
+  function openSequenceModal(s){
+    if(!s) return;
+    document.getElementById('sequence-modal-content').innerHTML = `
+      <h2>${s.name}</h2>
+      <div class="modal-sub">${s.active?'Activa':'Pausada'} · ${s.num_steps} pasos${s.created_at ? ' · creada '+fmtDate(s.created_at) : ''}</div>
+      <div class="modal-kpis">
+        <div class="modal-kpi"><b>${s.scheduled.toLocaleString('es-ES')}</b>Programados</div>
+        <div class="modal-kpi"><b>${s.delivered.toLocaleString('es-ES')}</b>Entregados</div>
+        <div class="modal-kpi"><b>${s.opened.toLocaleString('es-ES')} (${s.open_pct}%)</b>Abiertos</div>
+        <div class="modal-kpi"><b>${s.clicked.toLocaleString('es-ES')} (${s.click_pct}%)</b>Clics</div>
+        <div class="modal-kpi"><b>${s.replied.toLocaleString('es-ES')} (${s.reply_pct}%)</b>Respuestas</div>
+        <div class="modal-kpi"><b>${s.interested.toLocaleString('es-ES')} (${s.interested_pct}%)</b>Interesados</div>
+        <div class="modal-kpi"><b>${s.bounced.toLocaleString('es-ES')}</b>Rebotados</div>
+        <div class="modal-kpi"><b>${s.unsubscribed.toLocaleString('es-ES')}</b>Dados de baja</div>
+      </div>
+    `;
+    document.getElementById('sequence-modal').classList.add('active');
+  }
+  document.getElementById('sequence-modal-close').addEventListener('click', ()=> document.getElementById('sequence-modal').classList.remove('active'));
+  document.getElementById('sequence-modal').addEventListener('click', (e)=>{
+    if(e.target.id==='sequence-modal') e.target.classList.remove('active');
+  });
+
   // ---------- init ----------
   renderEmpresas();
   renderContactos();
   renderRespuestas();
+  renderSecuencias();
 
   // ---------- last update badge ----------
   const ownerChip = document.querySelector('.owner-chip');
