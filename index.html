@@ -398,6 +398,7 @@
     <div class="section-title"><span class="dot"></span>Secuencias de Apollo</div>
     <div class="filters">
       <input type="text" id="secuencias-search" placeholder="Buscar secuencia...">
+      <select id="secuencias-select"><option value="">Elegir secuencia...</option></select>
       <select id="secuencias-estado">
         <option value="">Todos los estados</option>
         <option value="active">Activas</option>
@@ -974,6 +975,9 @@ function render(DATA, REPLIES, SEQUENCES){
   const avgOpenPct = sequences.length ? Math.round(sequences.reduce((s,x)=>s+x.open_pct,0)/sequences.length) : 0;
   const avgReplyPct = sequences.length ? Math.round(sequences.reduce((s,x)=>s+x.reply_pct,0)/sequences.length) : 0;
 
+  const seqSelectEl = document.getElementById('secuencias-select');
+  sequences.forEach(s=> seqSelectEl.innerHTML += `<option value="${s.name.replace(/"/g,'&quot;')}">${s.name}</option>`);
+
   const seqKpis = [
     {label:'Secuencias totales', value: seqMeta.total_sequences || 0, sub: (seqMeta.active_sequences||0)+' activas', hi:true},
     {label:'Total entregados', value: seqMeta.total_delivered || 0, sub: 'Emails entregados'},
@@ -989,8 +993,10 @@ function render(DATA, REPLIES, SEQUENCES){
 
   function renderSecuencias(){
     const q = document.getElementById('secuencias-search').value.toLowerCase();
+    const selected = document.getElementById('secuencias-select').value;
     const estado = document.getElementById('secuencias-estado').value;
     let rows = sequences.filter(s=>{
+      if(selected && s.name !== selected) return false;
       if(q && !(s.name||'').toLowerCase().includes(q)) return false;
       if(estado==='active' && !s.active) return false;
       if(estado==='inactive' && s.active) return false;
@@ -1016,10 +1022,10 @@ function render(DATA, REPLIES, SEQUENCES){
       row.addEventListener('click', ()=> openSequenceModal(sequences[parseInt(row.dataset.idx)]));
     });
   }
-  ['secuencias-search','secuencias-estado'].forEach(id=>
+  ['secuencias-search','secuencias-select','secuencias-estado'].forEach(id=>
     document.getElementById(id).addEventListener('input', renderSecuencias));
   document.getElementById('secuencias-reset').addEventListener('click', ()=>{
-    ['secuencias-search','secuencias-estado'].forEach(id=> document.getElementById(id).value='');
+    ['secuencias-search','secuencias-select','secuencias-estado'].forEach(id=> document.getElementById(id).value='');
     renderSecuencias();
   });
 
