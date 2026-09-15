@@ -34,11 +34,18 @@ PER_PAGE = 50
 
 def pick(d, *keys, default=0):
     """Devuelve el primer valor no-nulo entre varios nombres de campo
-    posibles (la API de Apollo no siempre usa el mismo nombre)."""
+    posibles (la API de Apollo no siempre usa el mismo nombre), convertido
+    a número (Apollo a veces devuelve los conteos como texto, ej. "45")."""
     for k in keys:
         v = d.get(k)
         if v is not None:
-            return v
+            try:
+                return int(v)
+            except (TypeError, ValueError):
+                try:
+                    return int(float(v))
+                except (TypeError, ValueError):
+                    continue
     return default
 
 
