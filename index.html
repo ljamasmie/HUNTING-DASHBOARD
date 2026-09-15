@@ -390,7 +390,7 @@
   <div class="view" id="view-contactos">
     <div class="section-title"><span class="dot"></span>Contactos</div>
     <div class="filters">
-      <input type="text" id="contactos-search" placeholder="Buscar contacto o empresa...">
+      <input type="text" id="contactos-search" placeholder="Buscar contacto, empresa o email...">
       <select id="contactos-lista"><option value="">Todas las listas</option></select>
       <select id="contactos-rubro"><option value="">Todos los rubros</option></select>
       <select id="contactos-role"><option value="">Todos los perfiles</option></select>
@@ -779,7 +779,7 @@ function render(DATA, REPLIES, SEQUENCES){
     const emailF = document.getElementById('contactos-email').value;
 
     let rows = contacts.filter(c=>{
-      if(q && !(c.name.toLowerCase().includes(q) || c.company.toLowerCase().includes(q))) return false;
+      if(q && !(c.name.toLowerCase().includes(q) || c.company.toLowerCase().includes(q) || (c.email||'').toLowerCase().includes(q))) return false;
       if(lista && !c.lists.includes(lista)) return false;
       if(rubro && !c.rubros.includes(rubro)) return false;
       if(role && c.role !== role) return false;
@@ -797,7 +797,10 @@ function render(DATA, REPLIES, SEQUENCES){
         <td class="company-link" data-company="${encodeURIComponent(c.company)}">${c.company}</td>
         <td>${c.city}</td>
         <td>${c.country}</td>
-        <td><span class="badge ${c.email_status}">${c.email_status}</span></td>
+        <td>
+          ${c.email ? `<a href="mailto:${c.email}" style="color:var(--ink); text-decoration:none;">${c.email}</a><br>` : '<span style="color:var(--ink-soft);">—</span><br>'}
+          <span class="badge ${c.email_status}" style="margin-top:3px;">${c.email_status}</span>
+        </td>
         <td>${c.phone || '—'}</td>
         <td>${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="color:var(--fuchsia-dark); text-decoration:none;">Perfil ↗</a>` : '—'}</td>
         <td>${hubspotCellHTML(c.id)}</td>
