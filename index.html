@@ -132,8 +132,24 @@
   .badge.verified{background:#E4F7EF; color:var(--green);}
   .badge.unavailable{background:#FBEAEA; color:var(--red);}
   .badge.extrapolated{background:#FFF4DC; color:var(--amber);}
+  .badge.neutral{background:#F1EFF5; color:var(--ink-soft);}
   .pill{display:inline-block; padding:3px 9px; border-radius:999px; font-size:10.5px; font-weight:600; background:var(--lavender-light); color:var(--lavender-dark); margin:1px 2px 1px 0;}
   .company-link{color:var(--fuchsia-dark); font-weight:700; cursor:pointer;}
+
+  /* ---- Lead scoring / priority ---- */
+  .score-badge{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; white-space:nowrap;}
+  .score-badge.alto{background:var(--fuchsia-light); color:var(--fuchsia-dark);}
+  .score-badge.medio{background:#FFF4DC; color:var(--amber);}
+  .score-badge.bajo{background:#F1EFF5; color:var(--ink-soft);}
+  .reason-chip{display:inline-block; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:600; background:var(--cloud); color:var(--ink-soft); border:1px solid var(--line); margin:1px 3px 1px 0;}
+  .reclass-select{
+    border:1px solid var(--line); background:#fff; border-radius:7px; padding:3px 6px;
+    font-size:10.5px; color:var(--ink-soft); margin-top:4px; max-width:170px;
+  }
+  .reclass-select:focus{border-color:var(--fuchsia);}
+  .class-manual-tag{font-size:9.5px; color:var(--ink-soft); margin-top:2px;}
+  .priority-highlight{background:#fff; border:1px solid var(--fuchsia-light); border-left:4px solid var(--fuchsia); border-radius:12px; padding:16px 18px; margin-bottom:16px;}
+  .priority-highlight b{color:var(--fuchsia-dark);}
 
   /* ---- HubSpot integration ---- */
   .hs-btn{
@@ -152,6 +168,7 @@
   .hs-cell{display:flex; flex-direction:column; gap:3px; align-items:flex-start;}
   .hs-err-msg{font-size:10.5px; color:var(--red); max-width:180px;}
   .hs-retry{font-size:10.5px; color:var(--ink-soft); text-decoration:underline; cursor:pointer; background:none; border:none; padding:0;}
+
 
   .hs-toolbar{
     display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
@@ -275,6 +292,7 @@
   <button class="tab-btn" data-view="listas">Listas de Difusión</button>
   <button class="tab-btn" data-view="empresas">Empresas</button>
   <button class="tab-btn" data-view="contactos">Contactos</button>
+  <button class="tab-btn" data-view="prioridad">🎯 Prioridad</button>
   <button class="tab-btn" data-view="respuestas">📩 Respuestas</button>
   <button class="tab-btn" data-view="secuencias">📈 Secuencias</button>
 </div>
@@ -406,6 +424,75 @@
     </div>
   </div>
 
+  <!-- ============ PRIORIDAD ============ -->
+  <div class="view" id="view-prioridad">
+    <div class="kpi-grid" id="prioridad-kpi-grid"></div>
+
+    <div class="priority-highlight" id="prioridad-highlight" style="display:none;"></div>
+
+    <div class="section-title"><span class="dot"></span>Leads de alta prioridad</div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin:-8px 0 14px;">
+      Score calculado a partir del cargo (encaje con el ICP), estado del email, si hay teléfono, tamaño de la empresa y si ha respondido con interés. 100% en base a datos reales de Apollo/Gmail — nada es inventado.
+    </p>
+    <div class="filters">
+      <input type="text" id="prioridad-search" placeholder="Buscar contacto o empresa...">
+      <select id="prioridad-tier">
+        <option value="alto">Solo prioridad alta</option>
+        <option value="medio">Solo prioridad media</option>
+        <option value="">Todos los niveles</option>
+      </select>
+      <select id="prioridad-lista"><option value="">Todas las listas</option></select>
+      <button class="btn-reset" id="prioridad-reset">Reset filtros</button>
+    </div>
+    <div class="result-count" id="prioridad-count"></div>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="prioridad-table">
+          <thead>
+            <tr>
+              <th>Score</th><th>Nombre</th><th>Cargo</th><th>Empresa</th><th>Lista</th>
+              <th>Email</th><th>Teléfono</th><th>Por qué</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="dot"></span>Respuestas que requieren tu atención</div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin:-8px 0 14px;">
+      Respuestas clasificadas automáticamente (por palabras clave del propio email) como interesadas o derivadas a otro contacto. Puedes corregir la clasificación manualmente desde la pestaña "Respuestas".
+    </p>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="prioridad-respuestas-table">
+          <thead>
+            <tr><th>Contacto</th><th>Empresa</th><th>Clasificación</th><th>Fecha</th><th>Vista previa</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <p id="prioridad-respuestas-empty" style="font-size:11.5px; color:var(--ink-soft); margin-top:12px; display:none;">
+      No hay respuestas clasificadas como "Interesado" o "Derivar a otro contacto" en este momento.
+    </p>
+
+    <div class="section-title"><span class="dot"></span>Empresas con potencial sin explotar</div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin:-8px 0 14px;">
+      Empresas con al menos 8 contactos en Apollo pero con menos del 40% de emails verificados — candidatas a re-enriquecer antes de prospectar más a fondo.
+    </p>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="prioridad-empresas-table">
+          <thead>
+            <tr><th>Empresa</th><th>Rubro</th><th>Nº contactos</th><th>Email verificado</th><th>% verificado</th><th>Cargo principal</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <!-- ============ RESPUESTAS ============ -->
   <div class="view" id="view-respuestas">
     <div class="kpi-grid" id="respuestas-kpi-grid"></div>
@@ -423,7 +510,7 @@
         <table id="respuestas-table">
           <thead>
             <tr>
-              <th>Contacto</th><th>Empresa</th><th>Lista</th><th>Asunto</th><th>Fecha</th><th>Vista previa</th>
+              <th>Contacto</th><th>Empresa</th><th>Lista</th><th>Clasificación</th><th>Asunto</th><th>Fecha</th><th>Vista previa</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -933,6 +1020,63 @@ function render(DATA, REPLIES, SEQUENCES){
   const replies = REPLIES.replies || [];
   const repliesMeta = REPLIES.meta || {};
 
+  // ---------- Clasificación automática de respuestas ----------
+  const REPLY_CLASS_LABELS = {
+    interesado: 'Interesado',
+    derivado: 'Derivar a otro contacto',
+    fuera_oficina: 'Fuera de oficina',
+    no_interesado: 'No interesado',
+    baja: 'Baja / Queja',
+    sin_clasificar: 'Sin clasificar'
+  };
+  const REPLY_CLASS_BADGE = {
+    interesado: 'verified',
+    derivado: 'extrapolated',
+    fuera_oficina: 'extrapolated',
+    no_interesado: 'unavailable',
+    baja: 'unavailable',
+    sin_clasificar: 'neutral'
+  };
+  const REPLY_CLASS_PRIORITY = {interesado:5, derivado:4, sin_clasificar:3, fuera_oficina:2, no_interesado:1, baja:0};
+
+  function stripAccents(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+  function classifyReplyAuto(r){
+    const raw = stripAccents(((r.subject||'')+' '+(r.body_text||r.snippet||'')).toLowerCase());
+    const rules = [
+      { key:'baja', re:/(dat[ea]\s?de\s?baja|unsubscrib|no me he suscrito|no he autorizado|eliminar mi correo|quitar( de la)? lista|retirar mi (correo|email)|no quiero recibir|de donde ha salido mi contacto|de donde han sacado mi (correo|contacto)|marcar como spam)/ },
+      { key:'fuera_oficina', re:/(fuera de la oficina|out of office|de vacaciones|ausente hasta|estare ausente|regreso el|volvere el|no tendre acceso al correo|de baja (medica|por))/ },
+      { key:'no_interesado', re:/(no (nos |me )?interesa\b|no es el momento|no estamos interesados|ya trabajamos con|no procede|por ahora no|no buscamos|no (tenemos|contamos con) presupuesto|no gracias)/ },
+      { key:'derivado', re:/(no soy la persona (indicada|adecuada)|te recomiendo contactar|deberias hablar con|contacta(r)? con [a-z]|reenvio (esto|tu correo) a|paso tu (correo|mensaje) a|el responsable de esto es|habla(r)? mejor con)/ },
+      { key:'interesado', re:/(me interesa|si,? hablemos|suena (bien|interesante)|agendemos|cuentame mas|quiero saber mas|claro,? hablamos|podemos hablar|estaria bien una llamada|me gustaria conocer mas|te parece bien una reunion|20 minutos|dame mas detalles|encantad[oa] de hablar|hablamos esta semana)/ },
+    ];
+    for(const rule of rules){
+      if(rule.re.test(raw)) return { key: rule.key, label: REPLY_CLASS_LABELS[rule.key], auto:true };
+    }
+    return { key:'sin_clasificar', label: REPLY_CLASS_LABELS['sin_clasificar'], auto:true };
+  }
+
+  let replyOverrides = {};
+  try{ replyOverrides = JSON.parse(localStorage.getItem('apprecio_reply_overrides') || '{}'); }catch(e){ replyOverrides = {}; }
+
+  function replyKeyId(r){ return r.message_id || r.thread_id || r.contact_email || r.subject; }
+
+  function getReplyClassification(r){
+    const id = replyKeyId(r);
+    if(replyOverrides[id]){
+      return { key: replyOverrides[id], label: REPLY_CLASS_LABELS[replyOverrides[id]], auto:false };
+    }
+    return classifyReplyAuto(r);
+  }
+
+  function setReplyOverride(r, key){
+    const id = replyKeyId(r);
+    if(key){ replyOverrides[id] = key; } else { delete replyOverrides[id]; }
+    localStorage.setItem('apprecio_reply_overrides', JSON.stringify(replyOverrides));
+    renderRespuestas();
+    if(typeof renderPrioridad === 'function') renderPrioridad();
+  }
+
   const repKpis = [
     {label:'Total respuestas', value: repliesMeta.total_replies || 0, sub: 'Últimos '+(repliesMeta.days_scanned||30)+' días', hi:true},
     {label:'Contactos que respondieron', value: repliesMeta.unique_contacts_replied || 0, sub: 'De tus listas Apollo'},
@@ -970,17 +1114,40 @@ function render(DATA, REPLIES, SEQUENCES){
     });
     document.getElementById('respuestas-count').textContent = rows.length.toLocaleString('es-ES')+' respuestas';
     document.getElementById('respuestas-empty-note').style.display = replies.length===0 ? 'block' : 'none';
-    document.querySelector('#respuestas-table tbody').innerHTML = rows.map((r,i)=>`
+    document.querySelector('#respuestas-table tbody').innerHTML = rows.map((r,i)=>{
+      const cls = getReplyClassification(r);
+      return `
       <tr class="reply-row" data-idx="${replies.indexOf(r)}">
         <td><b>${r.contact_name||r.contact_email}</b><br><span style="color:var(--ink-soft); font-size:11px;">${r.contact_title||''}</span></td>
         <td>${r.company||'N/A'}</td>
         <td>${(r.lists||[]).map(l=>`<span class="pill">${l}</span>`).join('')}</td>
+        <td>
+          <span class="badge ${REPLY_CLASS_BADGE[cls.key]}">${cls.label}</span>
+          ${cls.auto ? '' : '<div class="class-manual-tag">Corregido manualmente</div>'}
+          <br>
+          <select class="reclass-select reclass-select-js" data-idx="${replies.indexOf(r)}">
+            <option value="">Auto: ${classifyReplyAuto(r).label}</option>
+            ${Object.entries(REPLY_CLASS_LABELS).map(([k,label])=>`<option value="${k}" ${cls.key===k && !cls.auto ? 'selected':''}>${label}</option>`).join('')}
+          </select>
+        </td>
         <td>${r.subject||'(sin asunto)'}</td>
         <td>${fmtDate(r.date)}</td>
         <td style="color:var(--ink-soft); max-width:280px;">${(r.snippet||'').slice(0,90)}${(r.snippet||'').length>90?'…':''}</td>
-      </tr>`).join('') || `<tr><td colspan="6" class="empty-state">Sin respuestas con estos filtros</td></tr>`;
+      </tr>`;
+    }).join('') || `<tr><td colspan="7" class="empty-state">Sin respuestas con estos filtros</td></tr>`;
     document.querySelectorAll('.reply-row').forEach(row=>{
-      row.addEventListener('click', ()=> openReplyModal(replies[parseInt(row.dataset.idx)]));
+      row.addEventListener('click', (e)=>{
+        if(e.target.closest('.reclass-select-js')) return;
+        openReplyModal(replies[parseInt(row.dataset.idx)]);
+      });
+    });
+    document.querySelectorAll('.reclass-select-js').forEach(sel=>{
+      sel.addEventListener('click', e=> e.stopPropagation());
+      sel.addEventListener('change', e=>{
+        e.stopPropagation();
+        const r = replies[parseInt(sel.dataset.idx)];
+        setReplyOverride(r, sel.value);
+      });
     });
   }
   ['respuestas-search','respuestas-lista','respuestas-rubro'].forEach(id=>
@@ -1010,6 +1177,174 @@ function render(DATA, REPLIES, SEQUENCES){
   document.getElementById('reply-modal').addEventListener('click', (e)=>{
     if(e.target.id==='reply-modal') e.target.classList.remove('active');
   });
+
+  // ---------- Prioridad tab: lead scoring ----------
+  const ROLE_WEIGHTS = {
+    'CEO / Founder': 25, 'COO': 25, 'HR/People Director': 25,
+    'HR/People Manager': 20, 'Talent Acquisition': 15,
+    'Comercial / Ventas': 10, 'L&D': 10, 'Internal Communications': 8, 'Otros': 4
+  };
+  const EMAIL_WEIGHTS = { verified: 25, extrapolated: 10, unavailable: 0 };
+  const companiesByName = {};
+  companies.forEach(c=> companiesByName[c.name] = c);
+
+  function companySizeInfo(companyName){
+    const c = companiesByName[companyName];
+    if(!c) return { bonus:0 };
+    if(c.contacts >= 50) return { bonus:15, label:'Cuenta grande (' + c.contacts + ' contactos)' };
+    if(c.contacts >= 20) return { bonus:10, label:'Cuenta mediana (' + c.contacts + ' contactos)' };
+    if(c.contacts >= 5)  return { bonus:5,  label:'Varios contactos en la empresa' };
+    return { bonus:0 };
+  }
+
+  // Mejor clasificación de respuesta por email de contacto (prioriza interés)
+  const replyClassByEmail = {};
+  replies.forEach(r=>{
+    const email = (r.contact_email||'').toLowerCase();
+    if(!email) return;
+    const cls = getReplyClassification(r);
+    const current = replyClassByEmail[email];
+    if(!current || REPLY_CLASS_PRIORITY[cls.key] > REPLY_CLASS_PRIORITY[current]){
+      replyClassByEmail[email] = cls.key;
+    }
+  });
+
+  function computeLeadScore(contact){
+    let score = 0;
+    const reasons = [];
+
+    const roleW = ROLE_WEIGHTS[contact.role] ?? 4;
+    score += roleW;
+    if(roleW >= 20) reasons.push('Cargo clave para el ICP');
+    else if(roleW >= 10) reasons.push('Cargo relevante');
+
+    const emailW = EMAIL_WEIGHTS[contact.email_status] ?? 0;
+    score += emailW;
+    if(contact.email_status === 'verified') reasons.push('Email verificado');
+    else if(contact.email_status === 'extrapolated') reasons.push('Email extrapolado (revisar antes de escribir)');
+
+    if(contact.phone){ score += 15; reasons.push('Tiene teléfono directo'); }
+
+    const sizeInfo = companySizeInfo(contact.company);
+    score += sizeInfo.bonus;
+    if(sizeInfo.label) reasons.push(sizeInfo.label);
+
+    const replyKey = replyClassByEmail[(contact.email||'').toLowerCase()];
+    if(replyKey === 'interesado'){ score += 30; reasons.push('Respondió mostrando interés'); }
+    else if(replyKey === 'derivado'){ score += 10; reasons.push('Derivó a otro contacto de la empresa'); }
+    else if(replyKey === 'no_interesado' || replyKey === 'baja'){ score -= 40; reasons.push('Respondió sin interés / pidió baja'); }
+
+    score = Math.max(0, Math.min(100, score));
+    let tier = 'bajo';
+    if(score >= 65) tier = 'alto';
+    else if(score >= 40) tier = 'medio';
+
+    return { contact, score, tier, reasons, replyKey };
+  }
+
+  const scoredContacts = contacts.map(computeLeadScore).sort((a,b)=> b.score - a.score);
+
+  const prioKpis = [
+    {label:'Leads prioridad alta', value: scoredContacts.filter(s=>s.tier==='alto').length, sub: 'Score ≥ 65 sobre 100', hi:true},
+    {label:'Leads prioridad media', value: scoredContacts.filter(s=>s.tier==='medio').length, sub: 'Score entre 40 y 64'},
+    {label:'Respuestas por gestionar', value: replies.filter(r=>['interesado','derivado'].includes(getReplyClassification(r).key)).length, sub: 'Interesados + a derivar'},
+    {label:'Empresas por enriquecer', value: companies.filter(c=> c.contacts>=8 && (c.verified_email/c.contacts)<0.4).length, sub: '≥8 contactos, <40% verificado'},
+  ];
+  document.getElementById('prioridad-kpi-grid').innerHTML = prioKpis.map(k=>`
+    <div class="kpi ${k.hi?'hi':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value.toLocaleString('es-ES')}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  const topLead = scoredContacts[0];
+  const highlightEl = document.getElementById('prioridad-highlight');
+  if(topLead && topLead.score > 0){
+    highlightEl.style.display = 'block';
+    highlightEl.innerHTML = `🔥 Tu lead mejor puntuado ahora mismo es <b>${topLead.contact.name}</b> (${topLead.contact.title||''} en <b>${topLead.contact.company||'—'}</b>) con un score de <b>${topLead.score}/100</b> — ${topLead.reasons.slice(0,2).join(', ').toLowerCase()}.`;
+  }
+
+  const prioListaSel = document.getElementById('prioridad-lista');
+  lists.forEach(l=> prioListaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
+  document.getElementById('prioridad-tier').value = 'alto';
+
+  function renderPrioridadLeads(){
+    const q = document.getElementById('prioridad-search').value.toLowerCase();
+    const tier = document.getElementById('prioridad-tier').value;
+    const lista = document.getElementById('prioridad-lista').value;
+    let rows = scoredContacts.filter(s=>{
+      const c = s.contact;
+      if(q && !((c.name||'').toLowerCase().includes(q) || (c.company||'').toLowerCase().includes(q))) return false;
+      if(tier && s.tier !== tier) return false;
+      if(lista && !(c.lists||[]).includes(lista)) return false;
+      return true;
+    }).slice(0, 200);
+    document.getElementById('prioridad-count').textContent = rows.length.toLocaleString('es-ES') + ' leads' + (rows.length===200 ? ' (mostrando los 200 primeros)' : '');
+    document.querySelector('#prioridad-table tbody').innerHTML = rows.map(s=>{
+      const c = s.contact;
+      return `<tr>
+        <td><span class="score-badge ${s.tier}">${s.score}</span></td>
+        <td><b>${c.name}</b></td>
+        <td>${c.title||''}</td>
+        <td>${c.company||'—'}</td>
+        <td>${(c.lists||[]).map(l=>`<span class="pill">${l}</span>`).join('')}</td>
+        <td><span class="badge ${c.email_status}">${c.email_status}</span></td>
+        <td>${c.phone||'—'}</td>
+        <td>${s.reasons.map(r=>`<span class="reason-chip">${r}</span>`).join('')}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="8" class="empty-state">Sin leads con estos filtros</td></tr>`;
+  }
+  ['prioridad-search','prioridad-tier','prioridad-lista'].forEach(id=>
+    document.getElementById(id).addEventListener('input', renderPrioridadLeads));
+  document.getElementById('prioridad-reset').addEventListener('click', ()=>{
+    document.getElementById('prioridad-search').value = '';
+    document.getElementById('prioridad-tier').value = 'alto';
+    document.getElementById('prioridad-lista').value = '';
+    renderPrioridadLeads();
+  });
+
+  function renderPrioridadRespuestas(){
+    const actionable = replies.filter(r=> ['interesado','derivado'].includes(getReplyClassification(r).key))
+      .sort((a,b)=> new Date(b.date) - new Date(a.date));
+    document.getElementById('prioridad-respuestas-empty').style.display = actionable.length===0 ? 'block' : 'none';
+    document.querySelector('#prioridad-respuestas-table tbody').innerHTML = actionable.map(r=>{
+      const cls = getReplyClassification(r);
+      return `<tr class="reply-row" data-idx="${replies.indexOf(r)}">
+        <td><b>${r.contact_name||r.contact_email}</b><br><span style="color:var(--ink-soft); font-size:11px;">${r.contact_title||''}</span></td>
+        <td>${r.company||'N/A'}</td>
+        <td><span class="badge ${REPLY_CLASS_BADGE[cls.key]}">${cls.label}</span></td>
+        <td>${fmtDate(r.date)}</td>
+        <td style="color:var(--ink-soft); max-width:280px;">${(r.snippet||'').slice(0,90)}${(r.snippet||'').length>90?'…':''}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="5" class="empty-state">Sin respuestas por gestionar</td></tr>`;
+    document.querySelectorAll('#prioridad-respuestas-table .reply-row').forEach(row=>{
+      row.addEventListener('click', ()=> openReplyModal(replies[parseInt(row.dataset.idx)]));
+    });
+  }
+
+  function renderPrioridadEmpresas(){
+    const rows = companies
+      .filter(c=> c.contacts>=8 && (c.verified_email/c.contacts)<0.4)
+      .sort((a,b)=> (a.verified_email/a.contacts) - (b.verified_email/b.contacts) || b.contacts - a.contacts)
+      .slice(0, 100);
+    document.querySelector('#prioridad-empresas-table tbody').innerHTML = rows.map(c=>{
+      const pct = Math.round(c.verified_email/c.contacts*100);
+      return `<tr>
+        <td><b>${c.name}</b></td>
+        <td>${(c.rubros||[]).map(r=>`<span class="pill">${r}</span>`).join('')}</td>
+        <td>${c.contacts}</td>
+        <td>${c.verified_email}</td>
+        <td>${pct}%</td>
+        <td>${c.top_title||'—'}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="6" class="empty-state">Sin empresas que cumplan el criterio</td></tr>`;
+  }
+
+  function renderPrioridad(){
+    renderPrioridadLeads();
+    renderPrioridadRespuestas();
+    renderPrioridadEmpresas();
+  }
 
   // ---------- Secuencias tab ----------
   const sequences = SEQUENCES.sequences || [];
@@ -1099,6 +1434,7 @@ function render(DATA, REPLIES, SEQUENCES){
   renderEmpresas();
   renderContactos();
   renderRespuestas();
+  renderPrioridad();
   renderSecuencias();
 
   // ---------- last update badge ----------
