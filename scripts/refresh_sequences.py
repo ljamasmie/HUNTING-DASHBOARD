@@ -31,10 +31,6 @@ if not APOLLO_API_KEY:
 SEARCH_URL = "https://api.apollo.io/api/v1/emailer_campaigns/search"
 PER_PAGE = 50
 
-# owner_id de Lorenzo Jamasmie en Apollo (mismo que usa refresh_data.py) —
-# se usa para quedarnos solo con SUS secuencias, no las de todo el equipo.
-OWNER_ID = "6a97347e1365fe0010e7b200"
-
 
 def pick(d, *keys, default=0):
     """Devuelve el primer valor no-nulo entre varios nombres de campo
@@ -127,17 +123,39 @@ def normalize(seq):
     }
 
 
-def is_mine(seq):
-    """True si la secuencia es de Lorenzo (por owner_id/user_id). Si Apollo
-    no expone ese campo en absoluto en ninguna secuencia, no filtramos nada
-    (mejor mostrar de más que ocultar todo por un cambio de la API)."""
-    owner = seq.get("owner_id") or seq.get("user_id")
-    if owner is None:
-        return True
-    return owner == OWNER_ID
+def is_mine(seq, list_names):
+    """True si el nombre de la secuencia coincide con una de tus listas de
+    Apollo reales (sacadas de data.json, que refresh_data.py ya mantiene al
+    día). Esto es más confiable que filtrar por owner_id, porque ese campo
+    no siempre corresponde al mismo ID de usuario en /labels y en
+    /emailer_campaigns."""
+    name = (seq.get("name") or "").strip().lower()
+    return name in list_names
+
+
+def load_list_names():
+    """Lee data.json (ya generado por refresh_data.py) para saber los
+    nombres exactos de tus listas actuales."""
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    data_json_path = os.path.join(repo_root, "data.json")
+    try:
+        with open(data_json_path, encoding="utf-8") as f:
+            data = json.load(f)
+        names = {l["name"].strip().lower() for l in data.get("lists", []) if l.get("name")}
+        if names:
+            return names
+    except Exception as e:
+        print(f"Aviso: no se pudo leer data.json para matchear listas ({e})", file=sys.stderr)
+    return None
 
 
 def main():
+    list_names = load_list_names()
+    if list_names:
+        print(f"Nombres de listas para matchear ({len(list_names)}): {', '.join(sorted(list_names))}")
+    else:
+        print("Aviso: no se encontraron listas en data.json, no se filtrará por nombre.", file=sys.stderr)
+
     print("Consultando secuencias de Apollo...")
     first = fetch_page(1)
     raw = list(first.get("emailer_campaigns", []))
@@ -149,8 +167,8 @@ def main():
         raw.extend(batch)
         print(f"  página {page}/{total_pages} -> {len(batch)} secuencias")
 
-    sequences = [normalize(s) for s in raw if is_mine(s)]
-    print(f"Secuencias de Lorenzo: {len(sequences)} de {len(raw)} totales")
+    sequences = [normalize(s) for s in raw if is_mine(s, list_names)] if list_names else [normalize(s) for s in raw]
+    print(f"Secuencias que coinciden con tus listas: {len(sequences)} de {len(raw)} totales")
     sequences.sort(key=lambda s: -(s["delivered"] or 0))
 
     data_blob = {
