@@ -414,7 +414,7 @@
             <tr>
               <th style="width:28px;"><input type="checkbox" id="hs-select-all"></th>
               <th data-sort="name">Nombre</th><th data-sort="title">Cargo</th><th data-sort="role">Perfil</th>
-              <th data-sort="company">Empresa</th><th data-sort="city">Ciudad</th><th data-sort="country">País</th>
+              <th data-sort="company">Empresa</th><th data-sort="country">País</th>
               <th data-sort="email_status">Email</th><th>Teléfono</th><th>LinkedIn</th><th>HubSpot</th>
             </tr>
           </thead>
@@ -795,7 +795,6 @@ function render(DATA, REPLIES, SEQUENCES){
         <td>${c.title}</td>
         <td><span class="pill">${c.role}</span></td>
         <td class="company-link" data-company="${encodeURIComponent(c.company)}">${c.company}</td>
-        <td>${c.city}</td>
         <td>${c.country}</td>
         <td>
           ${c.email ? `<a href="mailto:${c.email}" style="color:var(--ink); text-decoration:none;">${c.email}</a><br>` : '<span style="color:var(--ink-soft);">—</span><br>'}
@@ -804,7 +803,7 @@ function render(DATA, REPLIES, SEQUENCES){
         <td>${c.phone || '—'}</td>
         <td>${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="color:var(--fuchsia-dark); text-decoration:none;">Perfil ↗</a>` : '—'}</td>
         <td>${hubspotCellHTML(c.id)}</td>
-      </tr>`).join('') || `<tr><td colspan="11" class="empty-state">Sin resultados con estos filtros</td></tr>`;
+      </tr>`).join('') || `<tr><td colspan="10" class="empty-state">Sin resultados con estos filtros</td></tr>`;
     document.querySelectorAll('#contactos-table .company-link').forEach(el=>{
       el.addEventListener('click', ()=> openCompanyModal(decodeURIComponent(el.dataset.company)));
     });
