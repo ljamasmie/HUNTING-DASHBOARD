@@ -87,6 +87,14 @@ def fetch_label_names():
             lid = l.get("id") or l.get("_id")
             if not lid:
                 continue
+            # solo nos interesan listas de CONTACTOS: las de empresas
+            # (modality "accounts") o de secuencias (modality
+            # "emailer_campaigns") no son válidas como contact_label_ids en
+            # /contacts/search y hacen fallar la llamada entera con un 422
+            # si se cuelan. Ej: "Apprecio Beat - Automoción España
+            # (Prioritarias/Base Completa)" son listas de empresas.
+            if l.get("modality") != "contacts":
+                continue
             # si la API expone owner_id, nos quedamos solo con las de Lorenzo;
             # si no lo expone, asumimos que la API key ya está scoped a su cuenta.
             owner_id = l.get("owner_id") or l.get("user_id")
