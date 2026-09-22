@@ -1,0 +1,143 @@
+{
+  "generated_at": "2026-09-22T00:00:00Z",
+  "owner": "Lorenzo Jamasmie",
+  "scope": "España",
+  "meta": {
+    "total_companies": 3,
+    "total_meetings": 3,
+    "avg_success_odds": 3.0,
+    "success_odds_sample_size": 2,
+    "avg_sentiment": 3.0,
+    "sentiment_sample_size": 2,
+    "next_meeting": {
+      "company": "József Gyarmati (proyecto Lupi)",
+      "detail": "Encuentro presencial propuesto en Valencia",
+      "date_hint": "~10 oct 2026"
+    }
+  },
+  "companies": [
+    {
+      "id": "bdf-integral",
+      "name": "BDF Integral",
+      "domain": "bdfintegral.es",
+      "sector": "Correduría de seguros",
+      "contacts": [
+        {"name": "Francisco Calderón Saura", "role": "Tomador de decisión"},
+        {"name": "David Fleta", "role": "Tomador de decisión"}
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-22",
+          "summary": "Presentación de las soluciones de incentivos de Apprecio. BDF Integral, correduría de seguros, busca optimizar su plan de incentivos para agencias distribuidoras de cara a 2027.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Destinan ~2% de sus 700.000€ en ventas anuales (~14.000€) a incentivos para agencias distribuidoras, pero sin presupuesto cerrado todavía para una solución digital."
+            },
+            "authority": {
+              "status": "definido",
+              "detail": "Dos tomadores de decisión identificados en la reunión: Francisco Calderón Saura y David Fleta."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Digitalizar y dar trazabilidad al plan de incentivos a agencias distribuidoras para 2027. Rewards es la opción que más encaja por su sencillez."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Plan pensado para 2027. Próximo paso acordado: una carga piloto de 10€ para validar la funcionalidad, sin fecha de decisión cerrada."
+            }
+          },
+          "objections": [
+            "Desconocimiento de la marca Apprecio en el mercado español",
+            "Incertidumbre sobre la adopción por parte del usuario final",
+            "Falta de automatización directa con sus procesos de venta actuales",
+            "Penalización del 15% por reversa de puntos"
+          ],
+          "next_steps": "Lorenzo enviará la presentación formal y un brochure. Se propuso una carga piloto de 10€ para verificar la funcionalidad antes de avanzar."
+        }
+      ]
+    },
+    {
+      "id": "conversia",
+      "name": "Conversia",
+      "domain": null,
+      "sector": "Servicios corporativos (550 empleados · grupo Wilmington)",
+      "contacts": [
+        {"name": "Oriol Fabregas", "role": "Tomador de decisión"},
+        {"name": "Ana Paula Diez", "role": "Equipo Apprecio"}
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-09",
+          "summary": "Presentación de Apprecio Rewards y Apprecio Beat. Conversia (550 empleados, recientemente adquirida por el grupo inglés Wilmington) está en 'fase 0' de evaluación de proveedores. Interés inicial solo en Rewards para incentivos a personal no comercial; descartaron Beat por ahora.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se definió un presupuesto cerrado. Rewards tiene coste de administración cero para el cliente; el margen viene de los proveedores de tarjetas de regalo."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Oriol Fabregas fue identificado como tomador de decisión, aunque el proceso depende también de las políticas de compras del grupo Wilmington."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Diseñar esquemas de premios para personal no comercial. Por ahora solo les interesa Rewards."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Oriol está en 'fase 0' de evaluación de proveedores, sin plazo de decisión definido."
+            }
+          },
+          "objections": [
+            "Desconocimiento sobre la utilidad inicial del producto",
+            "Confusión sobre el coste del servicio",
+            "Falta de un plan de proyecto definido",
+            "Dudas sobre la integración técnica del módulo de formación"
+          ],
+          "next_steps": "Consultar requisitos fiscales locales, validar políticas de compras con el grupo Wilmington y presentar casos de uso concretos. Lorenzo enviará materiales y precios de referencia."
+        }
+      ]
+    },
+    {
+      "id": "gyarmati-lupi",
+      "name": "József Gyarmati (proyecto Lupi)",
+      "domain": null,
+      "sector": "Proyecto Lupi",
+      "contacts": [
+        {"name": "József Gyarmati", "role": "Rol de decisión sin confirmar"}
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-09",
+          "summary": "Lorenzo presentó Apprecio Vid a József Gyarmati: reconocimiento, objetivos, recompensas y desarrollo profesional, con los tres tipos de puntos (económicos, de reconocimiento y de experiencia) y uso de IA para encuestas y capacitaciones. Gyarmati mostró interés para el proyecto Lupi y preguntó por la integración con plataformas educativas externas (Coursera, edX).",
+          "success_odds": null,
+          "sentiment": null,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se mencionó presupuesto en la reunión."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "No se confirmó si Gyarmati es el tomador de decisión final para el proyecto Lupi."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Interés en implementar Apprecio Vid para activar cultura organizacional (reconocimiento, objetivos, recompensas) en el proyecto Lupi. Dudas sobre integración con plataformas educativas externas."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Se habló de coordinar un encuentro presencial en Valencia alrededor del 10 de octubre de 2026."
+            }
+          },
+          "objections": [],
+          "next_steps": "Mantenerse en contacto para coordinar un posible encuentro presencial en Valencia (~10 oct 2026) y seguir avanzando en la colaboración."
+        }
+      ]
+    }
+  ]
+}

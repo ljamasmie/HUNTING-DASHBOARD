@@ -199,6 +199,36 @@
 
   .empty-state{padding:50px 20px; text-align:center; color:var(--ink-soft); font-size:13px;}
 
+  /* ---- DIIO: reuniones y BANT ---- */
+  .diio-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(270px, 1fr)); gap:16px;}
+  .diio-card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; cursor:pointer; transition:box-shadow .15s ease, border-color .15s ease;}
+  .diio-card:hover{border-color:var(--fuchsia); box-shadow:0 4px 16px rgba(250,52,94,.1);}
+  .diio-card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .diio-card h4{margin:0; font-size:14.5px; font-weight:800; color:var(--ink);}
+  .diio-card .diio-sector{font-size:11px; color:var(--ink-soft); margin-top:3px;}
+  .diio-meta-row{display:flex; gap:18px; margin:14px 0 12px;}
+  .diio-meta-row div{font-size:11px; color:var(--ink-soft);}
+  .diio-meta-row b{display:block; font-size:16px; color:var(--ink); font-weight:800;}
+  .bant-row{display:flex; gap:6px;}
+  .bant-chip{flex:1; text-align:center; border-radius:8px; padding:6px 2px; font-size:9.5px; font-weight:700; color:#fff; letter-spacing:.2px;}
+  .bant-chip.definido{background:var(--green);}
+  .bant-chip.parcial{background:var(--amber);}
+  .bant-chip.no_identificado{background:#C9C1E8; color:#4A3F73;}
+  .success-pill{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:800; padding:3px 10px; border-radius:999px; white-space:nowrap;}
+  .success-pill.s5, .success-pill.s4{background:#E4F7EF; color:var(--green);}
+  .success-pill.s3{background:#FFF4DC; color:var(--amber);}
+  .success-pill.s2, .success-pill.s1{background:#FBEAEA; color:var(--red);}
+  .success-pill.sna{background:#F1EFF5; color:var(--ink-soft);}
+  .bant-detail-block{border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px;}
+  .bant-detail-block .bant-label{display:flex; align-items:center; gap:8px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; margin-bottom:6px; color:var(--ink);}
+  .bant-dot{width:9px; height:9px; border-radius:50%; flex:none;}
+  .bant-dot.definido{background:var(--green);}
+  .bant-dot.parcial{background:var(--amber);}
+  .bant-dot.no_identificado{background:#B7A6EC;}
+  .diio-meeting-card{border-top:1px solid var(--line); padding-top:16px; margin-top:16px;}
+  .diio-meeting-card:first-child{border-top:none; padding-top:0; margin-top:0;}
+  .objection-chip{display:inline-block; background:var(--fuchsia-light); color:var(--fuchsia-dark); font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:999px; margin:2px 4px 2px 0;}
+
   /* Company detail modal */
   .modal-bg{
     display:none; position:fixed; inset:0; background:rgba(21,18,28,.55); z-index:100;
@@ -294,6 +324,7 @@
   <button class="tab-btn" data-view="contactos">Contactos</button>
   <button class="tab-btn" data-view="prioridad">🎯 Prioridad</button>
   <button class="tab-btn" data-view="respuestas">📩 Respuestas</button>
+  <button class="tab-btn" data-view="diio">🗣️ Reuniones</button>
   <button class="tab-btn" data-view="secuencias">📈 Secuencias</button>
 </div>
 
@@ -524,6 +555,26 @@
     </p>
   </div>
 
+  <div class="view" id="view-diio">
+    <div class="kpi-grid" id="diio-kpi-grid"></div>
+
+    <div class="priority-highlight" id="diio-highlight" style="display:none;"></div>
+
+    <div class="section-title"><span class="dot"></span>Empresas contactadas en España</div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin:-8px 0 14px;">
+      Reuniones y llamadas analizadas por DIIO, filtradas a empresas de España contactadas por Lorenzo Jamasmie. Metodología BANT — Budget (presupuesto), Authority (decisor), Need (necesidad), Timeline (plazo) — para ver de un vistazo qué falta por confirmar en cada cuenta.
+    </p>
+    <div class="filters">
+      <input type="text" id="diio-search" placeholder="Buscar empresa...">
+      <button class="btn-reset" id="diio-reset">Reset filtros</button>
+    </div>
+    <div class="result-count" id="diio-count"></div>
+    <div class="diio-grid" id="diio-grid"></div>
+    <p id="diio-empty-note" style="font-size:11.5px; color:var(--ink-soft); margin-top:12px; display:none;">
+      Todavía no hay reuniones registradas en DIIO para empresas de España contactadas por ti.
+    </p>
+  </div>
+
   <div class="view" id="view-secuencias">
     <div class="kpi-grid" id="secuencias-kpi-grid"></div>
 
@@ -586,6 +637,14 @@
   </div>
 </div>
 
+<!-- DIIO company detail modal -->
+<div class="modal-bg" id="diio-modal">
+  <div class="modal" style="max-width:700px;">
+    <button class="modal-close" id="diio-modal-close">✕</button>
+    <div id="diio-modal-content"></div>
+  </div>
+</div>
+
 <script>async function boot(){
   let DATA;
   try{
@@ -616,12 +675,20 @@
     // sequences.json es opcional; si no carga, seguimos con la pestaña vacía sin romper el resto
   }
 
+  let DIIO = { meta: {}, companies: [] };
+  try{
+    const res4 = await fetch('diio.json', {cache:'no-store'});
+    if(res4.ok) DIIO = await res4.json();
+  }catch(err){
+    // diio.json es opcional; si no carga, la pestaña de Reuniones queda vacía sin romper el resto
+  }
+
   document.getElementById('load-status').style.display = 'none';
   document.getElementById('dashboard-root').style.display = 'block';
-  render(DATA, REPLIES, SEQUENCES);
+  render(DATA, REPLIES, SEQUENCES, DIIO);
 }
 
-function render(DATA, REPLIES, SEQUENCES){
+function render(DATA, REPLIES, SEQUENCES, DIIO){
   const contacts = DATA.contacts;
   const companies = DATA.companies;
   const lists = DATA.lists;
@@ -1424,6 +1491,125 @@ function render(DATA, REPLIES, SEQUENCES){
     renderPrioridadEmpresas();
   }
 
+  // ---------- DIIO tab: reuniones y avance BANT por empresa ----------
+  const diioCompanies = (DIIO && DIIO.companies) || [];
+  const diioMeta = (DIIO && DIIO.meta) || {};
+
+  const BANT_ORDER = ['budget','authority','need','timeline'];
+  const BANT_LABELS = {budget:'Presupuesto', authority:'Decisor', need:'Necesidad', timeline:'Plazo'};
+  const BANT_STATUS_LABELS = {definido:'Definido', parcial:'Parcial', no_identificado:'No identificado'};
+
+  function successBadgeClass(v){
+    if(v===null || v===undefined) return 'sna';
+    return 's'+Math.round(v);
+  }
+  function latestDiioMeeting(company){
+    const ms = (company.meetings||[]).slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
+    return ms[0] || null;
+  }
+  function bantChipsHTML(meeting){
+    return BANT_ORDER.map(k=>{
+      const b = (meeting.bant && meeting.bant[k]) || {status:'no_identificado'};
+      return `<div class="bant-chip ${b.status}">${BANT_LABELS[k]}</div>`;
+    }).join('');
+  }
+
+  const diioKpis = [
+    {label:'Empresas contactadas (España)', value: diioMeta.total_companies ?? diioCompanies.length, sub:'Por Lorenzo Jamasmie', hi:true},
+    {label:'Reuniones registradas', value: diioMeta.total_meetings ?? diioCompanies.reduce((s,c)=> s+(c.meetings||[]).length, 0), sub:'Analizadas por DIIO'},
+    {label:'Predicción de éxito media', value: diioMeta.avg_success_odds != null ? diioMeta.avg_success_odds.toFixed(1)+'/5' : '—', sub: diioMeta.success_odds_sample_size ? 'Sobre '+diioMeta.success_odds_sample_size+' reuniones con dato' : 'Escala 1-5'},
+    {label:'Sentimiento medio del cliente', value: diioMeta.avg_sentiment != null ? diioMeta.avg_sentiment.toFixed(1)+'/5' : '—', sub: diioMeta.sentiment_sample_size ? 'Sobre '+diioMeta.sentiment_sample_size+' reuniones con dato' : 'Escala 1-5'},
+  ];
+  document.getElementById('diio-kpi-grid').innerHTML = diioKpis.map(k=>`
+    <div class="kpi ${k.hi?'hi':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  const diioHighlightEl = document.getElementById('diio-highlight');
+  if(diioMeta.next_meeting){
+    diioHighlightEl.style.display = 'block';
+    diioHighlightEl.innerHTML = `📅 Próxima reunión: <b>${diioMeta.next_meeting.company}</b> — ${diioMeta.next_meeting.detail}${diioMeta.next_meeting.date_hint ? ' ('+diioMeta.next_meeting.date_hint+')' : ''}.`;
+  }
+
+  function renderDiio(){
+    const q = document.getElementById('diio-search').value.toLowerCase();
+    let rows = diioCompanies.filter(c=> !q || (c.name||'').toLowerCase().includes(q));
+    document.getElementById('diio-count').textContent = rows.length.toLocaleString('es-ES') + (rows.length===1 ? ' empresa' : ' empresas');
+    document.getElementById('diio-empty-note').style.display = diioCompanies.length===0 ? 'block' : 'none';
+    document.getElementById('diio-grid').innerHTML = rows.map(c=>{
+      const last = latestDiioMeeting(c);
+      const n = (c.meetings||[]).length;
+      return `<div class="diio-card" data-id="${c.id}">
+        <div class="diio-card-top">
+          <div>
+            <h4>${c.name}</h4>
+            <div class="diio-sector">${c.sector || ''}</div>
+          </div>
+          <span class="success-pill ${successBadgeClass(last && last.success_odds)}">${last && last.success_odds!=null ? 'Éxito '+last.success_odds+'/5' : 'Sin dato'}</span>
+        </div>
+        <div class="diio-meta-row">
+          <div><b>${n}</b>reunión${n===1?'':'es'}</div>
+          <div><b>${last ? fmtDate(last.date) : '—'}</b>Última</div>
+        </div>
+        ${last ? `<div class="bant-row">${bantChipsHTML(last)}</div>` : ''}
+      </div>`;
+    }).join('');
+    document.querySelectorAll('.diio-card').forEach(el=>{
+      el.addEventListener('click', ()=> openDiioModal(el.dataset.id));
+    });
+  }
+  document.getElementById('diio-search').addEventListener('input', renderDiio);
+  document.getElementById('diio-reset').addEventListener('click', ()=>{
+    document.getElementById('diio-search').value='';
+    renderDiio();
+  });
+
+  function openDiioModal(companyId){
+    const c = diioCompanies.find(x=> x.id === companyId);
+    if(!c) return;
+    const meetings = (c.meetings||[]).slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
+    document.getElementById('diio-modal-content').innerHTML = `
+      <h2>${c.name}</h2>
+      <div class="modal-sub">${c.sector||''}${c.domain ? ' · '+c.domain : ''}</div>
+      ${c.contacts && c.contacts.length ? `
+        <div class="modal-section-title">Contactos</div>
+        <div style="margin-bottom:6px;">${c.contacts.map(p=>`<span class="pill">${p.name}${p.role ? ' — '+p.role : ''}</span>`).join(' ')}</div>
+      ` : ''}
+      <div class="modal-section-title">Avance por reunión (BANT)</div>
+      ${meetings.map(m=>`
+        <div class="diio-meeting-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:10px;">
+            <b>${fmtDate(m.date)}</b>
+            <span class="success-pill ${successBadgeClass(m.success_odds)}">Éxito: ${m.success_odds!=null ? m.success_odds+'/5' : '—'}</span>
+          </div>
+          <div style="font-size:12.5px; color:var(--ink); margin-bottom:12px;">${m.summary||''}</div>
+          ${BANT_ORDER.map(k=>{
+            const b = (m.bant && m.bant[k]) || {status:'no_identificado', detail:'Sin información en esta reunión.'};
+            return `<div class="bant-detail-block">
+              <div class="bant-label"><span class="bant-dot ${b.status}"></span>${BANT_LABELS[k]} · ${BANT_STATUS_LABELS[b.status]}</div>
+              <div style="font-size:12px; color:var(--ink-soft);">${b.detail||''}</div>
+            </div>`;
+          }).join('')}
+          ${m.objections && m.objections.length ? `
+            <div class="modal-section-title" style="margin-top:12px;">Objeciones</div>
+            <div>${m.objections.map(o=>`<span class="objection-chip">${o}</span>`).join('')}</div>
+          ` : ''}
+          ${m.next_steps ? `
+            <div class="modal-section-title" style="margin-top:12px;">Próximos pasos</div>
+            <div class="next-action">${m.next_steps}</div>
+          ` : ''}
+        </div>
+      `).join('')}
+    `;
+    document.getElementById('diio-modal').classList.add('active');
+  }
+  document.getElementById('diio-modal-close').addEventListener('click', ()=> document.getElementById('diio-modal').classList.remove('active'));
+  document.getElementById('diio-modal').addEventListener('click', (e)=>{
+    if(e.target.id==='diio-modal') e.target.classList.remove('active');
+  });
+
   // ---------- Secuencias tab ----------
   const sequences = SEQUENCES.sequences || [];
   const seqMeta = SEQUENCES.meta || {};
@@ -1513,6 +1699,7 @@ function render(DATA, REPLIES, SEQUENCES){
   renderContactos();
   renderRespuestas();
   renderPrioridad();
+  renderDiio();
   renderSecuencias();
 
   // ---------- last update badge ----------
