@@ -3,12 +3,10 @@
   "owner": "Lorenzo Jamasmie",
   "scope": "España",
   "meta": {
-    "total_companies": 3,
-    "total_meetings": 3,
-    "avg_success_odds": 3.0,
-    "success_odds_sample_size": 2,
+    "total_companies": 7,
+    "total_meetings": 7,
     "avg_sentiment": 3.0,
-    "sentiment_sample_size": 2,
+    "sentiment_sample_size": 5,
     "next_meeting": {
       "company": "József Gyarmati (proyecto Lupi)",
       "detail": "Encuentro presencial propuesto en Valencia",
@@ -22,8 +20,14 @@
       "domain": "bdfintegral.es",
       "sector": "Correduría de seguros",
       "contacts": [
-        {"name": "Francisco Calderón Saura", "role": "Tomador de decisión"},
-        {"name": "David Fleta", "role": "Tomador de decisión"}
+        {
+          "name": "Francisco Calderón Saura",
+          "role": "Tomador de decisión"
+        },
+        {
+          "name": "David Fleta",
+          "role": "Tomador de decisión"
+        }
       ],
       "meetings": [
         {
@@ -55,7 +59,21 @@
             "Falta de automatización directa con sus procesos de venta actuales",
             "Penalización del 15% por reversa de puntos"
           ],
-          "next_steps": "Lorenzo enviará la presentación formal y un brochure. Se propuso una carga piloto de 10€ para verificar la funcionalidad antes de avanzar."
+          "commitments": "Envío de la presentación formal, brochure y enlaces de acceso a la plataforma. Se plantea una carga de prueba de 10€ para validar el proceso de canje antes de decidir sobre el presupuesto de 2027.",
+          "competitors": [],
+          "next_steps": "Lorenzo enviará la presentación formal y un brochure. Se propuso una carga piloto de 10€ para verificar la funcionalidad antes de avanzar.",
+          "follow_up_suggestion": "Correo de agradecimiento resumiendo los beneficios clave (gestión simple, coste cero, flexibilidad) y reiterando la propuesta de la carga de prueba de 10€.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Buena presentación de las líneas de negocio de Apprecio",
+              "Adaptó bien la oferta de Rewards a la necesidad de incentivos externos del cliente"
+            ],
+            "improvements": [
+              "Preparar una guía rápida de implementación para reducir la incertidumbre por ser una marca nueva en España",
+              "Precisar las condiciones de transferibilidad de las tarjetas de regalo"
+            ]
+          }
         }
       ]
     },
@@ -65,8 +83,14 @@
       "domain": null,
       "sector": "Servicios corporativos (550 empleados · grupo Wilmington)",
       "contacts": [
-        {"name": "Oriol Fabregas", "role": "Tomador de decisión"},
-        {"name": "Ana Paula Diez", "role": "Equipo Apprecio"}
+        {
+          "name": "Oriol Fabregas",
+          "role": "Tomador de decisión"
+        },
+        {
+          "name": "Ana Paula Diez",
+          "role": "Equipo Apprecio"
+        }
       ],
       "meetings": [
         {
@@ -98,7 +122,19 @@
             "Falta de un plan de proyecto definido",
             "Dudas sobre la integración técnica del módulo de formación"
           ],
-          "next_steps": "Consultar requisitos fiscales locales, validar políticas de compras con el grupo Wilmington y presentar casos de uso concretos. Lorenzo enviará materiales y precios de referencia."
+          "commitments": "Lorenzo se compromete a enviar los brochures de Rewards y Beat junto con una orientación de precios estimada para Beat.",
+          "competitors": [
+            "Amazon (mencionado como opción dentro del marketplace de incentivos)"
+          ],
+          "next_steps": "Consultar requisitos fiscales locales, validar políticas de compras con el grupo Wilmington y presentar casos de uso concretos. Lorenzo enviará materiales y precios de referencia.",
+          "follow_up_suggestion": "Correo formal con el material prometido y la información de costes, dejando la puerta abierta para cuando el proyecto de Conversia avance.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Buena capacidad para aclarar dudas sobre el modelo de negocio ante las objeciones iniciales del cliente"
+            ],
+            "improvements": []
+          }
         }
       ]
     },
@@ -108,7 +144,10 @@
       "domain": null,
       "sector": "Proyecto Lupi",
       "contacts": [
-        {"name": "József Gyarmati", "role": "Rol de decisión sin confirmar"}
+        {
+          "name": "József Gyarmati",
+          "role": "Rol de decisión sin confirmar"
+        }
       ],
       "meetings": [
         {
@@ -135,7 +174,235 @@
             }
           },
           "objections": [],
-          "next_steps": "Mantenerse en contacto para coordinar un posible encuentro presencial en Valencia (~10 oct 2026) y seguir avanzando en la colaboración."
+          "commitments": null,
+          "competitors": [],
+          "next_steps": "Mantenerse en contacto para coordinar un posible encuentro presencial en Valencia (~10 oct 2026) y seguir avanzando en la colaboración.",
+          "follow_up_suggestion": null,
+          "performance": null
+        }
+      ]
+    },
+    {
+      "id": "phone-house",
+      "name": "Phone House",
+      "domain": "phonehouse.es",
+      "sector": "Retail de telefonía",
+      "contacts": [
+        {
+          "name": "Eduardo Diaz",
+          "role": "Sin confirmar como decisor"
+        },
+        {
+          "name": "Roberto Restrepo",
+          "role": "Sin confirmar como decisor"
+        },
+        {
+          "name": "Almudena Saez",
+          "role": "Sin confirmar como decisor"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-04",
+          "summary": "Reunión de venta sobre Apprecio Rewards para incentivar al equipo de ventas en tienda de Phone House. El cliente busca centralizar la gestión de premios, mejorar el análisis de datos por sucursal y optimizar el retorno de su inversión anual en incentivos.",
+          "success_odds": 5,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "No se definió una cifra exacta; el cliente hará una estimación de su gasto anual para evaluar un acuerdo de volumen."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Participaron tres personas del lado del cliente (Eduardo Diaz, Roberto Restrepo, Almudena Saez), pero ninguna fue confirmada como tomadora de decisión final; la propuesta se revisará internamente."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Centralizar la gestión de premios para el equipo de ventas en tienda, mejorar el análisis de datos por sucursal y optimizar el retorno de la inversión anual en incentivos."
+            },
+            "timeline": {
+              "status": "definido",
+              "detail": "La decisión se tomará en el transcurso de una semana, tras revisar la propuesta internamente."
+            }
+          },
+          "objections": [
+            "Incertidumbre sobre posibles costes ocultos",
+            "Dudas sobre cláusulas de permanencia",
+            "Piden condiciones especiales por volumen"
+          ],
+          "commitments": "Lorenzo enviará la presentación comercial. Los clientes realizarán una estimación de su gasto anual en incentivos para evaluar beneficios por volumen. Ambas partes acordaron retomar el contacto la próxima semana.",
+          "competitors": [],
+          "next_steps": "Lorenzo enviará la presentación comercial para revisión interna. Retomarán el contacto la semana siguiente.",
+          "follow_up_suggestion": "Correo destacando la gratuidad del modelo, la inmediatez de la carga de puntos, la gestión simplificada vía panel administrativo, y apertura a negociar un rebate por volumen.",
+          "performance": {
+            "score": null,
+            "strengths": [
+              "Excelente detección de necesidades (foco en ventas en tienda)",
+              "Transparencia explicando el modelo de valor",
+              "Buena empatía liderando la conversación"
+            ],
+            "improvements": [
+              "Liderar el compromiso de seguimiento proponiendo fechas concretas en vez de esperar al cliente",
+              "Profundizar en los KPIs del cliente antes de negociar beneficios por volumen"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "grupo-saona",
+      "name": "Grupo Saona",
+      "domain": null,
+      "sector": "Restauración (~1.200 colaboradores)",
+      "contacts": [
+        {
+          "name": "Melissa Solano Bravo",
+          "role": "Punto de contacto principal (escala a su directora)"
+        },
+        {
+          "name": "Erika",
+          "role": "Sin confirmar"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-02",
+          "summary": "Reunión de seguimiento a una propuesta comercial de plataforma de reconocimiento para 1.200 colaboradores, con tres pilares (reconocimiento, recompensa y crecimiento) adaptados a la cultura de Saona.",
+          "success_odds": 4,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "El fee mensual de 2.700€ se percibe como elevado; la empresa no tiene actualmente una partida presupuestaria para este tipo de programa. Se planteó un piloto con descuento para validar la herramienta."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Melissa Solano Bravo es el punto de contacto principal, pero debe presentar la propuesta a su directora, quien tiene la aprobación presupuestaria final."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Implementar una plataforma de reconocimiento para 1.200 colaboradores, con foco en reconocimiento, recompensa y crecimiento, adaptada a los valores culturales de Saona."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin plazo definido; queda sujeto a la revisión interna que Melissa hará con su dirección."
+            }
+          },
+          "objections": [
+            "No hay partida presupuestaria asignada para una inversión mensual de esta magnitud",
+            "El fee se percibe como elevado frente a su situación actual"
+          ],
+          "commitments": null,
+          "competitors": [],
+          "next_steps": "Se enviaron los materiales comerciales. Se evaluó hacer un piloto con descuento antes de un despliegue total, con disponibilidad para ajustar el modelo.",
+          "follow_up_suggestion": null,
+          "performance": null
+        }
+      ]
+    },
+    {
+      "id": "loom",
+      "name": "LOOM",
+      "domain": null,
+      "sector": "Servicios (32 \"hosts\" en 14 centros, Madrid y Barcelona)",
+      "contacts": [
+        {
+          "name": "Nicolás Asta",
+          "role": "Interlocutor (escala a su jefa directa)"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-04",
+          "summary": "Presentación de Apprecio Bit como solución de cultura organizacional, comunicación y gamificación. LOOM busca motivar a sus 32 \"hosts\" en 14 centros, premiando hitos como reseñas positivas en Google, usando puntos canjeables e IA para retos y encuestas.",
+          "success_odds": 4,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Modelo de fee mensual por usuario, con puntos equivalentes a 1€. No se definió presupuesto cerrado; depende de la propuesta que Nicolás presente a su jefa."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Nicolás Asta es el interlocutor, pero debe escalar la propuesta a su jefa directa para decidir."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Motivar a sus 32 'hosts' en 14 centros, premiando hitos como reseñas positivas en Google."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "No se definió un plazo estricto; depende de que la jefatura de Nicolás apruebe internamente."
+            }
+          },
+          "objections": [
+            "Claridad en los costos del modelo",
+            "Temor a manipulación del sistema (abuso entre pares)",
+            "Necesidad de integración automática con Google",
+            "Dependencia de aprobación de su jefatura"
+          ],
+          "commitments": "Lorenzo enviará una propuesta formal con el desglose de costes mensuales por usuario y material informativo, para que Nicolás Asta la presente a su jefa.",
+          "competitors": [],
+          "next_steps": "Envío de propuesta detallada y material informativo; posible reunión conjunta con la jefatura de LOOM.",
+          "follow_up_suggestion": "Correo reforzando el valor de Apprecio Bit (reconocimiento, incentivos económicos, gestión con IA), adjuntando presentación y costes, e invitando a coordinar una reunión conjunta con la jefa de Nicolás.",
+          "performance": {
+            "score": null,
+            "strengths": [
+              "Excelente capacidad de conexión y enfoque consultivo",
+              "Buen diagnóstico del dolor del cliente con solución a medida",
+              "Manejo transparente de dudas técnicas"
+            ],
+            "improvements": [
+              "Liderar la agenda proponiendo fechas y horas concretas en vez de aceptar los plazos del cliente",
+              "Profundizar en los KPIs del cliente antes de mostrar toda la plataforma"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "leroy-merlin",
+      "name": "Leroy Merlin",
+      "domain": "leroymerlin.es",
+      "sector": "Retail de bricolaje (Grupo Adeo)",
+      "contacts": [
+        {
+          "name": "Ainara Martín",
+          "role": "Interlocutora (decisión sujeta al Grupo Adeo)"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-02",
+          "summary": "Reunión de partnership: Apprecio propone incorporar las gift cards de Leroy Merlin a su catálogo de beneficios y ofrecer soporte tecnológico para digitalizar sus activos. Ainara Martín se mostró abierta, aunque el Grupo Adeo (matriz) ya desarrolla herramientas internas propias.",
+          "success_odds": null,
+          "sentiment": null,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No aplica un presupuesto tradicional: es un modelo de integración/comisión sobre sus propias gift cards, aún sin condiciones comerciales cerradas."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Ainara Martín es la interlocutora y se mostró abierta a la propuesta, pero la decisión final depende de los desarrollos internos del Grupo Adeo (matriz)."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Evaluar la incorporación de sus gift cards al catálogo de Apprecio y el soporte tecnológico para digitalizar sus activos, aunque el Grupo Adeo ya desarrolla herramientas internas propias."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin fecha para la reunión presencial en Madrid; Lorenzo gestionará la relación local durante los próximos dos meses."
+            }
+          },
+          "objections": [
+            "El Grupo Adeo (matriz) ya desarrolla herramientas internas propias, lo que podría competir con la propuesta de Apprecio"
+          ],
+          "commitments": "Sebastian Gajardo enviará una propuesta formal (modelo económico/operativo + propuesta tecnológica) que Ainara Martín revisará internamente. Lorenzo gestionará la relación en Madrid y buscará organizar una visita presencial.",
+          "competitors": [],
+          "next_steps": "Presentar una propuesta con dos pilares (condiciones comerciales + oferta tecnológica) y coordinar una reunión presencial en Madrid.",
+          "follow_up_suggestion": null,
+          "performance": null
         }
       ]
     }

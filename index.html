@@ -1517,8 +1517,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
   const diioKpis = [
     {label:'Empresas contactadas (España)', value: diioMeta.total_companies ?? diioCompanies.length, sub:'Por Lorenzo Jamasmie', hi:true},
     {label:'Reuniones registradas', value: diioMeta.total_meetings ?? diioCompanies.reduce((s,c)=> s+(c.meetings||[]).length, 0), sub:'Analizadas por DIIO'},
-    {label:'Predicción de éxito media', value: diioMeta.avg_success_odds != null ? diioMeta.avg_success_odds.toFixed(1)+'/5' : '—', sub: diioMeta.success_odds_sample_size ? 'Sobre '+diioMeta.success_odds_sample_size+' reuniones con dato' : 'Escala 1-5'},
-    {label:'Sentimiento medio del cliente', value: diioMeta.avg_sentiment != null ? diioMeta.avg_sentiment.toFixed(1)+'/5' : '—', sub: diioMeta.sentiment_sample_size ? 'Sobre '+diioMeta.sentiment_sample_size+' reuniones con dato' : 'Escala 1-5'},
+    {label:'Sentimiento medio del cliente', value: diioMeta.avg_sentiment != null ? diioMeta.avg_sentiment.toFixed(1)+'/3' : '—', sub: diioMeta.sentiment_sample_size ? 'Sobre '+diioMeta.sentiment_sample_size+' reuniones con dato' : 'Escala 1-3'},
   ];
   document.getElementById('diio-kpi-grid').innerHTML = diioKpis.map(k=>`
     <div class="kpi ${k.hi?'hi':''}">
@@ -1596,9 +1595,35 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
             <div class="modal-section-title" style="margin-top:12px;">Objeciones</div>
             <div>${m.objections.map(o=>`<span class="objection-chip">${o}</span>`).join('')}</div>
           ` : ''}
+          ${m.commitments ? `
+            <div class="modal-section-title" style="margin-top:12px;">Compromisos acordados</div>
+            <div style="font-size:12px; color:var(--ink-soft);">${m.commitments}</div>
+          ` : ''}
+          ${m.competitors && m.competitors.length ? `
+            <div class="modal-section-title" style="margin-top:12px;">Competidores mencionados</div>
+            <div>${m.competitors.map(o=>`<span class="pill">${o}</span>`).join(' ')}</div>
+          ` : ''}
           ${m.next_steps ? `
             <div class="modal-section-title" style="margin-top:12px;">Próximos pasos</div>
             <div class="next-action">${m.next_steps}</div>
+          ` : ''}
+          ${m.follow_up_suggestion ? `
+            <div class="modal-section-title" style="margin-top:12px;">Sugerencia de seguimiento</div>
+            <div style="font-size:12px; color:var(--ink-soft); font-style:italic;">${m.follow_up_suggestion}</div>
+          ` : ''}
+          ${m.performance && (m.performance.score != null || (m.performance.strengths && m.performance.strengths.length) || (m.performance.improvements && m.performance.improvements.length)) ? `
+            <div class="modal-section-title" style="margin-top:12px;">Cómo fue tu desempeño</div>
+            <div class="bant-detail-block" style="border-color:var(--lavender);">
+              ${m.performance.score != null ? `<div style="font-size:12.5px; font-weight:800; color:var(--lavender-dark); margin-bottom:6px;">Puntuación: ${m.performance.score}/10</div>` : ''}
+              ${m.performance.strengths && m.performance.strengths.length ? `
+                <div style="font-size:11px; font-weight:700; color:var(--green); margin-bottom:3px;">Fortalezas</div>
+                <ul style="margin:0 0 8px; padding-left:18px; font-size:12px; color:var(--ink-soft);">${m.performance.strengths.map(s=>`<li>${s}</li>`).join('')}</ul>
+              ` : ''}
+              ${m.performance.improvements && m.performance.improvements.length ? `
+                <div style="font-size:11px; font-weight:700; color:var(--amber); margin-bottom:3px;">Áreas de mejora</div>
+                <ul style="margin:0; padding-left:18px; font-size:12px; color:var(--ink-soft);">${m.performance.improvements.map(s=>`<li>${s}</li>`).join('')}</ul>
+              ` : ''}
+            </div>
           ` : ''}
         </div>
       `).join('')}
