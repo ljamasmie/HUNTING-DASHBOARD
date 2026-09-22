@@ -451,7 +451,7 @@
           <thead>
             <tr>
               <th>Score</th><th>Nombre</th><th>Cargo</th><th>Empresa</th><th>Lista</th>
-              <th>Email</th><th>Teléfono</th><th>Por qué</th>
+              <th>Email</th><th>Teléfono</th><th>LinkedIn</th><th>HubSpot</th><th>Contactado</th><th>Por qué</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -880,6 +880,7 @@ function render(DATA, REPLIES, SEQUENCES){
       // se quedarán en "Crear en HubSpot" hasta que lo esté.
     }
     renderContactos();
+    if(typeof renderPrioridadLeads === 'function') renderPrioridadLeads();
   }
 
   async function checkHubspotHealth(){
@@ -946,6 +947,7 @@ function render(DATA, REPLIES, SEQUENCES){
       showToast('⚠ No se pudo contactar con el Worker de HubSpot.');
     }
     renderContactos();
+    if(typeof renderPrioridadLeads === 'function') renderPrioridadLeads();
   }
 
   document.getElementById('hs-bulk-btn').addEventListener('click', async ()=>{
@@ -978,6 +980,7 @@ function render(DATA, REPLIES, SEQUENCES){
     selectedContactIds.clear();
     updateBulkButton();
     renderContactos();
+    if(typeof renderPrioridadLeads === 'function') renderPrioridadLeads();
   });
 
   loadHubspotState();
@@ -1323,6 +1326,14 @@ function render(DATA, REPLIES, SEQUENCES){
   lists.forEach(l=> prioListaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
   document.getElementById('prioridad-tier').value = 'alto';
 
+  // ---------- "Contactado" tick: se guarda en este navegador (localStorage) ----------
+  let contactedState = {};
+  try{ contactedState = JSON.parse(localStorage.getItem('apprecio_contacted') || '{}'); }catch(e){ contactedState = {}; }
+  function setContacted(contactId, checked){
+    if(checked) contactedState[contactId] = true; else delete contactedState[contactId];
+    localStorage.setItem('apprecio_contacted', JSON.stringify(contactedState));
+  }
+
   function renderPrioridadLeads(){
     const q = document.getElementById('prioridad-search').value.toLowerCase();
     const tier = document.getElementById('prioridad-tier').value;
@@ -1345,9 +1356,21 @@ function render(DATA, REPLIES, SEQUENCES){
         <td>${(c.lists||[]).map(l=>`<span class="pill">${l}</span>`).join('')}</td>
         <td><span class="badge ${c.email_status}">${c.email_status}</span></td>
         <td>${c.phone||'—'}</td>
+        <td>${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="color:var(--fuchsia-dark); text-decoration:none;">Perfil ↗</a>` : '—'}</td>
+        <td>${hubspotCellHTML(c.id)}</td>
+        <td style="text-align:center;"><input type="checkbox" class="prio-contacted-check" data-id="${c.id}" ${contactedState[c.id] ? 'checked' : ''} title="Marcar como contactado"></td>
         <td>${s.reasons.map(r=>`<span class="reason-chip">${r}</span>`).join('')}</td>
       </tr>`;
-    }).join('') || `<tr><td colspan="8" class="empty-state">Sin leads con estos filtros</td></tr>`;
+    }).join('') || `<tr><td colspan="11" class="empty-state">Sin leads con estos filtros</td></tr>`;
+    document.querySelectorAll('#prioridad-table .hs-create-btn').forEach(el=>{
+      el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
+    });
+    document.querySelectorAll('#prioridad-table .hs-retry').forEach(el=>{
+      el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
+    });
+    document.querySelectorAll('#prioridad-table .prio-contacted-check').forEach(el=>{
+      el.addEventListener('change', ()=> setContacted(el.dataset.id, el.checked));
+    });
   }
   ['prioridad-search','prioridad-tier','prioridad-lista'].forEach(id=>
     document.getElementById(id).addEventListener('input', renderPrioridadLeads));
