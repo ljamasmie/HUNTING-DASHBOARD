@@ -566,6 +566,10 @@
     </p>
     <div class="filters">
       <input type="text" id="diio-search" placeholder="Buscar empresa...">
+      <select id="diio-sort">
+        <option value="date_desc">Más recientes primero</option>
+        <option value="date_asc">Más antiguas primero</option>
+      </select>
       <button class="btn-reset" id="diio-reset">Reset filtros</button>
     </div>
     <div class="result-count" id="diio-count"></div>
@@ -1534,7 +1538,15 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
 
   function renderDiio(){
     const q = document.getElementById('diio-search').value.toLowerCase();
+    const sortOrder = document.getElementById('diio-sort').value;
     let rows = diioCompanies.filter(c=> !q || (c.name||'').toLowerCase().includes(q));
+    rows = rows.slice().sort((a,b)=>{
+      const da = latestDiioMeeting(a);
+      const db = latestDiioMeeting(b);
+      const ta = da ? new Date(da.date).getTime() : -Infinity;
+      const tb = db ? new Date(db.date).getTime() : -Infinity;
+      return sortOrder === 'date_asc' ? ta - tb : tb - ta;
+    });
     document.getElementById('diio-count').textContent = rows.length.toLocaleString('es-ES') + (rows.length===1 ? ' empresa' : ' empresas');
     document.getElementById('diio-empty-note').style.display = diioCompanies.length===0 ? 'block' : 'none';
     document.getElementById('diio-grid').innerHTML = rows.map(c=>{
@@ -1560,8 +1572,10 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
     });
   }
   document.getElementById('diio-search').addEventListener('input', renderDiio);
+  document.getElementById('diio-sort').addEventListener('change', renderDiio);
   document.getElementById('diio-reset').addEventListener('click', ()=>{
     document.getElementById('diio-search').value='';
+    document.getElementById('diio-sort').value='date_desc';
     renderDiio();
   });
 
