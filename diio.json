@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-22T00:00:00Z",
+  "generated_at": "2026-09-29T00:00:00Z",
   "owner": "Lorenzo Jamasmie",
   "scope": "España",
   "meta": {
-    "total_companies": 7,
-    "total_meetings": 7,
-    "avg_sentiment": 3.0,
-    "sentiment_sample_size": 5,
+    "total_companies": 10,
+    "total_meetings": 10,
+    "avg_sentiment": 2.88,
+    "sentiment_sample_size": 8,
     "next_meeting": {
       "company": "József Gyarmati (proyecto Lupi)",
       "detail": "Encuentro presencial propuesto en Valencia",
@@ -403,6 +403,168 @@
           "next_steps": "Presentar una propuesta con dos pilares (condiciones comerciales + oferta tecnológica) y coordinar una reunión presencial en Madrid.",
           "follow_up_suggestion": null,
           "performance": null
+        }
+      ]
+    },
+    {
+      "id": "airtificial",
+      "name": "Airtificial A&D",
+      "domain": "airtificial.com",
+      "sector": "Aeroespacial y defensa",
+      "contacts": [
+        {
+          "name": "Carla",
+          "role": "Sin confirmar como decisora"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-29",
+          "summary": "Lorenzo presentó Apprecio Beat a Carla para explorar si la plataforma podía complementar sus herramientas de RRHH. Airtificial A&D acaba de confirmar la colaboración con Sesame, que centraliza fichajes y comunicaciones internas, por lo que Carla evaluaba qué valor adicional podía aportar Apprecio sin duplicar herramientas.",
+          "success_odds": 2,
+          "sentiment": 2,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se mencionó presupuesto en la reunión."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Carla revisará la propuesta con su equipo; no se confirmó si es la tomadora de decisión final."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Buscan mejorar la comunicación interna corporativa y medir a quién llegan los mensajes y quién interactúa, pero ya cuentan con Sesame centralizando gestión de RRHH y les preocupa sumar otra herramienta."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "No se fijó fecha para una segunda reunión; queda pendiente de que revisen la demo internamente."
+            }
+          },
+          "objections": [
+            "La plataforma parece demasiado compleja para operarios e ingenieros, perfiles difíciles de mantener conectados",
+            "La necesidad principal es comunicación interna, no encuestas ni retos",
+            "No está claro que puedan gestionar bien los objetivos comerciales en la plataforma",
+            "Temor a que sumar otra herramienta descentralice la información y confunda a los empleados (ya tienen Sesame)"
+          ],
+          "commitments": "Lorenzo enviará un acceso a un entorno demo (sandbox) enfocado en comunicación y feed social, además de un brochure. Carla lo revisará internamente antes de valorar una segunda reunión.",
+          "competitors": [
+            "Sesame (herramienta de RRHH que ya centraliza fichajes y comunicaciones en la empresa)"
+          ],
+          "next_steps": "Aterrizar el caso de uso prioritario (qué comunicaciones y reportes esperan), validar la adopción con los distintos perfiles (operarios/ingenieros) e identificar quién más participa en la evaluación interna.",
+          "follow_up_suggestion": "Correo agradeciendo el tiempo, reconociendo que Sesame ya cubre la parte administrativa, y posicionando Apprecio Beat como complemento centrado en reconocimiento y cultura (con módulos activables por separado). Incluye envío de acceso a demo y brochure.",
+          "performance": {
+            "score": 5,
+            "strengths": [],
+            "improvements": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "molecor",
+      "name": "Molecor",
+      "domain": null,
+      "sector": "Fabricación de tuberías (~600 empleados, 5 centros en España)",
+      "contacts": [
+        {
+          "name": "Silvia Vazquez",
+          "role": "Sin confirmar como decisora"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-28",
+          "summary": "Lorenzo presentó la plataforma de puntos e incentivos de Apprecio. Silvia explicó que Molecor entrega actualmente cestas físicas de Navidad y consideró que la plataforma encajaría mejor en otro tipo de campañas, como '0 accidentes' o incentivos comerciales.",
+          "success_odds": 2,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se especificó presupuesto ni coste actual de las campañas de incentivos."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Silvia no es la responsable de decisión; indicó que otra compañera gestiona la próxima campaña y luego informaría a Lorenzo."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Simplificar la gestión de incentivos y explorar alternativas para campañas distintas de Navidad (seguridad laboral, incentivos comerciales)."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin plazo definido; depende de que la compañera de Silvia retome el contacto para la próxima campaña."
+            }
+          },
+          "objections": [
+            "Para Navidad prefieren cestas o productos físicos en lugar de puntos o dinero",
+            "El incentivo en formato de puntos/dinero les parece poco atractivo para esa campaña en particular"
+          ],
+          "commitments": "Lorenzo enviará un correo de seguimiento. Ambos quedaron en mantener el contacto de cara a una campaña futura (no navideña).",
+          "competitors": [],
+          "next_steps": "Averiguar quién gestiona las otras campañas (no navideñas), aclarar los costos actuales y explorar los requisitos para una posible campaña piloto.",
+          "follow_up_suggestion": null,
+          "performance": null
+        }
+      ]
+    },
+    {
+      "id": "ikerfel",
+      "name": "IKERFEL",
+      "domain": "ikerfel.es",
+      "sector": "Estudios de mercado / investigación cualitativa (oficinas en Bilbao y Madrid)",
+      "contacts": [
+        {
+          "name": "Idoya (aparece como \"Isabel\" en videollamada)",
+          "role": "Responsable de campo cualitativo, sin confirmar como decisora"
+        },
+        {
+          "name": "Mónica Campo",
+          "role": "Sin confirmar"
+        },
+        {
+          "name": "Maribel",
+          "role": "Sin confirmar"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-28",
+          "summary": "Lorenzo presentó Apprecio Rewards para gratificar participantes de focus groups, mystery shopping y entrevistas en profundidad. IKERFEL usa hoy principalmente tarjetas de regalo (antes físicas, ahora más online tras la pandemia). El equipo mostró interés pero identificó fricciones entre el modelo de puntos acumulables y su forma de trabajar con participantes.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se mencionó presupuesto ni costes actuales de las gratificaciones."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Ninguna de las tres asistentes fue confirmada como decisora final; dijeron que revisarían la información con calma."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Gratificar participantes de estudios cualitativos con tarjetas de regalo, pero la acumulación de puntos no encaja del todo: buscan evitar que los participantes se 'profesionalicen' y normalmente no repiten antes de un año."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "No se fijó una fecha para una próxima reunión."
+            }
+          },
+          "objections": [
+            "La acumulación de puntos no encaja con participantes que solo colaboran de forma puntual (no vuelven a participar hasta pasado ~1 año)",
+            "El catálogo no incluye Amazon, una de las opciones más solicitadas por sus participantes",
+            "Los importes predeterminados de algunas tarjetas limitan la libertad para elegir cuánto gastar"
+          ],
+          "commitments": "Lorenzo enviará un folleto informativo y el enlace para consultar el catálogo y el proceso de registro. Ofreció también una explicación adicional o reunión presencial en Madrid si lo necesitan.",
+          "competitors": [],
+          "next_steps": "Validar si el catálogo (comercios y montos mínimos) encaja con sus participantes, aclarar el proceso y coste de devolución de puntos no usados (cargo del 15%), e identificar quién aprueba proveedores y si otro equipo además del cualitativo entrega incentivos de forma recurrente.",
+          "follow_up_suggestion": "Correo agradeciendo el tiempo, resumiendo que la plataforma no tiene costos de mantención, que los puntos equivalen a euros y duran 2 años, y comprometiéndose a revisar con proveedores montos menores (ej. 5€) en los comercios de mayor interés. Incluye enlace al catálogo y brochure.",
+          "performance": {
+            "score": 7,
+            "strengths": [],
+            "improvements": []
+          }
         }
       ]
     }
