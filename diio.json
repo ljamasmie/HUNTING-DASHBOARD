@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-09-29T00:00:00Z",
+  "generated_at": "2026-10-06T00:00:00Z",
   "owner": "Lorenzo Jamasmie",
   "scope": "España",
   "meta": {
-    "total_companies": 10,
-    "total_meetings": 10,
-    "avg_sentiment": 2.88,
-    "sentiment_sample_size": 8,
+    "total_companies": 11,
+    "total_meetings": 11,
+    "avg_sentiment": 2.78,
+    "sentiment_sample_size": 9,
     "next_meeting": {
       "company": "József Gyarmati (proyecto Lupi)",
       "detail": "Encuentro presencial propuesto en Valencia",
@@ -562,6 +562,59 @@
           "follow_up_suggestion": "Correo agradeciendo el tiempo, resumiendo que la plataforma no tiene costos de mantención, que los puntos equivalen a euros y duran 2 años, y comprometiéndose a revisar con proveedores montos menores (ej. 5€) en los comercios de mayor interés. Incluye enlace al catálogo y brochure.",
           "performance": {
             "score": 7,
+            "strengths": [],
+            "improvements": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "girbau",
+      "name": "Girbau",
+      "domain": null,
+      "sector": "Fabricación de equipos de lavandería industrial (~650 empleados en España, sede en Barcelona, presencia en más de 10 países)",
+      "contacts": [
+        {
+          "name": "Laura",
+          "role": "Equipo de Personas, sin confirmar como decisora (depende de dirección)"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-29",
+          "summary": "Lorenzo presentó Apprecio Rewards y Apprecio Beat a Laura. Girbau tiene presencia en numerosos países y percibe desconexión entre sus delegaciones, ya que las iniciativas de reconocimiento suelen ser locales. Laura no tenía una necesidad concreta definida, pero quería evaluar si la plataforma podía dar más visibilidad y conexión entre sedes, y también exploraba alternativas a la cesta de Navidad tradicional.",
+          "success_odds": 3,
+          "sentiment": 2,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se discutió presupuesto cerrado. Lorenzo enviará cotizaciones para los escenarios de 300 y 600 usuarios de Apprecio Beat."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Laura es del equipo de Personas, pero la decisión sobre el beneficio de Navidad y sobre adoptar la plataforma depende de la dirección."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Busca mejorar la conexión y visibilidad entre las delegaciones internacionales, pero sin una necesidad concreta definida; también evalúan alternativas a la cesta de Navidad tradicional para que cada persona elija su regalo."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin plazo definido; depende de que la dirección decida sobre el beneficio de Navidad y de que revisen las cotizaciones enviadas."
+            }
+          },
+          "objections": [
+            "La plataforma podría no cubrir las necesidades de todos los países donde opera la empresa",
+            "No hay una necesidad concreta ni está claro qué uso tendría más allá de las iniciativas actuales",
+            "El coste de licenciar a toda la plantilla podría ser alto si la participación y el uso son bajos (más de 300 de 600 personas trabajan en producción)",
+            "La empresa todavía no ha decidido si cambiará su beneficio de Navidad (depende de dirección)"
+          ],
+          "commitments": "Lorenzo enviará una demo, un brochure, cotizaciones de Apprecio Beat para 300 y 600 usuarios, y una propuesta de Apprecio Rewards para la cesta de Navidad.",
+          "competitors": [],
+          "next_steps": "Validar el alcance internacional (qué países y sedes deberían incluirse), definir qué colectivos usarían la plataforma (especialmente en planta, donde la participación puede ser baja), y averiguar quiénes participan en la decisión sobre la plataforma y sobre las alternativas a la cesta de Navidad.",
+          "follow_up_suggestion": "Correo agradeciendo el tiempo, adjuntando el brochure y cotizaciones para 300 y 600 usuarios de Apprecio Beat, y la información de Apprecio Rewards como alternativa a la cesta de Navidad tradicional, dejando abierta la puerta a una llamada de seguimiento una vez que lo revisen.",
+          "performance": {
+            "score": 6,
             "strengths": [],
             "improvements": []
           }
