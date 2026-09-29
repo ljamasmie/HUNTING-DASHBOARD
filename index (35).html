@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Apprecio España — CRM Intelligence Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --fuchsia:#FA345E;
+    --fuchsia-dark:#B42543;
+    --fuchsia-light:#FEEEF2;
+    --lavender:#B7A6EC;
+    --lavender-dark:#8C74D6;
+    --lavender-light:#EFEAFB;
+    --ink:#1A1A1A;
+    --ink-soft:#5C5A63;
+    --paper:#FFFFFF;
+    --cloud:#FAFAFA;
+    --line:#ECE9ED;
+    --green:#1FA97A;
+    --amber:#E0A400;
+    --red:#E23A4E;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--cloud); color:var(--ink);
+    font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--fuchsia); color:#fff;}
+
+  /* ---- Header ---- */
+  .topbar{
+    background:var(--fuchsia); color:#fff; padding:22px 32px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    position:sticky; top:0; z-index:50;
+  }
+  .brand{display:flex; align-items:center; gap:14px;}
+  .brand-mark{
+    width:40px; height:40px; border-radius:10px;
+    background:#fff;
+    display:flex; align-items:center; justify-content:center; flex:none;
+    padding:5px;
+  }
+  .brand-mark img{width:100%; height:100%; object-fit:contain;}
+  .brand-text h1{margin:0; font-size:17px; font-weight:700; letter-spacing:.2px;}
+  .brand-text p{margin:2px 0 0; font-size:12px; color:rgba(255,255,255,.85);}
+  .owner-chip{
+    display:flex; align-items:center; gap:8px; background:rgba(255,255,255,.16);
+    border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:6px 14px 6px 6px;
+    font-size:12.5px; color:#fff;
+  }
+  .owner-avatar{
+    width:24px; height:24px; border-radius:50%; background:#fff;
+    display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:var(--fuchsia-dark);
+  }
+
+  /* ---- Nav tabs ---- */
+  .tabbar{
+    background:#fff; border-bottom:1px solid var(--line);
+    display:flex; gap:4px; padding:0 32px; position:sticky; top:74px; z-index:40;
+    overflow-x:auto;
+  }
+  .tab-btn{
+    border:none; background:transparent; padding:16px 18px; font-size:13.5px; font-weight:600;
+    color:var(--ink-soft); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;
+    transition:color .15s ease, border-color .15s ease;
+  }
+  .tab-btn:hover{color:var(--ink);}
+  .tab-btn.active{color:var(--fuchsia-dark); border-bottom-color:var(--fuchsia);}
+
+  .wrap{max-width:1320px; margin:0 auto; padding:28px 32px 80px;}
+  .view{display:none;}
+  .view.active{display:block;}
+
+  /* ---- KPI cards ---- */
+  .kpi-grid{
+    display:grid; grid-template-columns:repeat(6, 1fr); gap:14px; margin-bottom:26px;
+  }
+  @media(max-width:1180px){.kpi-grid{grid-template-columns:repeat(3,1fr);}}
+  @media(max-width:640px){.kpi-grid{grid-template-columns:repeat(2,1fr);}}
+  .kpi{
+    background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 16px 14px;
+    position:relative; overflow:hidden;
+  }
+  .kpi.hi{background:linear-gradient(135deg, var(--fuchsia) 0%, var(--fuchsia-dark) 100%); border:none; color:#fff;}
+  .kpi .kpi-label{font-size:11.5px; font-weight:600; text-transform:uppercase; letter-spacing:.5px; color:var(--ink-soft);}
+  .kpi.hi .kpi-label{color:rgba(255,255,255,.82);}
+  .kpi .kpi-value{font-size:28px; font-weight:800; margin-top:6px; letter-spacing:-.5px;}
+  .kpi .kpi-sub{font-size:11.5px; color:var(--ink-soft); margin-top:4px;}
+  .kpi.hi .kpi-sub{color:rgba(255,255,255,.78);}
+
+  /* ---- Section / cards ---- */
+  .section-title{font-size:15px; font-weight:700; margin:30px 0 14px; display:flex; align-items:center; gap:8px;}
+  .section-title .dot{width:8px; height:8px; border-radius:50%; background:var(--fuchsia);}
+  .card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px;}
+  .grid-2{display:grid; grid-template-columns:1.3fr 1fr; gap:16px;}
+  .grid-3{display:grid; grid-template-columns:repeat(3,1fr); gap:16px;}
+  @media(max-width:980px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+  .card h3{margin:0 0 12px; font-size:13.5px; font-weight:700; color:var(--ink);}
+  .card .chart-box{height:260px;}
+
+  /* ---- Filters ---- */
+  .filters{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:16px; align-items:center;}
+  .filters select, .filters input[type=text]{
+    border:1px solid var(--line); background:#fff; border-radius:9px; padding:9px 12px;
+    font-size:12.5px; color:var(--ink); outline:none; min-width:150px;
+  }
+  .filters input[type=text]{min-width:220px;}
+  .filters select:focus, .filters input:focus{border-color:var(--fuchsia);}
+  .btn-reset{
+    border:1px solid var(--line); background:#fff; color:var(--ink-soft); border-radius:9px;
+    padding:9px 14px; font-size:12.5px; font-weight:600; cursor:pointer;
+  }
+  .btn-reset:hover{border-color:var(--fuchsia); color:var(--fuchsia-dark);}
+  .result-count{font-size:12px; color:var(--ink-soft); margin-bottom:10px;}
+
+  /* ---- Table ---- */
+  table{width:100%; border-collapse:collapse; font-size:12.5px;}
+  thead th{
+    text-align:left; padding:10px 12px; background:var(--lavender-light); color:var(--ink);
+    font-weight:700; font-size:11px; text-transform:uppercase; letter-spacing:.3px;
+    position:sticky; top:0; cursor:pointer; user-select:none;
+  }
+  thead th:hover{color:var(--fuchsia-dark);}
+  tbody td{padding:9px 12px; border-bottom:1px solid var(--line); vertical-align:middle;}
+  tbody tr:hover{background:var(--fuchsia-light);}
+  .table-scroll{max-height:560px; overflow:auto; border:1px solid var(--line); border-radius:12px;}
+  .table-scroll table{margin:0;}
+
+  .badge{display:inline-block; padding:3px 9px; border-radius:999px; font-size:10.5px; font-weight:700;}
+  .badge.verified{background:#E4F7EF; color:var(--green);}
+  .badge.unavailable{background:#FBEAEA; color:var(--red);}
+  .badge.extrapolated{background:#FFF4DC; color:var(--amber);}
+  .badge.neutral{background:#F1EFF5; color:var(--ink-soft);}
+  .pill{display:inline-block; padding:3px 9px; border-radius:999px; font-size:10.5px; font-weight:600; background:var(--lavender-light); color:var(--lavender-dark); margin:1px 2px 1px 0;}
+  .company-link{color:var(--fuchsia-dark); font-weight:700; cursor:pointer;}
+
+  /* ---- Lead scoring / priority ---- */
+  .score-badge{display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:11px; font-weight:800; white-space:nowrap;}
+  .score-badge.alto{background:var(--fuchsia-light); color:var(--fuchsia-dark);}
+  .score-badge.medio{background:#FFF4DC; color:var(--amber);}
+  .score-badge.bajo{background:#F1EFF5; color:var(--ink-soft);}
+  .reason-chip{display:inline-block; padding:2px 8px; border-radius:999px; font-size:10px; font-weight:600; background:var(--cloud); color:var(--ink-soft); border:1px solid var(--line); margin:1px 3px 1px 0;}
+  .reclass-select{
+    border:1px solid var(--line); background:#fff; border-radius:7px; padding:3px 6px;
+    font-size:10.5px; color:var(--ink-soft); margin-top:4px; max-width:170px;
+  }
+  .reclass-select:focus{border-color:var(--fuchsia);}
+  .class-manual-tag{font-size:9.5px; color:var(--ink-soft); margin-top:2px;}
+  .priority-highlight{background:#fff; border:1px solid var(--fuchsia-light); border-left:4px solid var(--fuchsia); border-radius:12px; padding:16px 18px; margin-bottom:16px;}
+  .priority-highlight b{color:var(--fuchsia-dark);}
+
+  /* ---- HubSpot integration ---- */
+  .hs-btn{
+    display:inline-flex; align-items:center; gap:6px; border:1px solid var(--fuchsia);
+    background:#fff; color:var(--fuchsia-dark); border-radius:8px; padding:6px 11px;
+    font-size:11.5px; font-weight:700; cursor:pointer; white-space:nowrap;
+  }
+  .hs-btn:hover{background:var(--fuchsia-light);}
+  .hs-btn:disabled{opacity:.55; cursor:default;}
+  .hs-status{display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700; white-space:nowrap;}
+  .hs-status.ok{color:var(--green);}
+  .hs-status.err{color:var(--red);}
+  .hs-status.pending{color:var(--ink-soft);}
+  .hs-view-link{color:var(--lavender-dark); font-size:11px; text-decoration:none; font-weight:600; margin-left:4px;}
+  .hs-view-link:hover{text-decoration:underline;}
+  .hs-cell{display:flex; flex-direction:column; gap:3px; align-items:flex-start;}
+  .hs-err-msg{font-size:10.5px; color:var(--red); max-width:180px;}
+  .hs-retry{font-size:10.5px; color:var(--ink-soft); text-decoration:underline; cursor:pointer; background:none; border:none; padding:0;}
+
+
+  .hs-toolbar{
+    display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    margin-bottom:12px; padding:10px 14px; background:var(--lavender-light); border-radius:10px;
+  }
+  .hs-toolbar-left{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .hs-conn-pill{
+    display:inline-flex; align-items:center; gap:6px; font-size:11.5px; font-weight:700;
+    background:#fff; border:1px solid var(--line); border-radius:999px; padding:5px 12px;
+  }
+  .hs-conn-dot{width:8px; height:8px; border-radius:50%; background:var(--ink-soft);}
+  .hs-conn-dot.on{background:var(--green);}
+  .hs-conn-dot.off{background:var(--red);}
+  .hs-bulk-btn{
+    border:none; background:var(--fuchsia); color:#fff; border-radius:9px; padding:9px 16px;
+    font-size:12.5px; font-weight:700; cursor:pointer;
+  }
+  .hs-bulk-btn:disabled{opacity:.5; cursor:default;}
+  .hs-selected-count{font-size:11.5px; color:var(--ink-soft);}
+
+  .hs-toast{
+    position:fixed; bottom:24px; right:24px; background:var(--ink); color:#fff; padding:14px 18px;
+    border-radius:10px; font-size:12.5px; max-width:340px; box-shadow:0 8px 24px rgba(0,0,0,.2); z-index:200;
+    line-height:1.5;
+  }
+  .hs-toast b{color:var(--fuchsia-light);}
+  .company-link:hover{text-decoration:underline;}
+
+  .empty-state{padding:50px 20px; text-align:center; color:var(--ink-soft); font-size:13px;}
+
+  /* ---- DIIO: reuniones y BANT ---- */
+  .diio-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(270px, 1fr)); gap:16px;}
+  .diio-card{background:#fff; border:1px solid var(--line); border-radius:14px; padding:18px; cursor:pointer; transition:box-shadow .15s ease, border-color .15s ease;}
+  .diio-card:hover{border-color:var(--fuchsia); box-shadow:0 4px 16px rgba(250,52,94,.1);}
+  .diio-card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .diio-card h4{margin:0; font-size:14.5px; font-weight:800; color:var(--ink);}
+  .diio-card .diio-sector{font-size:11px; color:var(--ink-soft); margin-top:3px;}
+  .diio-meta-row{display:flex; gap:18px; margin:14px 0 12px;}
+  .diio-meta-row div{font-size:11px; color:var(--ink-soft);}
+  .diio-meta-row b{display:block; font-size:16px; color:var(--ink); font-weight:800;}
+  .bant-row{display:flex; gap:6px;}
+  .bant-chip{flex:1; text-align:center; border-radius:8px; padding:6px 2px; font-size:9.5px; font-weight:700; color:#fff; letter-spacing:.2px;}
+  .bant-chip.definido{background:var(--green);}
+  .bant-chip.parcial{background:var(--amber);}
+  .bant-chip.no_identificado{background:#C9C1E8; color:#4A3F73;}
+  .success-pill{display:inline-flex; align-items:center; gap:4px; font-size:10.5px; font-weight:800; padding:3px 10px; border-radius:999px; white-space:nowrap;}
+  .success-pill.s5, .success-pill.s4{background:#E4F7EF; color:var(--green);}
+  .success-pill.s3{background:#FFF4DC; color:var(--amber);}
+  .success-pill.s2, .success-pill.s1{background:#FBEAEA; color:var(--red);}
+  .success-pill.sna{background:#F1EFF5; color:var(--ink-soft);}
+  .bant-detail-block{border:1px solid var(--line); border-radius:10px; padding:12px 14px; margin-bottom:10px;}
+  .bant-detail-block .bant-label{display:flex; align-items:center; gap:8px; font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.3px; margin-bottom:6px; color:var(--ink);}
+  .bant-dot{width:9px; height:9px; border-radius:50%; flex:none;}
+  .bant-dot.definido{background:var(--green);}
+  .bant-dot.parcial{background:var(--amber);}
+  .bant-dot.no_identificado{background:#B7A6EC;}
+  .diio-meeting-card{border-top:1px solid var(--line); padding-top:16px; margin-top:16px;}
+  .diio-meeting-card:first-child{border-top:none; padding-top:0; margin-top:0;}
+  .objection-chip{display:inline-block; background:var(--fuchsia-light); color:var(--fuchsia-dark); font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:999px; margin:2px 4px 2px 0;}
+
+  /* Company detail modal */
+  .modal-bg{
+    display:none; position:fixed; inset:0; background:rgba(21,18,28,.55); z-index:100;
+    align-items:center; justify-content:center; padding:24px;
+  }
+  .modal-bg.active{display:flex;}
+  .modal{
+    background:#fff; border-radius:16px; max-width:620px; width:100%; max-height:82vh; overflow:auto;
+    padding:26px;
+  }
+  .modal-close{
+    float:right; border:none; background:var(--cloud); width:30px; height:30px; border-radius:50%;
+    font-size:16px; cursor:pointer; color:var(--ink-soft);
+  }
+  .modal h2{margin:0 0 4px; font-size:18px;}
+  .modal .modal-sub{color:var(--ink-soft); font-size:12.5px; margin-bottom:16px;}
+  .modal-kpis{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;}
+  .modal-kpi{background:var(--cloud); border-radius:10px; padding:10px 14px; font-size:11.5px;}
+  .modal-kpi b{display:block; font-size:16px; color:var(--fuchsia-dark);}
+  .modal-section-title{font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; color:var(--ink-soft); margin:16px 0 8px;}
+  .next-action{background:var(--lavender-light); border-left:3px solid var(--lavender-dark); padding:10px 14px; border-radius:0 8px 8px 0; font-size:12.5px; color:var(--ink);}
+
+  .email-body{background:var(--cloud); border:1px solid var(--line); border-radius:10px; padding:14px; font-size:12.5px; white-space:pre-wrap; line-height:1.5; max-height:320px; overflow:auto;}
+  .reply-row{cursor:pointer;}
+
+  footer.note{margin-top:30px; font-size:11.5px; color:var(--ink-soft); border-top:1px solid var(--line); padding-top:16px;}
+
+  /* ---- Lock screen ---- */
+  #lock-screen{
+    position:fixed; inset:0; z-index:999; background:var(--fuchsia);
+    display:flex; align-items:center; justify-content:center; padding:20px;
+  }
+  #lock-screen.hidden{display:none;}
+  .lock-card{
+    background:#fff; border-radius:18px; padding:38px 34px; width:100%; max-width:360px;
+    box-shadow:0 24px 60px rgba(0,0,0,.25); text-align:center;
+  }
+  .lock-logo{width:56px; height:56px; margin:0 auto 18px; border-radius:14px; background:var(--fuchsia-light);
+    display:flex; align-items:center; justify-content:center; padding:8px;}
+  .lock-logo img{width:100%; height:100%; object-fit:contain;}
+  .lock-card h2{margin:0 0 6px; font-size:17px; font-weight:800; color:var(--ink);}
+  .lock-card p{margin:0 0 22px; font-size:12.5px; color:var(--ink-soft);}
+  .lock-card input{
+    width:100%; border:1.5px solid var(--line); border-radius:10px; padding:12px 14px;
+    font-size:14px; color:var(--ink); outline:none; text-align:center; letter-spacing:.5px;
+    margin-bottom:12px;
+  }
+  .lock-card input:focus{border-color:var(--fuchsia);}
+  .lock-card button{
+    width:100%; border:none; background:var(--fuchsia); color:#fff; border-radius:10px;
+    padding:12px 14px; font-size:13.5px; font-weight:700; cursor:pointer; transition:background .15s ease;
+  }
+  .lock-card button:hover{background:var(--fuchsia-dark);}
+  .lock-error{color:var(--red); font-size:12px; font-weight:600; margin-top:12px; min-height:16px;}
+  #app-content.locked{display:none;}
+</style>
+</head>
+<body>
+
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-logo"><img src="data:image/png;base64,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" alt="Apprecio"></div>
+    <h2>CRM Intelligence Dashboard</h2>
+    <p>Introduce la clave de acceso para ver el dashboard</p>
+    <input type="password" id="lock-password" placeholder="Clave de acceso" autocomplete="off">
+    <button id="lock-submit">Entrar</button>
+    <div class="lock-error" id="lock-error"></div>
+  </div>
+</div>
+
+<div id="app-content" class="locked">
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">
+      <img src="data:image/png;base64,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" alt="Apprecio">
+    </div>
+    <div class="brand-text">
+      <h1>CRM Intelligence Dashboard</h1>
+      <p>Prospección comercial Apprecio España · Fuente: Apollo</p>
+    </div>
+  </div>
+  <div class="owner-chip">
+    <div class="owner-avatar">LJ</div>
+    <span>Listas de <b>Lorenzo Jamasmie</b> · última actualización 14 sep 2026</span>
+  </div>
+</div>
+
+<div class="tabbar">
+  <button class="tab-btn active" data-view="overview">Overview</button>
+  <button class="tab-btn" data-view="listas">Listas de Difusión</button>
+  <button class="tab-btn" data-view="empresas">Empresas</button>
+  <button class="tab-btn" data-view="contactos">Contactos</button>
+  <button class="tab-btn" data-view="prioridad">🎯 Prioridad</button>
+  <button class="tab-btn" data-view="respuestas">📩 Respuestas</button>
+  <button class="tab-btn" data-view="diio">🗣️ Reuniones</button>
+  <button class="tab-btn" data-view="secuencias">📈 Secuencias</button>
+</div>
+
+<div class="wrap">
+
+  <div id="load-status" style="font-size:12px; color:var(--ink-soft); margin-bottom:14px;">Cargando datos desde <code>data.json</code>…</div>
+  <div id="dashboard-root" style="display:none;">
+
+  <!-- ============ OVERVIEW ============ -->
+  <div class="view active" id="view-overview">
+    <div class="kpi-grid" id="kpi-grid"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <h3>Contactos por rubro</h3>
+        <div class="chart-box"><canvas id="chart-rubro"></canvas></div>
+      </div>
+      <div class="card">
+        <h3>Distribución por perfil</h3>
+        <div class="chart-box"><canvas id="chart-role"></canvas></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card">
+        <h3>Top 10 empresas por nº de contactos</h3>
+        <div class="chart-box"><canvas id="chart-companies"></canvas></div>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="dot"></span>Listas de difusión — resumen</div>
+    <div class="card">
+      <div class="table-scroll">
+        <table id="overview-lists-table">
+          <thead>
+            <tr><th>Lista</th><th>Rubro</th><th>Contactos</th><th>Empresas</th><th>Email verificado</th><th>% Verificado</th><th>Con teléfono</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer class="note">
+      Fuente de datos: Apollo — listas de difusión propiedad de Lorenzo Jamasmie (owner_id verificado vía Apollo Users). No se mezclan contactos de otros usuarios del equipo. Los campos "Rubro" se derivan del nombre de cada lista de Apollo, ya que Apollo no expone un campo de industria poblado en estos registros. El estado de contacto usado aquí (verificado / no disponible / extrapolado) corresponde al campo <code>email_status</code> nativo de Apollo — ningún dato ha sido inventado.
+    </footer>
+  </div>
+
+  <!-- ============ LISTAS ============ -->
+  <div class="view" id="view-listas">
+    <div class="section-title"><span class="dot"></span>Listas de Difusión de Lorenzo Jamasmie</div>
+    <div class="card">
+      <div class="table-scroll">
+        <table id="listas-table">
+          <thead>
+            <tr>
+              <th>Lista</th><th>Rubro</th><th>Nº contactos</th><th>Nº empresas</th>
+              <th>Email verificado</th><th>% verificado</th><th>Con teléfono</th><th>% con teléfono</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p style="font-size:11.5px; color:var(--ink-soft); margin-top:12px;">
+        Clic en una fila para filtrar la pestaña "Contactos" por esa lista. Métricas de outreach (contactados, respuestas, interesados, % de respuesta) muestran "No data available" — Apollo no reporta actividad de secuencia para estas listas en el snapshot actual.
+      </p>
+    </div>
+  </div>
+
+  <!-- ============ EMPRESAS ============ -->
+  <div class="view" id="view-empresas">
+    <div class="section-title"><span class="dot"></span>Empresas prospectadas</div>
+    <div class="filters">
+      <input type="text" id="empresas-search" placeholder="Buscar empresa...">
+      <select id="empresas-rubro"><option value="">Todos los rubros</option></select>
+      <button class="btn-reset" id="empresas-reset">Reset filtros</button>
+    </div>
+    <div class="result-count" id="empresas-count"></div>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="empresas-table">
+          <thead>
+            <tr>
+              <th data-sort="name">Empresa</th><th data-sort="rubro">Rubro</th><th data-sort="contacts">Nº contactos</th>
+              <th data-sort="top_title">Cargo principal</th><th data-sort="city">Ciudad</th><th data-sort="verified_email">Email verif.</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CONTACTOS ============ -->
+  <div class="view" id="view-contactos">
+    <div class="section-title"><span class="dot"></span>Contactos</div>
+    <div class="filters">
+      <input type="text" id="contactos-search" placeholder="Buscar contacto, empresa o email...">
+      <select id="contactos-lista"><option value="">Todas las listas</option></select>
+      <select id="contactos-rubro"><option value="">Todos los rubros</option></select>
+      <select id="contactos-role"><option value="">Todos los perfiles</option></select>
+      <select id="contactos-email"><option value="">Email: todos</option><option value="verified">Verificado</option><option value="unavailable">No disponible</option><option value="extrapolated">Extrapolado</option></select>
+      <button class="btn-reset" id="contactos-reset">Reset filtros</button>
+    </div>
+
+    <div class="hs-toolbar">
+      <div class="hs-toolbar-left">
+        <button class="hs-bulk-btn" id="hs-bulk-btn" disabled>Crear seleccionados en HubSpot</button>
+        <span class="hs-selected-count" id="hs-selected-count">0 seleccionados</span>
+      </div>
+      <span class="hs-conn-pill" id="hs-conn-pill"><span class="hs-conn-dot" id="hs-conn-dot"></span><span id="hs-conn-label">Comprobando HubSpot…</span></span>
+    </div>
+
+    <div class="result-count" id="contactos-count"></div>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="contactos-table">
+          <thead>
+            <tr>
+              <th style="width:28px;"><input type="checkbox" id="hs-select-all"></th>
+              <th data-sort="name">Nombre</th><th data-sort="title">Cargo</th><th data-sort="role">Perfil</th>
+              <th data-sort="company">Empresa</th>
+              <th data-sort="email_status">Email</th><th>Teléfono</th><th>LinkedIn</th><th>HubSpot</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PRIORIDAD ============ -->
+  <div class="view" id="view-prioridad">
+    <div class="kpi-grid" id="prioridad-kpi-grid"></div>
+
+    <div class="priority-highlight" id="prioridad-highlight" style="display:none;"></div>
+
+    <div class="section-title"><span class="dot"></span>Leads de alta prioridad</div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin:-8px 0 14px;">
+      Score calculado a partir del cargo (encaje con el ICP), estado del email, si hay teléfono, tamaño de la empresa y si ha respondido con interés. 100% en base a datos reales de Apollo/Gmail — nada es inventado.
+    </p>
+    <div class="filters">
+      <input type="text" id="prioridad-search" placeholder="Buscar contacto o empresa...">
+      <select id="prioridad-tier">
+        <option value="alto">Solo prioridad alta</option>
+        <option value="medio">Solo prioridad media</option>
+        <option value="">Todos los niveles</option>
+      </select>
+      <select id="prioridad-lista"><option value="">Todas las listas</option></select>
+      <button class="btn-reset" id="prioridad-reset">Reset filtros</button>
+    </div>
+    <div class="result-count" id="prioridad-count"></div>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="prioridad-table">
+          <thead>
+            <tr>
+              <th>Score</th><th>Nombre</th><th>Cargo</th><th>Empresa</th><th>Lista</th>
+              <th>Email</th><th>Teléfono</th><th>LinkedIn</th><th>HubSpot</th><th>Contactado</th><th>Por qué</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-title"><span class="dot"></span>Respuestas que requieren tu atención</div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin:-8px 0 14px;">
+      Respuestas clasificadas automáticamente (por palabras clave del propio email) como interesadas o derivadas a otro contacto. Puedes corregir la clasificación manualmente desde la pestaña "Respuestas".
+    </p>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="prioridad-respuestas-table">
+          <thead>
+            <tr><th>Contacto</th><th>Empresa</th><th>Clasificación</th><th>Fecha</th><th>Vista previa</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <p id="prioridad-respuestas-empty" style="font-size:11.5px; color:var(--ink-soft); margin-top:12px; display:none;">
+      No hay respuestas clasificadas como "Interesado" o "Derivar a otro contacto" en este momento.
+    </p>
+
+    <div class="section-title"><span class="dot"></span>Empresas con potencial sin explotar</div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin:-8px 0 14px;">
+      Empresas con al menos 8 contactos en Apollo pero con menos del 40% de emails verificados — candidatas a re-enriquecer antes de prospectar más a fondo.
+    </p>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="prioridad-empresas-table">
+          <thead>
+            <tr><th>Empresa</th><th>Rubro</th><th>Nº contactos</th><th>Email verificado</th><th>% verificado</th><th>Cargo principal</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ RESPUESTAS ============ -->
+  <div class="view" id="view-respuestas">
+    <div class="kpi-grid" id="respuestas-kpi-grid"></div>
+
+    <div class="section-title"><span class="dot"></span>Respuestas recibidas</div>
+    <div class="filters">
+      <input type="text" id="respuestas-search" placeholder="Buscar contacto o empresa...">
+      <select id="respuestas-lista"><option value="">Todas las listas</option></select>
+      <select id="respuestas-rubro"><option value="">Todos los rubros</option></select>
+      <select id="respuestas-mes"><option value="">Todos los meses</option></select>
+      <select id="respuestas-clasificacion"><option value="">Todas las clasificaciones</option></select>
+      <button class="btn-reset" id="respuestas-reset">Reset filtros</button>
+    </div>
+    <div class="result-count" id="respuestas-count"></div>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="respuestas-table">
+          <thead>
+            <tr>
+              <th>Contacto</th><th>Empresa</th><th>Lista</th><th>Clasificación</th><th>Asunto</th><th data-sort="date" id="respuestas-th-fecha">Fecha <span id="respuestas-sort-icon">▼</span></th><th>Vista previa</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <p id="respuestas-empty-note" style="font-size:11.5px; color:var(--ink-soft); margin-top:12px; display:none;">
+      Sin respuestas registradas todavía. Este dashboard revisa el inbox de Gmail de los últimos <span id="respuestas-days"></span> días y cruza los remitentes contra los contactos de Apollo — se actualiza cada hora junto con los datos de Apollo.
+    </p>
+  </div>
+
+  <div class="view" id="view-diio">
+    <div class="kpi-grid" id="diio-kpi-grid"></div>
+
+    <div class="priority-highlight" id="diio-highlight" style="display:none;"></div>
+
+    <div class="section-title"><span class="dot"></span>Empresas contactadas en España</div>
+    <p style="font-size:11.5px; color:var(--ink-soft); margin:-8px 0 14px;">
+      Reuniones y llamadas analizadas por DIIO, filtradas a empresas de España contactadas por Lorenzo Jamasmie. Metodología BANT — Budget (presupuesto), Authority (decisor), Need (necesidad), Timeline (plazo) — para ver de un vistazo qué falta por confirmar en cada cuenta.
+    </p>
+    <div class="filters">
+      <input type="text" id="diio-search" placeholder="Buscar empresa...">
+      <select id="diio-sort">
+        <option value="date_desc">Más recientes primero</option>
+        <option value="date_asc">Más antiguas primero</option>
+      </select>
+      <button class="btn-reset" id="diio-reset">Reset filtros</button>
+    </div>
+    <div class="result-count" id="diio-count"></div>
+    <div class="diio-grid" id="diio-grid"></div>
+    <p id="diio-empty-note" style="font-size:11.5px; color:var(--ink-soft); margin-top:12px; display:none;">
+      Todavía no hay reuniones registradas en DIIO para empresas de España contactadas por ti.
+    </p>
+  </div>
+
+  <div class="view" id="view-secuencias">
+    <div class="kpi-grid" id="secuencias-kpi-grid"></div>
+
+    <div class="section-title"><span class="dot"></span>Secuencias de Apollo</div>
+    <div class="filters">
+      <input type="text" id="secuencias-search" placeholder="Buscar secuencia...">
+      <select id="secuencias-select"><option value="">Elegir secuencia...</option></select>
+      <select id="secuencias-estado">
+        <option value="">Todos los estados</option>
+        <option value="active">Activas</option>
+        <option value="inactive">Pausadas</option>
+      </select>
+      <button class="btn-reset" id="secuencias-reset">Reset filtros</button>
+    </div>
+    <div class="result-count" id="secuencias-count"></div>
+    <div class="card" style="padding:0;">
+      <div class="table-scroll">
+        <table id="secuencias-table">
+          <thead>
+            <tr>
+              <th data-sort="name">Secuencia</th><th>Estado</th><th>Pasos</th>
+              <th>Programados</th><th>Entregados</th><th>Abiertos</th><th>Clics</th>
+              <th>Respuestas</th><th>Interesados</th><th>% Apertura</th><th>% Respuesta</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <p id="secuencias-empty-note" style="font-size:11.5px; color:var(--ink-soft); margin-top:12px; display:none;">
+      Sin secuencias registradas todavía. Este dashboard consulta las secuencias de tu cuenta de Apollo (requiere una API key "master") y se actualiza cada hora.
+    </p>
+  </div>
+
+  </div><!-- /dashboard-root -->
+
+</div>
+
+<!-- Company modal -->
+<div class="modal-bg" id="company-modal">
+  <div class="modal">
+    <button class="modal-close" id="modal-close">✕</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+
+<!-- Reply detail modal -->
+<div class="modal-bg" id="reply-modal">
+  <div class="modal">
+    <button class="modal-close" id="reply-modal-close">✕</button>
+    <div id="reply-modal-content"></div>
+  </div>
+</div>
+
+<!-- Sequence detail modal -->
+<div class="modal-bg" id="sequence-modal">
+  <div class="modal">
+    <button class="modal-close" id="sequence-modal-close">✕</button>
+    <div id="sequence-modal-content"></div>
+  </div>
+</div>
+
+<!-- DIIO company detail modal -->
+<div class="modal-bg" id="diio-modal">
+  <div class="modal" style="max-width:700px;">
+    <button class="modal-close" id="diio-modal-close">✕</button>
+    <div id="diio-modal-content"></div>
+  </div>
+</div>
+
+<script>async function boot(){
+  let DATA;
+  try{
+    const res = await fetch('data.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    DATA = await res.json();
+  }catch(err){
+    document.getElementById('load-status').innerHTML =
+      '⚠️ No se pudo cargar <code>data.json</code> (' + err.message + '). '
+      + 'Si abriste el archivo con doble clic, algunos navegadores bloquean fetch() en file://. '
+      + 'Sírvelo con un servidor local (ej. <code>python3 -m http.server</code>) o publícalo en GitHub Pages.';
+    return;
+  }
+
+  let REPLIES = { replies: [], meta: { total_replies: 0, unique_contacts_replied: 0, days_scanned: 30 } };
+  try{
+    const res2 = await fetch('replies.json', {cache:'no-store'});
+    if(res2.ok) REPLIES = await res2.json();
+  }catch(err){
+    // replies.json es opcional; si no carga, seguimos con la pestaña vacía sin romper el resto
+  }
+
+  let SEQUENCES = { sequences: [], meta: { total_sequences: 0, active_sequences: 0, total_delivered: 0, total_replied: 0 } };
+  try{
+    const res3 = await fetch('sequences.json', {cache:'no-store'});
+    if(res3.ok) SEQUENCES = await res3.json();
+  }catch(err){
+    // sequences.json es opcional; si no carga, seguimos con la pestaña vacía sin romper el resto
+  }
+
+  let DIIO = { meta: {}, companies: [] };
+  try{
+    const res4 = await fetch('diio.json', {cache:'no-store'});
+    if(res4.ok) DIIO = await res4.json();
+  }catch(err){
+    // diio.json es opcional; si no carga, la pestaña de Reuniones queda vacía sin romper el resto
+  }
+
+  document.getElementById('load-status').style.display = 'none';
+  document.getElementById('dashboard-root').style.display = 'block';
+  render(DATA, REPLIES, SEQUENCES, DIIO);
+}
+
+function render(DATA, REPLIES, SEQUENCES, DIIO){
+  const contacts = DATA.contacts;
+  const companies = DATA.companies;
+  const lists = DATA.lists;
+  const meta = DATA.meta;
+
+  const FUCHSIA = '#FA345E', FUCHSIA_D = '#B42543', LAV = '#B7A6EC', LAV_D = '#8C74D6', INK='#1A1A1A', GREY='#D9D3EE';
+  const PALETTE = [FUCHSIA, LAV_D, '#F27A9E', LAV, '#7A3D6B', '#E0A400', '#5C5A63', '#C994B8'];
+
+  Chart.defaults.font.family = "'Segoe UI', sans-serif";
+  Chart.defaults.color = '#5C5A63';
+  Chart.defaults.font.size = 11.5;
+
+  // ---------- Tabs ----------
+  document.querySelectorAll('.tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+      document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('view-'+btn.dataset.view).classList.add('active');
+    });
+  });
+  function goTo(view){
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active', b.dataset.view===view));
+    document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active', v.id==='view-'+view));
+  }
+
+  // ---------- KPIs ----------
+  const totalContacts = contacts.length;
+  const totalCompanies = companies.length;
+  const totalLists = lists.length;
+  const rubros = Object.keys(meta.rubro_counts);
+  const withEmail = contacts.filter(c=>c.email).length;
+  const verifiedEmail = contacts.filter(c=>c.email_status==='verified').length;
+  const withPhone = contacts.filter(c=>c.phone).length;
+
+  const kpis = [
+    {label:'Total contactos', value: totalContacts, sub: 'Contactos únicos (Apollo Contact ID)', hi:true},
+    {label:'Empresas únicas', value: totalCompanies, sub: rubros.length+' rubros detectados'},
+    {label:'Listas de difusión', value: totalLists, sub: 'Propiedad de Lorenzo Jamasmie'},
+    {label:'Con email', value: withEmail, sub: (Math.round(withEmail/totalContacts*100))+'% del total'},
+    {label:'Email verificado', value: verifiedEmail, sub: (Math.round(verifiedEmail/totalContacts*100))+'% verificados'},
+    {label:'Con teléfono', value: withPhone, sub: (Math.round(withPhone/totalContacts*100))+'% del total'},
+  ];
+  const kpiGrid = document.getElementById('kpi-grid');
+  kpiGrid.innerHTML = kpis.map(k=>`
+    <div class="kpi ${k.hi?'hi':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value.toLocaleString('es-ES')}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  // ---------- Chart: rubro ----------
+  const rubroEntries = Object.entries(meta.rubro_counts).sort((a,b)=>b[1]-a[1]);
+  new Chart(document.getElementById('chart-rubro'), {
+    type:'bar',
+    data:{ labels: rubroEntries.map(e=>e[0]),
+      datasets:[{ data: rubroEntries.map(e=>e[1]), backgroundColor: FUCHSIA, borderRadius:6, maxBarThickness:38 }]},
+    options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#EFEAFB'}}, y:{grid:{display:false}}} }
+  });
+
+  // ---------- Chart: role ----------
+  const roleEntries = Object.entries(meta.role_counts).sort((a,b)=>b[1]-a[1]);
+  new Chart(document.getElementById('chart-role'), {
+    type:'doughnut',
+    data:{ labels: roleEntries.map(e=>e[0]),
+      datasets:[{ data: roleEntries.map(e=>e[1]), backgroundColor: PALETTE, borderWidth:2, borderColor:'#fff' }]},
+    options:{ plugins:{legend:{position:'right', labels:{boxWidth:10, padding:10, font:{size:10.5}}}}, cutout:'62%' }
+  });
+
+  // ---------- Chart: top companies ----------
+  const topCompanies = [...companies].sort((a,b)=>b.contacts-a.contacts).slice(0,10);
+  new Chart(document.getElementById('chart-companies'), {
+    type:'bar',
+    data:{ labels: topCompanies.map(c=>c.name),
+      datasets:[{ data: topCompanies.map(c=>c.contacts), backgroundColor: LAV_D, borderRadius:6, maxBarThickness:22 }]},
+    options:{ indexAxis:'y', plugins:{legend:{display:false}}, scales:{x:{grid:{color:'#EFEAFB'}}, y:{grid:{display:false}, ticks:{font:{size:10.5}}}} }
+  });
+
+  // ---------- Overview lists table ----------
+  function listRow(l){
+    const pctV = Math.round(l.verified_email/l.contacts*100);
+    const pctP = Math.round(l.with_phone/l.contacts*100);
+    return `<tr>
+      <td><b>${l.name}</b></td><td><span class="pill">${l.rubro}</span></td>
+      <td>${l.contacts}</td><td>${l.companies}</td>
+      <td>${l.verified_email}</td><td>${pctV}%</td><td>${l.with_phone} (${pctP}%)</td>
+    </tr>`;
+  }
+  document.querySelector('#overview-lists-table tbody').innerHTML = lists.map(listRow).join('');
+
+  document.querySelector('#listas-table tbody').innerHTML = lists.map(l=>{
+    const pctV = Math.round(l.verified_email/l.contacts*100);
+    const pctP = Math.round(l.with_phone/l.contacts*100);
+    return `<tr class="lista-row" data-list="${l.name}" style="cursor:pointer;">
+      <td><b>${l.name}</b></td><td><span class="pill">${l.rubro}</span></td>
+      <td>${l.contacts}</td><td>${l.companies}</td>
+      <td>${l.verified_email}</td><td>${pctV}%</td>
+      <td>${l.with_phone}</td><td>${pctP}%</td>
+    </tr>`;
+  }).join('');
+  document.querySelectorAll('.lista-row').forEach(row=>{
+    row.addEventListener('click', ()=>{
+      goTo('contactos');
+      document.getElementById('contactos-lista').value = row.dataset.list;
+      renderContactos();
+    });
+  });
+
+  // ---------- Empresas tab ----------
+  const empresasRubroSel = document.getElementById('empresas-rubro');
+  rubros.forEach(r=> empresasRubroSel.innerHTML += `<option value="${r}">${r}</option>`);
+
+  function renderEmpresas(){
+    const q = document.getElementById('empresas-search').value.toLowerCase();
+    const rubro = document.getElementById('empresas-rubro').value;
+    let rows = companies.filter(c=>{
+      if(q && !c.name.toLowerCase().includes(q)) return false;
+      if(rubro && !c.rubros.includes(rubro)) return false;
+      return true;
+    });
+    rows.sort((a,b)=>b.contacts-a.contacts);
+    document.getElementById('empresas-count').textContent = rows.length.toLocaleString('es-ES')+' empresas';
+    document.querySelector('#empresas-table tbody').innerHTML = rows.slice(0,400).map(c=>`
+      <tr>
+        <td class="company-link" data-company="${encodeURIComponent(c.name)}">${c.name}</td>
+        <td>${c.rubros.map(r=>`<span class="pill">${r}</span>`).join('')}</td>
+        <td>${c.contacts}</td>
+        <td>${c.top_title}</td>
+        <td>${c.city}${c.country && c.country!=='N/A' ? ', '+c.country : ''}</td>
+        <td>${c.verified_email}/${c.contacts}</td>
+      </tr>`).join('') || `<tr><td colspan="6" class="empty-state">Sin resultados</td></tr>`;
+    document.querySelectorAll('.company-link').forEach(el=>{
+      el.addEventListener('click', ()=> openCompanyModal(decodeURIComponent(el.dataset.company)));
+    });
+  }
+  document.getElementById('empresas-search').addEventListener('input', renderEmpresas);
+  document.getElementById('empresas-rubro').addEventListener('change', renderEmpresas);
+  document.getElementById('empresas-reset').addEventListener('click', ()=>{
+    document.getElementById('empresas-search').value='';
+    document.getElementById('empresas-rubro').value='';
+    renderEmpresas();
+  });
+
+  // ---------- Contactos tab ----------
+  const listaSel = document.getElementById('contactos-lista');
+  lists.forEach(l=> listaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
+  const rubroSel = document.getElementById('contactos-rubro');
+  rubros.forEach(r=> rubroSel.innerHTML += `<option value="${r}">${r}</option>`);
+  const roleSel = document.getElementById('contactos-role');
+  Object.keys(meta.role_counts).forEach(r=> roleSel.innerHTML += `<option value="${r}">${r}</option>`);
+
+  function renderContactos(){
+    const q = document.getElementById('contactos-search').value.toLowerCase();
+    const lista = document.getElementById('contactos-lista').value;
+    const rubro = document.getElementById('contactos-rubro').value;
+    const role = document.getElementById('contactos-role').value;
+    const emailF = document.getElementById('contactos-email').value;
+
+    let rows = contacts.filter(c=>{
+      if(q && !(c.name.toLowerCase().includes(q) || c.company.toLowerCase().includes(q) || (c.email||'').toLowerCase().includes(q))) return false;
+      if(lista && !c.lists.includes(lista)) return false;
+      if(rubro && !c.rubros.includes(rubro)) return false;
+      if(role && c.role !== role) return false;
+      if(emailF && c.email_status !== emailF) return false;
+      return true;
+    });
+    document.getElementById('contactos-count').textContent = rows.length.toLocaleString('es-ES')+' contactos';
+    contactosRowsRendered = rows.slice(0,500);
+    document.querySelector('#contactos-table tbody').innerHTML = contactosRowsRendered.map(c=>`
+      <tr>
+        <td><input type="checkbox" class="hs-row-check" data-id="${c.id}" ${selectedContactIds.has(c.id)?'checked':''}></td>
+        <td><b>${c.name}</b></td>
+        <td>${c.title}</td>
+        <td><span class="pill">${c.role}</span></td>
+        <td class="company-link" data-company="${encodeURIComponent(c.company)}">${c.company}</td>
+        <td>
+          ${c.email ? `<a href="mailto:${c.email}" style="color:var(--ink); text-decoration:none;">${c.email}</a><br>` : '<span style="color:var(--ink-soft);">—</span><br>'}
+          <span class="badge ${c.email_status}" style="margin-top:3px;">${c.email_status}</span>
+        </td>
+        <td>${c.phone || '—'}</td>
+        <td>${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="color:var(--fuchsia-dark); text-decoration:none;">Perfil ↗</a>` : '—'}</td>
+        <td>${hubspotCellHTML(c.id)}</td>
+      </tr>`).join('') || `<tr><td colspan="9" class="empty-state">Sin resultados con estos filtros</td></tr>`;
+    document.querySelectorAll('#contactos-table .company-link').forEach(el=>{
+      el.addEventListener('click', ()=> openCompanyModal(decodeURIComponent(el.dataset.company)));
+    });
+    document.querySelectorAll('.hs-row-check').forEach(el=>{
+      el.addEventListener('change', ()=>{
+        const id = el.dataset.id;
+        if(el.checked) selectedContactIds.add(id); else selectedContactIds.delete(id);
+        updateBulkButton();
+      });
+    });
+    document.querySelectorAll('.hs-create-btn').forEach(el=>{
+      el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
+    });
+    document.querySelectorAll('.hs-retry').forEach(el=>{
+      el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
+    });
+  }
+  ['contactos-search','contactos-lista','contactos-rubro','contactos-role','contactos-email']
+    .forEach(id=> document.getElementById(id).addEventListener('input', renderContactos));
+  document.getElementById('contactos-reset').addEventListener('click', ()=>{
+    ['contactos-search','contactos-lista','contactos-rubro','contactos-role','contactos-email']
+      .forEach(id=> document.getElementById(id).value='');
+    renderContactos();
+  });
+
+  // ---------- HubSpot integration ----------
+  // Rellena esto con la URL de tu Worker tras desplegarlo (ver hubspot-worker/README).
+  const HUBSPOT_WORKER_URL = 'https://hunting-dashboard.ljamasmiech.workers.dev';
+
+  let hubspotState = {};          // { apolloContactId: {status, hubspot_contact_id, hubspot_url, error, ...} }
+  let selectedContactIds = new Set();
+  let contactosRowsRendered = [];
+
+  function showToast(html, ms=6000){
+    const existing = document.querySelector('.hs-toast');
+    if(existing) existing.remove();
+    const el = document.createElement('div');
+    el.className = 'hs-toast';
+    el.innerHTML = html;
+    document.body.appendChild(el);
+    setTimeout(()=> el.remove(), ms);
+  }
+
+  function hubspotCellHTML(contactId){
+    const st = hubspotState[contactId];
+    if(!st || st.status === 'not_created'){
+      return `<button class="hs-btn hs-create-btn" data-id="${contactId}">Crear en HubSpot</button>`;
+    }
+    if(st.status === 'pending'){
+      return `<span class="hs-status pending">⏳ Creando...</span>`;
+    }
+    if(st.status === 'created' || st.status === 'already_exists'){
+      const label = st.status === 'created' ? '✓ En HubSpot' : '↔ Ya existía';
+      const link = st.hubspot_url ? `<a class="hs-view-link" href="${st.hubspot_url}" target="_blank">Ver en HubSpot ↗</a>` : '';
+      return `<div class="hs-cell"><span class="hs-status ok">${label}</span>${link}</div>`;
+    }
+    if(st.status === 'error'){
+      return `<div class="hs-cell">
+        <span class="hs-status err">⚠ Error</span>
+        <span class="hs-err-msg">${(st.error||'Error desconocido').slice(0,90)}</span>
+        <button class="hs-retry" data-id="${contactId}">↻ Reintentar</button>
+      </div>`;
+    }
+    return `<button class="hs-btn hs-create-btn" data-id="${contactId}">Crear en HubSpot</button>`;
+  }
+
+  async function loadHubspotState(){
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/status', {cache:'no-store'});
+      if(res.ok) hubspotState = await res.json();
+    }catch(err){
+      // el Worker puede no estar desplegado todavía; los botones simplemente
+      // se quedarán en "Crear en HubSpot" hasta que lo esté.
+    }
+    renderContactos();
+    if(typeof renderPrioridadLeads === 'function') renderPrioridadLeads();
+  }
+
+  async function checkHubspotHealth(){
+    const dot = document.getElementById('hs-conn-dot');
+    const label = document.getElementById('hs-conn-label');
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/health', {cache:'no-store'});
+      const data = await res.json();
+      if(data.connected){
+        dot.className = 'hs-conn-dot on';
+        label.textContent = '🟢 HubSpot connected';
+      }else{
+        dot.className = 'hs-conn-dot off';
+        label.textContent = '🔴 HubSpot not connected';
+      }
+    }catch(err){
+      dot.className = 'hs-conn-dot off';
+      label.textContent = '🔴 Worker no disponible';
+    }
+  }
+
+  function updateBulkButton(){
+    const btn = document.getElementById('hs-bulk-btn');
+    const count = document.getElementById('hs-selected-count');
+    btn.disabled = selectedContactIds.size === 0;
+    count.textContent = selectedContactIds.size + ' seleccionados';
+  }
+
+  document.getElementById('hs-select-all').addEventListener('change', (e)=>{
+    contactosRowsRendered.forEach(c=>{
+      if(e.target.checked) selectedContactIds.add(c.id); else selectedContactIds.delete(c.id);
+    });
+    renderContactos();
+    updateBulkButton();
+  });
+
+  async function createSingleInHubspot(contactId){
+    const c = contacts.find(x=> x.id === contactId);
+    if(!c) return;
+    hubspotState[contactId] = { status: 'pending' };
+    renderContactos();
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/upsert', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ contacts: [c] })
+      });
+      const data = await res.json();
+      const result = data.results && data.results[contactId];
+      if(result){
+        hubspotState[contactId] = result;
+        if(result.status === 'error'){
+          showToast(`⚠ Unable to create contact. ${result.error || 'Please check the required fields.'}`);
+        }else if(result.status === 'already_exists'){
+          showToast(`This contact is already in HubSpot.`);
+        }else{
+          showToast(`The contact was created successfully.`);
+        }
+      }else{
+        hubspotState[contactId] = { status: 'error', error: 'Sin respuesta del servidor' };
+      }
+    }catch(err){
+      hubspotState[contactId] = { status: 'error', error: 'HubSpot connection expired. Please reconnect your account.' };
+      showToast('⚠ No se pudo contactar con el Worker de HubSpot.');
+    }
+    renderContactos();
+    if(typeof renderPrioridadLeads === 'function') renderPrioridadLeads();
+  }
+
+  document.getElementById('hs-bulk-btn').addEventListener('click', async ()=>{
+    const ids = Array.from(selectedContactIds);
+    if(!ids.length) return;
+    const selectedContacts = ids.map(id=> contacts.find(c=> c.id===id)).filter(Boolean);
+    ids.forEach(id=> hubspotState[id] = { status:'pending' });
+    renderContactos();
+    document.getElementById('hs-bulk-btn').disabled = true;
+
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/upsert', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ contacts: selectedContacts })
+      });
+      const data = await res.json();
+      let created=0, existed=0, errored=0;
+      Object.entries(data.results || {}).forEach(([id, st])=>{
+        hubspotState[id] = st;
+        if(st.status==='created') created++;
+        else if(st.status==='already_exists') existed++;
+        else if(st.status==='error') errored++;
+      });
+      showToast(`<b>${ids.length} contactos seleccionados</b><br>✓ ${created} creados<br>↔ ${existed} ya existían<br>⚠ ${errored} tuvieron errores`, 9000);
+    }catch(err){
+      ids.forEach(id=> hubspotState[id] = { status:'error', error:'HubSpot connection expired. Please reconnect your account.' });
+      showToast('⚠ No se pudo contactar con el Worker de HubSpot.');
+    }
+    selectedContactIds.clear();
+    updateBulkButton();
+    renderContactos();
+    if(typeof renderPrioridadLeads === 'function') renderPrioridadLeads();
+  });
+
+  loadHubspotState();
+  checkHubspotHealth();
+
+  // ---------- Company modal ----------
+  function openCompanyModal(name){
+    const comp = companies.find(c=>c.name===name);
+    if(!comp) return;
+    const compContacts = contacts.filter(c=>c.company===name);
+    const nextAction = compContacts.length > 1
+      ? "Varios contactos identificados: priorizar seguimiento con el cargo más senior disponible."
+      : (compContacts[0] && compContacts[0].email_status !== 'verified'
+          ? "Verificar el email de este contacto antes de iniciar outreach."
+          : "Add second HR contact — la empresa tiene un único contacto identificado.");
+    document.getElementById('modal-content').innerHTML = `
+      <h2>${comp.name}</h2>
+      <div class="modal-sub">${comp.city}${comp.country && comp.country!=='N/A' ? ', '+comp.country : ''} · ${comp.rubros.join(', ')}</div>
+      <div class="modal-kpis">
+        <div class="modal-kpi"><b>${comp.contacts}</b>Contactos</div>
+        <div class="modal-kpi"><b>${comp.verified_email}</b>Emails verificados</div>
+        <div class="modal-kpi"><b>${comp.with_phone}</b>Con teléfono</div>
+      </div>
+      <div class="modal-section-title">Contactos</div>
+      ${compContacts.map(c=>`
+        <div style="padding:8px 0; border-bottom:1px solid var(--line); font-size:12.5px;">
+          <b>${c.name}</b> — ${c.title}<br>
+          <span style="color:var(--ink-soft);">${c.email || 'sin email'} · <span class="badge ${c.email_status}">${c.email_status}</span> ${c.phone ? '· '+c.phone : ''}</span>
+        </div>`).join('')}
+      <div class="modal-section-title">Listas Apollo</div>
+      ${[...new Set(compContacts.flatMap(c=>c.lists))].map(l=>`<span class="pill">${l}</span>`).join(' ')}
+      <div class="modal-section-title">Next action sugerida</div>
+      <div class="next-action">${nextAction}</div>
+    `;
+    document.getElementById('company-modal').classList.add('active');
+  }
+  document.getElementById('modal-close').addEventListener('click', ()=> document.getElementById('company-modal').classList.remove('active'));
+  document.getElementById('company-modal').addEventListener('click', (e)=>{
+    if(e.target.id==='company-modal') e.target.classList.remove('active');
+  });
+
+  // ---------- Respuestas tab ----------
+  const replies = REPLIES.replies || [];
+  const repliesMeta = REPLIES.meta || {};
+
+  // ---------- Clasificación automática de respuestas ----------
+  const REPLY_CLASS_LABELS = {
+    interesado: 'Interesado',
+    derivado: 'Derivar a otro contacto',
+    fuera_oficina: 'Fuera de oficina',
+    no_interesado: 'No interesado',
+    baja: 'Baja / Queja',
+    sin_clasificar: 'Sin clasificar'
+  };
+  const REPLY_CLASS_BADGE = {
+    interesado: 'verified',
+    derivado: 'extrapolated',
+    fuera_oficina: 'extrapolated',
+    no_interesado: 'unavailable',
+    baja: 'unavailable',
+    sin_clasificar: 'neutral'
+  };
+  const REPLY_CLASS_PRIORITY = {interesado:5, derivado:4, sin_clasificar:3, fuera_oficina:2, no_interesado:1, baja:0};
+
+  function stripAccents(s){ return (s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+  function classifyReplyAuto(r){
+    const raw = stripAccents(((r.subject||'')+' '+(r.body_text||r.snippet||'')).toLowerCase());
+    const rules = [
+      { key:'baja', re:/(dat[ea]\s?de\s?baja|unsubscrib|no me he suscrito|no he autorizado|eliminar mi correo|quitar( de la)? lista|retirar mi (correo|email)|no quiero recibir|de donde ha salido mi contacto|de donde han sacado mi (correo|contacto)|marcar como spam)/ },
+      { key:'fuera_oficina', re:/(fuera de la oficina|out of office|de vacaciones|ausente hasta|estare ausente|regreso el|volvere el|no tendre acceso al correo|de baja (medica|por))/ },
+      { key:'no_interesado', re:/(no (nos |me )?interesa\b|no es el momento|no estamos interesados|ya trabajamos con|no procede|por ahora no|no buscamos|no (tenemos|contamos con) presupuesto|no gracias)/ },
+      { key:'derivado', re:/(no soy la persona (indicada|adecuada)|te recomiendo contactar|deberias hablar con|contacta(r)? con [a-z]|reenvio (esto|tu correo) a|paso tu (correo|mensaje) a|el responsable de esto es|habla(r)? mejor con)/ },
+      { key:'interesado', re:/(me interesa|si,? hablemos|suena (bien|interesante)|agendemos|cuentame mas|quiero saber mas|claro,? hablamos|podemos hablar|estaria bien una llamada|me gustaria conocer mas|te parece bien una reunion|20 minutos|dame mas detalles|encantad[oa] de hablar|hablamos esta semana)/ },
+    ];
+    for(const rule of rules){
+      if(rule.re.test(raw)) return { key: rule.key, label: REPLY_CLASS_LABELS[rule.key], auto:true };
+    }
+    return { key:'sin_clasificar', label: REPLY_CLASS_LABELS['sin_clasificar'], auto:true };
+  }
+
+  let replyOverrides = {};
+  try{ replyOverrides = JSON.parse(localStorage.getItem('apprecio_reply_overrides') || '{}'); }catch(e){ replyOverrides = {}; }
+
+  function replyKeyId(r){ return r.message_id || r.thread_id || r.contact_email || r.subject; }
+
+  function getReplyClassification(r){
+    const id = replyKeyId(r);
+    if(replyOverrides[id]){
+      return { key: replyOverrides[id], label: REPLY_CLASS_LABELS[replyOverrides[id]], auto:false };
+    }
+    return classifyReplyAuto(r);
+  }
+
+  function setReplyOverride(r, key){
+    const id = replyKeyId(r);
+    if(key){ replyOverrides[id] = key; } else { delete replyOverrides[id]; }
+    localStorage.setItem('apprecio_reply_overrides', JSON.stringify(replyOverrides));
+    renderRespuestas();
+    if(typeof renderPrioridad === 'function') renderPrioridad();
+  }
+
+  const repKpis = [
+    {label:'Total respuestas', value: repliesMeta.total_replies || 0, sub: 'Últimos '+(repliesMeta.days_scanned||30)+' días', hi:true},
+    {label:'Contactos que respondieron', value: repliesMeta.unique_contacts_replied || 0, sub: 'De tus listas Apollo'},
+    {label:'Mensajes de inbox revisados', value: repliesMeta.inbox_messages_scanned || 0, sub: 'Cruzados contra Apollo'},
+  ];
+  document.getElementById('respuestas-kpi-grid').innerHTML = repKpis.map(k=>`
+    <div class="kpi ${k.hi?'hi':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value.toLocaleString('es-ES')}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+  document.getElementById('respuestas-days').textContent = repliesMeta.days_scanned || 30;
+
+  const repListaSel = document.getElementById('respuestas-lista');
+  lists.forEach(l=> repListaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
+  const repRubroSel = document.getElementById('respuestas-rubro');
+  rubros.forEach(r=> repRubroSel.innerHTML += `<option value="${r}">${r}</option>`);
+
+  // Filtro por mes: se construye dinámicamente a partir de las fechas reales de las respuestas
+  const repMesSel = document.getElementById('respuestas-mes');
+  const monthKeysSeen = new Set();
+  const monthOptions = [];
+  replies.forEach(r=>{
+    const d = new Date(r.date);
+    if(isNaN(d)) return;
+    const key = d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+    if(!monthKeysSeen.has(key)){
+      monthKeysSeen.add(key);
+      let label = d.toLocaleDateString('es-ES', {month:'long', year:'numeric'});
+      label = label.charAt(0).toUpperCase() + label.slice(1);
+      monthOptions.push({key, label});
+    }
+  });
+  monthOptions.sort((a,b)=> b.key.localeCompare(a.key));
+  monthOptions.forEach(m=>{ repMesSel.innerHTML += `<option value="${m.key}">${m.label}</option>`; });
+
+  // Filtro por clasificación
+  const repClasSel = document.getElementById('respuestas-clasificacion');
+  Object.entries(REPLY_CLASS_LABELS).forEach(([k,label])=>{
+    repClasSel.innerHTML += `<option value="${k}">${label}</option>`;
+  });
+
+  // Orden por fecha: por defecto, más recientes primero
+  let respuestasSortDir = 'desc';
+
+  function fmtDate(iso){
+    if(!iso) return '';
+    const d = new Date(iso);
+    if(isNaN(d)) return iso;
+    return d.toLocaleDateString('es-ES', {day:'2-digit', month:'short', year:'numeric'});
+  }
+
+  function renderRespuestas(){
+    const q = document.getElementById('respuestas-search').value.toLowerCase();
+    const lista = document.getElementById('respuestas-lista').value;
+    const rubro = document.getElementById('respuestas-rubro').value;
+    const mes = document.getElementById('respuestas-mes').value;
+    const clasificacion = document.getElementById('respuestas-clasificacion').value;
+    let rows = replies.filter(r=>{
+      if(q && !((r.contact_name||'').toLowerCase().includes(q) || (r.company||'').toLowerCase().includes(q))) return false;
+      if(lista && !(r.lists||[]).includes(lista)) return false;
+      if(rubro && !(r.rubros||[]).includes(rubro)) return false;
+      if(mes){
+        const d = new Date(r.date);
+        const rowKey = !isNaN(d) ? (d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0')) : null;
+        if(rowKey !== mes) return false;
+      }
+      if(clasificacion && getReplyClassification(r).key !== clasificacion) return false;
+      return true;
+    });
+
+    rows.sort((a,b)=>{
+      const ta = new Date(a.date).getTime();
+      const tb = new Date(b.date).getTime();
+      const va = isNaN(ta) ? 0 : ta;
+      const vb = isNaN(tb) ? 0 : tb;
+      return respuestasSortDir === 'asc' ? va - vb : vb - va;
+    });
+
+    const sortIcon = document.getElementById('respuestas-sort-icon');
+    if(sortIcon) sortIcon.textContent = respuestasSortDir === 'asc' ? '▲' : '▼';
+
+    document.getElementById('respuestas-count').textContent = rows.length.toLocaleString('es-ES')+' respuestas';
+    document.getElementById('respuestas-empty-note').style.display = replies.length===0 ? 'block' : 'none';
+    document.querySelector('#respuestas-table tbody').innerHTML = rows.map((r,i)=>{
+      const cls = getReplyClassification(r);
+      return `
+      <tr class="reply-row" data-idx="${replies.indexOf(r)}">
+        <td><b>${r.contact_name||r.contact_email}</b><br><span style="color:var(--ink-soft); font-size:11px;">${r.contact_title||''}</span></td>
+        <td>${r.company||'N/A'}</td>
+        <td>${(r.lists||[]).map(l=>`<span class="pill">${l}</span>`).join('')}</td>
+        <td>
+          <span class="badge ${REPLY_CLASS_BADGE[cls.key]}">${cls.label}</span>
+          ${cls.auto ? '' : '<div class="class-manual-tag">Corregido manualmente</div>'}
+          <br>
+          <select class="reclass-select reclass-select-js" data-idx="${replies.indexOf(r)}">
+            <option value="">Auto: ${classifyReplyAuto(r).label}</option>
+            ${Object.entries(REPLY_CLASS_LABELS).map(([k,label])=>`<option value="${k}" ${cls.key===k && !cls.auto ? 'selected':''}>${label}</option>`).join('')}
+          </select>
+        </td>
+        <td>${r.subject||'(sin asunto)'}</td>
+        <td>${fmtDate(r.date)}</td>
+        <td style="color:var(--ink-soft); max-width:280px;">${(r.snippet||'').slice(0,90)}${(r.snippet||'').length>90?'…':''}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="7" class="empty-state">Sin respuestas con estos filtros</td></tr>`;
+    document.querySelectorAll('.reply-row').forEach(row=>{
+      row.addEventListener('click', (e)=>{
+        if(e.target.closest('.reclass-select-js')) return;
+        openReplyModal(replies[parseInt(row.dataset.idx)]);
+      });
+    });
+    document.querySelectorAll('.reclass-select-js').forEach(sel=>{
+      sel.addEventListener('click', e=> e.stopPropagation());
+      sel.addEventListener('change', e=>{
+        e.stopPropagation();
+        const r = replies[parseInt(sel.dataset.idx)];
+        setReplyOverride(r, sel.value);
+      });
+    });
+  }
+  ['respuestas-search','respuestas-lista','respuestas-rubro','respuestas-mes','respuestas-clasificacion'].forEach(id=>
+    document.getElementById(id).addEventListener('input', renderRespuestas));
+  document.getElementById('respuestas-reset').addEventListener('click', ()=>{
+    ['respuestas-search','respuestas-lista','respuestas-rubro','respuestas-mes','respuestas-clasificacion'].forEach(id=> document.getElementById(id).value='');
+    respuestasSortDir = 'desc';
+    renderRespuestas();
+  });
+  document.getElementById('respuestas-th-fecha').addEventListener('click', ()=>{
+    respuestasSortDir = respuestasSortDir === 'asc' ? 'desc' : 'asc';
+    renderRespuestas();
+  });
+
+  function openReplyModal(r){
+    if(!r) return;
+    document.getElementById('reply-modal-content').innerHTML = `
+      <h2>${r.contact_name||r.contact_email}</h2>
+      <div class="modal-sub">${r.contact_title||''}${r.company?' — '+r.company:''}</div>
+      <div class="modal-kpis">
+        <div class="modal-kpi"><b>${(r.lists||[]).join(', ')||'—'}</b>Lista Apollo</div>
+        <div class="modal-kpi"><b>${fmtDate(r.date)}</b>Fecha</div>
+      </div>
+      <div class="modal-section-title">Asunto</div>
+      <div>${r.subject||'(sin asunto)'}</div>
+      <div class="modal-section-title">Email recibido</div>
+      <div class="email-body">${(r.body_text||r.snippet||'(sin contenido)').replace(/</g,'&lt;')}</div>
+    `;
+    document.getElementById('reply-modal').classList.add('active');
+  }
+  document.getElementById('reply-modal-close').addEventListener('click', ()=> document.getElementById('reply-modal').classList.remove('active'));
+  document.getElementById('reply-modal').addEventListener('click', (e)=>{
+    if(e.target.id==='reply-modal') e.target.classList.remove('active');
+  });
+
+  // ---------- Prioridad tab: lead scoring ----------
+  const ROLE_WEIGHTS = {
+    'CEO / Founder': 25, 'COO': 25, 'HR/People Director': 25,
+    'HR/People Manager': 20, 'Talent Acquisition': 15,
+    'Comercial / Ventas': 10, 'L&D': 10, 'Internal Communications': 8, 'Otros': 4
+  };
+  const EMAIL_WEIGHTS = { verified: 25, extrapolated: 10, unavailable: 0 };
+  const companiesByName = {};
+  companies.forEach(c=> companiesByName[c.name] = c);
+
+  function companySizeInfo(companyName){
+    const c = companiesByName[companyName];
+    if(!c) return { bonus:0 };
+    if(c.contacts >= 50) return { bonus:15, label:'Cuenta grande (' + c.contacts + ' contactos)' };
+    if(c.contacts >= 20) return { bonus:10, label:'Cuenta mediana (' + c.contacts + ' contactos)' };
+    if(c.contacts >= 5)  return { bonus:5,  label:'Varios contactos en la empresa' };
+    return { bonus:0 };
+  }
+
+  // Mejor clasificación de respuesta por email de contacto (prioriza interés)
+  const replyClassByEmail = {};
+  replies.forEach(r=>{
+    const email = (r.contact_email||'').toLowerCase();
+    if(!email) return;
+    const cls = getReplyClassification(r);
+    const current = replyClassByEmail[email];
+    if(!current || REPLY_CLASS_PRIORITY[cls.key] > REPLY_CLASS_PRIORITY[current]){
+      replyClassByEmail[email] = cls.key;
+    }
+  });
+
+  function computeLeadScore(contact){
+    let score = 0;
+    const reasons = [];
+
+    const roleW = ROLE_WEIGHTS[contact.role] ?? 4;
+    score += roleW;
+    if(roleW >= 20) reasons.push('Cargo clave para el ICP');
+    else if(roleW >= 10) reasons.push('Cargo relevante');
+
+    const emailW = EMAIL_WEIGHTS[contact.email_status] ?? 0;
+    score += emailW;
+    if(contact.email_status === 'verified') reasons.push('Email verificado');
+    else if(contact.email_status === 'extrapolated') reasons.push('Email extrapolado (revisar antes de escribir)');
+
+    if(contact.phone){ score += 15; reasons.push('Tiene teléfono directo'); }
+
+    const sizeInfo = companySizeInfo(contact.company);
+    score += sizeInfo.bonus;
+    if(sizeInfo.label) reasons.push(sizeInfo.label);
+
+    const replyKey = replyClassByEmail[(contact.email||'').toLowerCase()];
+    if(replyKey === 'interesado'){ score += 30; reasons.push('Respondió mostrando interés'); }
+    else if(replyKey === 'derivado'){ score += 10; reasons.push('Derivó a otro contacto de la empresa'); }
+    else if(replyKey === 'no_interesado' || replyKey === 'baja'){ score -= 40; reasons.push('Respondió sin interés / pidió baja'); }
+
+    score = Math.max(0, Math.min(100, score));
+    let tier = 'bajo';
+    if(score >= 65) tier = 'alto';
+    else if(score >= 40) tier = 'medio';
+
+    return { contact, score, tier, reasons, replyKey };
+  }
+
+  const scoredContacts = contacts.map(computeLeadScore).sort((a,b)=> b.score - a.score);
+
+  const prioKpis = [
+    {label:'Leads prioridad alta', value: scoredContacts.filter(s=>s.tier==='alto').length, sub: 'Score ≥ 65 sobre 100', hi:true},
+    {label:'Leads prioridad media', value: scoredContacts.filter(s=>s.tier==='medio').length, sub: 'Score entre 40 y 64'},
+    {label:'Respuestas por gestionar', value: replies.filter(r=>['interesado','derivado'].includes(getReplyClassification(r).key)).length, sub: 'Interesados + a derivar'},
+    {label:'Empresas por enriquecer', value: companies.filter(c=> c.contacts>=8 && (c.verified_email/c.contacts)<0.4).length, sub: '≥8 contactos, <40% verificado'},
+  ];
+  document.getElementById('prioridad-kpi-grid').innerHTML = prioKpis.map(k=>`
+    <div class="kpi ${k.hi?'hi':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value.toLocaleString('es-ES')}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  const topLead = scoredContacts[0];
+  const highlightEl = document.getElementById('prioridad-highlight');
+  if(topLead && topLead.score > 0){
+    highlightEl.style.display = 'block';
+    highlightEl.innerHTML = `🔥 Tu lead mejor puntuado ahora mismo es <b>${topLead.contact.name}</b> (${topLead.contact.title||''} en <b>${topLead.contact.company||'—'}</b>) con un score de <b>${topLead.score}/100</b> — ${topLead.reasons.slice(0,2).join(', ').toLowerCase()}.`;
+  }
+
+  const prioListaSel = document.getElementById('prioridad-lista');
+  lists.forEach(l=> prioListaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
+  document.getElementById('prioridad-tier').value = 'alto';
+
+  // ---------- "Contactado" tick: se guarda en este navegador (localStorage) ----------
+  let contactedState = {};
+  try{ contactedState = JSON.parse(localStorage.getItem('apprecio_contacted') || '{}'); }catch(e){ contactedState = {}; }
+  function setContacted(contactId, checked){
+    if(checked) contactedState[contactId] = true; else delete contactedState[contactId];
+    localStorage.setItem('apprecio_contacted', JSON.stringify(contactedState));
+  }
+
+  function renderPrioridadLeads(){
+    const q = document.getElementById('prioridad-search').value.toLowerCase();
+    const tier = document.getElementById('prioridad-tier').value;
+    const lista = document.getElementById('prioridad-lista').value;
+    let rows = scoredContacts.filter(s=>{
+      const c = s.contact;
+      if(q && !((c.name||'').toLowerCase().includes(q) || (c.company||'').toLowerCase().includes(q))) return false;
+      if(tier && s.tier !== tier) return false;
+      if(lista && !(c.lists||[]).includes(lista)) return false;
+      return true;
+    }).slice(0, 200);
+    document.getElementById('prioridad-count').textContent = rows.length.toLocaleString('es-ES') + ' leads' + (rows.length===200 ? ' (mostrando los 200 primeros)' : '');
+    document.querySelector('#prioridad-table tbody').innerHTML = rows.map(s=>{
+      const c = s.contact;
+      return `<tr>
+        <td><span class="score-badge ${s.tier}">${s.score}</span></td>
+        <td><b>${c.name}</b></td>
+        <td>${c.title||''}</td>
+        <td>${c.company||'—'}</td>
+        <td>${(c.lists||[]).map(l=>`<span class="pill">${l}</span>`).join('')}</td>
+        <td><span class="badge ${c.email_status}">${c.email_status}</span></td>
+        <td>${c.phone||'—'}</td>
+        <td>${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="color:var(--fuchsia-dark); text-decoration:none;">Perfil ↗</a>` : '—'}</td>
+        <td>${hubspotCellHTML(c.id)}</td>
+        <td style="text-align:center;"><input type="checkbox" class="prio-contacted-check" data-id="${c.id}" ${contactedState[c.id] ? 'checked' : ''} title="Marcar como contactado"></td>
+        <td>${s.reasons.map(r=>`<span class="reason-chip">${r}</span>`).join('')}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="11" class="empty-state">Sin leads con estos filtros</td></tr>`;
+    document.querySelectorAll('#prioridad-table .hs-create-btn').forEach(el=>{
+      el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
+    });
+    document.querySelectorAll('#prioridad-table .hs-retry').forEach(el=>{
+      el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
+    });
+    document.querySelectorAll('#prioridad-table .prio-contacted-check').forEach(el=>{
+      el.addEventListener('change', ()=> setContacted(el.dataset.id, el.checked));
+    });
+  }
+  ['prioridad-search','prioridad-tier','prioridad-lista'].forEach(id=>
+    document.getElementById(id).addEventListener('input', renderPrioridadLeads));
+  document.getElementById('prioridad-reset').addEventListener('click', ()=>{
+    document.getElementById('prioridad-search').value = '';
+    document.getElementById('prioridad-tier').value = 'alto';
+    document.getElementById('prioridad-lista').value = '';
+    renderPrioridadLeads();
+  });
+
+  function renderPrioridadRespuestas(){
+    const actionable = replies.filter(r=> ['interesado','derivado'].includes(getReplyClassification(r).key))
+      .sort((a,b)=> new Date(b.date) - new Date(a.date));
+    document.getElementById('prioridad-respuestas-empty').style.display = actionable.length===0 ? 'block' : 'none';
+    document.querySelector('#prioridad-respuestas-table tbody').innerHTML = actionable.map(r=>{
+      const cls = getReplyClassification(r);
+      return `<tr class="reply-row" data-idx="${replies.indexOf(r)}">
+        <td><b>${r.contact_name||r.contact_email}</b><br><span style="color:var(--ink-soft); font-size:11px;">${r.contact_title||''}</span></td>
+        <td>${r.company||'N/A'}</td>
+        <td><span class="badge ${REPLY_CLASS_BADGE[cls.key]}">${cls.label}</span></td>
+        <td>${fmtDate(r.date)}</td>
+        <td style="color:var(--ink-soft); max-width:280px;">${(r.snippet||'').slice(0,90)}${(r.snippet||'').length>90?'…':''}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="5" class="empty-state">Sin respuestas por gestionar</td></tr>`;
+    document.querySelectorAll('#prioridad-respuestas-table .reply-row').forEach(row=>{
+      row.addEventListener('click', ()=> openReplyModal(replies[parseInt(row.dataset.idx)]));
+    });
+  }
+
+  function renderPrioridadEmpresas(){
+    const rows = companies
+      .filter(c=> c.contacts>=8 && (c.verified_email/c.contacts)<0.4)
+      .sort((a,b)=> (a.verified_email/a.contacts) - (b.verified_email/b.contacts) || b.contacts - a.contacts)
+      .slice(0, 100);
+    document.querySelector('#prioridad-empresas-table tbody').innerHTML = rows.map(c=>{
+      const pct = Math.round(c.verified_email/c.contacts*100);
+      return `<tr>
+        <td><b>${c.name}</b></td>
+        <td>${(c.rubros||[]).map(r=>`<span class="pill">${r}</span>`).join('')}</td>
+        <td>${c.contacts}</td>
+        <td>${c.verified_email}</td>
+        <td>${pct}%</td>
+        <td>${c.top_title||'—'}</td>
+      </tr>`;
+    }).join('') || `<tr><td colspan="6" class="empty-state">Sin empresas que cumplan el criterio</td></tr>`;
+  }
+
+  function renderPrioridad(){
+    renderPrioridadLeads();
+    renderPrioridadRespuestas();
+    renderPrioridadEmpresas();
+  }
+
+  // ---------- DIIO tab: reuniones y avance BANT por empresa ----------
+  const diioCompanies = (DIIO && DIIO.companies) || [];
+  const diioMeta = (DIIO && DIIO.meta) || {};
+
+  const BANT_ORDER = ['budget','authority','need','timeline'];
+  const BANT_LABELS = {budget:'Presupuesto', authority:'Decisor', need:'Necesidad', timeline:'Plazo'};
+  const BANT_STATUS_LABELS = {definido:'Definido', parcial:'Parcial', no_identificado:'No identificado'};
+
+  function successBadgeClass(v){
+    if(v===null || v===undefined) return 'sna';
+    return 's'+Math.round(v);
+  }
+  function latestDiioMeeting(company){
+    const ms = (company.meetings||[]).slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
+    return ms[0] || null;
+  }
+  function bantChipsHTML(meeting){
+    return BANT_ORDER.map(k=>{
+      const b = (meeting.bant && meeting.bant[k]) || {status:'no_identificado'};
+      return `<div class="bant-chip ${b.status}">${BANT_LABELS[k]}</div>`;
+    }).join('');
+  }
+
+  const diioKpis = [
+    {label:'Empresas contactadas (España)', value: diioMeta.total_companies ?? diioCompanies.length, sub:'Por Lorenzo Jamasmie', hi:true},
+    {label:'Reuniones registradas', value: diioMeta.total_meetings ?? diioCompanies.reduce((s,c)=> s+(c.meetings||[]).length, 0), sub:'Analizadas por DIIO'},
+    {label:'Sentimiento medio del cliente', value: diioMeta.avg_sentiment != null ? diioMeta.avg_sentiment.toFixed(1)+'/3' : '—', sub: diioMeta.sentiment_sample_size ? 'Sobre '+diioMeta.sentiment_sample_size+' reuniones con dato' : 'Escala 1-3'},
+  ];
+  document.getElementById('diio-kpi-grid').innerHTML = diioKpis.map(k=>`
+    <div class="kpi ${k.hi?'hi':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.value}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  const diioHighlightEl = document.getElementById('diio-highlight');
+  if(diioMeta.next_meeting){
+    diioHighlightEl.style.display = 'block';
+    diioHighlightEl.innerHTML = `📅 Próxima reunión: <b>${diioMeta.next_meeting.company}</b> — ${diioMeta.next_meeting.detail}${diioMeta.next_meeting.date_hint ? ' ('+diioMeta.next_meeting.date_hint+')' : ''}.`;
+  }
+
+  function renderDiio(){
+    const q = document.getElementById('diio-search').value.toLowerCase();
+    const sortOrder = document.getElementById('diio-sort').value;
+    let rows = diioCompanies.filter(c=> !q || (c.name||'').toLowerCase().includes(q));
+    rows = rows.slice().sort((a,b)=>{
+      const da = latestDiioMeeting(a);
+      const db = latestDiioMeeting(b);
+      const ta = da ? new Date(da.date).getTime() : -Infinity;
+      const tb = db ? new Date(db.date).getTime() : -Infinity;
+      return sortOrder === 'date_asc' ? ta - tb : tb - ta;
+    });
+    document.getElementById('diio-count').textContent = rows.length.toLocaleString('es-ES') + (rows.length===1 ? ' empresa' : ' empresas');
+    document.getElementById('diio-empty-note').style.display = diioCompanies.length===0 ? 'block' : 'none';
+    document.getElementById('diio-grid').innerHTML = rows.map(c=>{
+      const last = latestDiioMeeting(c);
+      const n = (c.meetings||[]).length;
+      return `<div class="diio-card" data-id="${c.id}">
+        <div class="diio-card-top">
+          <div>
+            <h4>${c.name}</h4>
+            <div class="diio-sector">${c.sector || ''}</div>
+          </div>
+          <span class="success-pill ${successBadgeClass(last && last.success_odds)}">${last && last.success_odds!=null ? 'Éxito '+last.success_odds+'/5' : 'Sin dato'}</span>
+        </div>
+        <div class="diio-meta-row">
+          <div><b>${n}</b>reunión${n===1?'':'es'}</div>
+          <div><b>${last ? fmtDate(last.date) : '—'}</b>Última</div>
+        </div>
+        ${last ? `<div class="bant-row">${bantChipsHTML(last)}</div>` : ''}
+      </div>`;
+    }).join('');
+    document.querySelectorAll('.diio-card').forEach(el=>{
+      el.addEventListener('click', ()=> openDiioModal(el.dataset.id));
+    });
+  }
+  document.getElementById('diio-search').addEventListener('input', renderDiio);
+  document.getElementById('diio-sort').addEventListener('change', renderDiio);
+  document.getElementById('diio-reset').addEventListener('click', ()=>{
+    document.getElementById('diio-search').value='';
+    document.getElementById('diio-sort').value='date_desc';
+    renderDiio();
+  });
+
+  function openDiioModal(companyId){
+    const c = diioCompanies.find(x=> x.id === companyId);
+    if(!c) return;
+    const meetings = (c.meetings||[]).slice().sort((a,b)=> new Date(b.date) - new Date(a.date));
+    document.getElementById('diio-modal-content').innerHTML = `
+      <h2>${c.name}</h2>
+      <div class="modal-sub">${c.sector||''}${c.domain ? ' · '+c.domain : ''}</div>
+      ${c.contacts && c.contacts.length ? `
+        <div class="modal-section-title">Contactos</div>
+        <div style="margin-bottom:6px;">${c.contacts.map(p=>`<span class="pill">${p.name}${p.role ? ' — '+p.role : ''}</span>`).join(' ')}</div>
+      ` : ''}
+      <div class="modal-section-title">Avance por reunión (BANT)</div>
+      ${meetings.map(m=>`
+        <div class="diio-meeting-card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; gap:10px;">
+            <b>${fmtDate(m.date)}</b>
+            <span class="success-pill ${successBadgeClass(m.success_odds)}">Éxito: ${m.success_odds!=null ? m.success_odds+'/5' : '—'}</span>
+          </div>
+          <div style="font-size:12.5px; color:var(--ink); margin-bottom:12px;">${m.summary||''}</div>
+          ${BANT_ORDER.map(k=>{
+            const b = (m.bant && m.bant[k]) || {status:'no_identificado', detail:'Sin información en esta reunión.'};
+            return `<div class="bant-detail-block">
+              <div class="bant-label"><span class="bant-dot ${b.status}"></span>${BANT_LABELS[k]} · ${BANT_STATUS_LABELS[b.status]}</div>
+              <div style="font-size:12px; color:var(--ink-soft);">${b.detail||''}</div>
+            </div>`;
+          }).join('')}
+          ${m.objections && m.objections.length ? `
+            <div class="modal-section-title" style="margin-top:12px;">Objeciones</div>
+            <div>${m.objections.map(o=>`<span class="objection-chip">${o}</span>`).join('')}</div>
+          ` : ''}
+          ${m.commitments ? `
+            <div class="modal-section-title" style="margin-top:12px;">Compromisos acordados</div>
+            <div style="font-size:12px; color:var(--ink-soft);">${m.commitments}</div>
+          ` : ''}
+          ${m.competitors && m.competitors.length ? `
+            <div class="modal-section-title" style="margin-top:12px;">Competidores mencionados</div>
+            <div>${m.competitors.map(o=>`<span class="pill">${o}</span>`).join(' ')}</div>
+          ` : ''}
+          ${m.next_steps ? `
+            <div class="modal-section-title" style="margin-top:12px;">Próximos pasos</div>
+            <div class="next-action">${m.next_steps}</div>
+          ` : ''}
+          ${m.follow_up_suggestion ? `
+            <div class="modal-section-title" style="margin-top:12px;">Sugerencia de seguimiento</div>
+            <div style="font-size:12px; color:var(--ink-soft); font-style:italic;">${m.follow_up_suggestion}</div>
+          ` : ''}
+          ${m.performance && (m.performance.score != null || (m.performance.strengths && m.performance.strengths.length) || (m.performance.improvements && m.performance.improvements.length)) ? `
+            <div class="modal-section-title" style="margin-top:12px;">Cómo fue tu desempeño</div>
+            <div class="bant-detail-block" style="border-color:var(--lavender);">
+              ${m.performance.score != null ? `<div style="font-size:12.5px; font-weight:800; color:var(--lavender-dark); margin-bottom:6px;">Puntuación: ${m.performance.score}/10</div>` : ''}
+              ${m.performance.strengths && m.performance.strengths.length ? `
+                <div style="font-size:11px; font-weight:700; color:var(--green); margin-bottom:3px;">Fortalezas</div>
+                <ul style="margin:0 0 8px; padding-left:18px; font-size:12px; color:var(--ink-soft);">${m.performance.strengths.map(s=>`<li>${s}</li>`).join('')}</ul>
+              ` : ''}
+              ${m.performance.improvements && m.performance.improvements.length ? `
+                <div style="font-size:11px; font-weight:700; color:var(--amber); margin-bottom:3px;">Áreas de mejora</div>
+                <ul style="margin:0; padding-left:18px; font-size:12px; color:var(--ink-soft);">${m.performance.improvements.map(s=>`<li>${s}</li>`).join('')}</ul>
+              ` : ''}
+            </div>
+          ` : ''}
+        </div>
+      `).join('')}
+    `;
+    document.getElementById('diio-modal').classList.add('active');
+  }
+  document.getElementById('diio-modal-close').addEventListener('click', ()=> document.getElementById('diio-modal').classList.remove('active'));
+  document.getElementById('diio-modal').addEventListener('click', (e)=>{
+    if(e.target.id==='diio-modal') e.target.classList.remove('active');
+  });
+
+  // ---------- Secuencias tab ----------
+  const sequences = SEQUENCES.sequences || [];
+  const seqMeta = SEQUENCES.meta || {};
+
+  const avgOpenPct = sequences.length ? Math.round(sequences.reduce((s,x)=>s+x.open_pct,0)/sequences.length) : 0;
+  const avgReplyPct = sequences.length ? Math.round(sequences.reduce((s,x)=>s+x.reply_pct,0)/sequences.length) : 0;
+
+  const seqSelectEl = document.getElementById('secuencias-select');
+  sequences.forEach(s=> seqSelectEl.innerHTML += `<option value="${s.name.replace(/"/g,'&quot;')}">${s.name}</option>`);
+
+  const seqKpis = [
+    {label:'Secuencias totales', value: seqMeta.total_sequences || 0, sub: (seqMeta.active_sequences||0)+' activas', hi:true},
+    {label:'Total entregados', value: seqMeta.total_delivered || 0, sub: 'Emails entregados'},
+    {label:'% Apertura promedio', value: avgOpenPct, sub: 'Entre todas las secuencias', isPct:true},
+    {label:'% Respuesta promedio', value: avgReplyPct, sub: 'Entre todas las secuencias', isPct:true},
+  ];
+  document.getElementById('secuencias-kpi-grid').innerHTML = seqKpis.map(k=>`
+    <div class="kpi ${k.hi?'hi':''}">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.isPct ? k.value+'%' : k.value.toLocaleString('es-ES')}</div>
+      <div class="kpi-sub">${k.sub}</div>
+    </div>`).join('');
+
+  function renderSecuencias(){
+    const q = document.getElementById('secuencias-search').value.toLowerCase();
+    const selected = document.getElementById('secuencias-select').value;
+    const estado = document.getElementById('secuencias-estado').value;
+    let rows = sequences.filter(s=>{
+      if(selected && s.name !== selected) return false;
+      if(q && !(s.name||'').toLowerCase().includes(q)) return false;
+      if(estado==='active' && !s.active) return false;
+      if(estado==='inactive' && s.active) return false;
+      return true;
+    });
+    document.getElementById('secuencias-count').textContent = rows.length.toLocaleString('es-ES')+' secuencias';
+    document.getElementById('secuencias-empty-note').style.display = sequences.length===0 ? 'block' : 'none';
+    document.querySelector('#secuencias-table tbody').innerHTML = rows.map((s,i)=>`
+      <tr class="seq-row" data-idx="${sequences.indexOf(s)}">
+        <td><b>${s.name}</b></td>
+        <td>${s.active ? '<span class="badge verified">Activa</span>' : '<span class="badge unavailable">Pausada</span>'}</td>
+        <td>${s.num_steps}</td>
+        <td>${s.scheduled.toLocaleString('es-ES')}</td>
+        <td>${s.delivered.toLocaleString('es-ES')}</td>
+        <td>${s.opened.toLocaleString('es-ES')}</td>
+        <td>${s.clicked.toLocaleString('es-ES')}</td>
+        <td>${s.replied.toLocaleString('es-ES')}</td>
+        <td>${s.interested.toLocaleString('es-ES')}</td>
+        <td>${s.open_pct}%</td>
+        <td>${s.reply_pct}%</td>
+      </tr>`).join('') || `<tr><td colspan="11" class="empty-state">Sin secuencias con estos filtros</td></tr>`;
+    document.querySelectorAll('.seq-row').forEach(row=>{
+      row.addEventListener('click', ()=> openSequenceModal(sequences[parseInt(row.dataset.idx)]));
+    });
+  }
+  ['secuencias-search','secuencias-select','secuencias-estado'].forEach(id=>
+    document.getElementById(id).addEventListener('input', renderSecuencias));
+  document.getElementById('secuencias-reset').addEventListener('click', ()=>{
+    ['secuencias-search','secuencias-select','secuencias-estado'].forEach(id=> document.getElementById(id).value='');
+    renderSecuencias();
+  });
+
+  function openSequenceModal(s){
+    if(!s) return;
+    document.getElementById('sequence-modal-content').innerHTML = `
+      <h2>${s.name}</h2>
+      <div class="modal-sub">${s.active?'Activa':'Pausada'} · ${s.num_steps} pasos${s.created_at ? ' · creada '+fmtDate(s.created_at) : ''}</div>
+      <div class="modal-kpis">
+        <div class="modal-kpi"><b>${s.scheduled.toLocaleString('es-ES')}</b>Programados</div>
+        <div class="modal-kpi"><b>${s.delivered.toLocaleString('es-ES')}</b>Entregados</div>
+        <div class="modal-kpi"><b>${s.opened.toLocaleString('es-ES')} (${s.open_pct}%)</b>Abiertos</div>
+        <div class="modal-kpi"><b>${s.clicked.toLocaleString('es-ES')} (${s.click_pct}%)</b>Clics</div>
+        <div class="modal-kpi"><b>${s.replied.toLocaleString('es-ES')} (${s.reply_pct}%)</b>Respuestas</div>
+        <div class="modal-kpi"><b>${s.interested.toLocaleString('es-ES')} (${s.interested_pct}%)</b>Interesados</div>
+        <div class="modal-kpi"><b>${s.bounced.toLocaleString('es-ES')}</b>Rebotados</div>
+        <div class="modal-kpi"><b>${s.unsubscribed.toLocaleString('es-ES')}</b>Dados de baja</div>
+      </div>
+    `;
+    document.getElementById('sequence-modal').classList.add('active');
+  }
+  document.getElementById('sequence-modal-close').addEventListener('click', ()=> document.getElementById('sequence-modal').classList.remove('active'));
+  document.getElementById('sequence-modal').addEventListener('click', (e)=>{
+    if(e.target.id==='sequence-modal') e.target.classList.remove('active');
+  });
+
+  // ---------- init ----------
+  renderEmpresas();
+  renderContactos();
+  renderRespuestas();
+  renderPrioridad();
+  renderDiio();
+  renderSecuencias();
+
+  // ---------- last update badge ----------
+  const ownerChip = document.querySelector('.owner-chip');
+  if(ownerChip && DATA.generated_at){
+    const d = new Date(DATA.generated_at);
+    const fecha = d.toLocaleDateString('es-ES', {day:'2-digit', month:'short', year:'numeric'});
+    ownerChip.innerHTML = `<div class="owner-avatar">LJ</div><span>Listas de <b>${DATA.owner || 'Lorenzo Jamasmie'}</b> · datos al ${fecha}</span>`;
+  }
+}
+
+boot();
+</script>
+
+</div><!-- /#app-content -->
+
+<script>
+  // ---------- Lock screen ----------
+  (function(){
+    const PASSWORD = 'Apprecio2026';
+    const lockScreen = document.getElementById('lock-screen');
+    const appContent = document.getElementById('app-content');
+    const input = document.getElementById('lock-password');
+    const submitBtn = document.getElementById('lock-submit');
+    const errorEl = document.getElementById('lock-error');
+
+    function unlock(){
+      lockScreen.classList.add('hidden');
+      appContent.classList.remove('locked');
+      sessionStorage.setItem('apprecio_dashboard_unlocked', '1');
+    }
+
+    function tryUnlock(){
+      if(input.value === PASSWORD){
+        errorEl.textContent = '';
+        unlock();
+      } else {
+        errorEl.textContent = 'Clave incorrecta. Inténtalo de nuevo.';
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    if(sessionStorage.getItem('apprecio_dashboard_unlocked') === '1'){
+      unlock();
+    } else {
+      input.focus();
+    }
+
+    submitBtn.addEventListener('click', tryUnlock);
+    input.addEventListener('keydown', (e)=>{
+      if(e.key === 'Enter') tryUnlock();
+    });
+  })();
+</script>
+</body>
+</html>
