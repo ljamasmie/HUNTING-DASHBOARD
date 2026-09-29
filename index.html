@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <title>Apprecio España — CRM Intelligence Dashboard</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
   :root{
     --fuchsia:#FA345E;
@@ -434,7 +435,11 @@
         <button class="hs-bulk-btn" id="hs-bulk-btn" disabled>Crear seleccionados en HubSpot</button>
         <span class="hs-selected-count" id="hs-selected-count">0 seleccionados</span>
       </div>
-      <span class="hs-conn-pill" id="hs-conn-pill"><span class="hs-conn-dot" id="hs-conn-dot"></span><span id="hs-conn-label">Comprobando HubSpot…</span></span>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <span class="hs-conn-pill" id="hs-conn-pill"><span class="hs-conn-dot" id="hs-conn-dot"></span><span id="hs-conn-label">Comprobando HubSpot…</span></span>
+        <button class="hs-btn" id="gmail-connect-btn">Conectar Gmail</button>
+        <span class="hs-conn-pill" id="gmail-conn-pill"><span class="hs-conn-dot" id="gmail-conn-dot"></span><span id="gmail-conn-label">Gmail no conectado</span></span>
+      </div>
     </div>
 
     <div class="result-count" id="contactos-count"></div>
@@ -446,7 +451,7 @@
               <th style="width:28px;"><input type="checkbox" id="hs-select-all"></th>
               <th data-sort="name">Nombre</th><th data-sort="title">Cargo</th><th data-sort="role">Perfil</th>
               <th data-sort="company">Empresa</th>
-              <th data-sort="email_status">Email</th><th>Teléfono</th><th>LinkedIn</th><th>HubSpot</th>
+              <th data-sort="email_status">Email</th><th>Teléfono</th><th>LinkedIn</th><th>HubSpot</th><th>Plantilla</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -875,7 +880,8 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         <td>${c.phone || '—'}</td>
         <td>${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="color:var(--fuchsia-dark); text-decoration:none;">Perfil ↗</a>` : '—'}</td>
         <td>${hubspotCellHTML(c.id)}</td>
-      </tr>`).join('') || `<tr><td colspan="9" class="empty-state">Sin resultados con estos filtros</td></tr>`;
+        <td>${templateCellHTML(c)}</td>
+      </tr>`).join('') || `<tr><td colspan="10" class="empty-state">Sin resultados con estos filtros</td></tr>`;
     document.querySelectorAll('#contactos-table .company-link').forEach(el=>{
       el.addEventListener('click', ()=> openCompanyModal(decodeURIComponent(el.dataset.company)));
     });
@@ -885,6 +891,12 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         if(el.checked) selectedContactIds.add(id); else selectedContactIds.delete(id);
         updateBulkButton();
       });
+    });
+    document.querySelectorAll('.template-send-btn').forEach(el=>{
+      el.addEventListener('click', ()=> sendTemplateEmail(el.dataset.id));
+    });
+    document.querySelectorAll('.template-retry-btn').forEach(el=>{
+      el.addEventListener('click', ()=> sendTemplateEmail(el.dataset.id));
     });
     document.querySelectorAll('.hs-create-btn').forEach(el=>{
       el.addEventListener('click', ()=> createSingleInHubspot(el.dataset.id));
@@ -908,6 +920,266 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
   let hubspotState = {};          // { apolloContactId: {status, hubspot_contact_id, hubspot_url, error, ...} }
   let selectedContactIds = new Set();
   let contactosRowsRendered = [];
+
+  // ---------- Gmail: envío de plantillas por rubro ----------
+  // PON AQUÍ TU CLIENT ID DE GOOGLE CLOUD (termina en .apps.googleusercontent.com)
+  const GOOGLE_CLIENT_ID = '372182055011-i90bvc9af9cbmm6qsnq6jjco4dt5a006.apps.googleusercontent.com';
+  const GMAIL_SIGNATURE = ''; // opcional: texto fijo a añadir al final de cada correo (ej. tu firma completa)
+
+  // Las 6 plantillas, tal cual el documento que compartiste. [Nombre] y [Empresa] se
+  // reemplazan automáticamente por los datos reales del contacto al enviar.
+  const EMAIL_TEMPLATES = {
+    'contact-center': {
+      label: 'Contact Center · Sales',
+      match: /contact\s*center/,
+      subject: '¿Cómo estáis motivando a vuestros equipos comerciales?',
+      body: [
+        'Hola [Nombre], ¿qué tal?',
+        'Soy Lorenzo, de Apprecio España – (https://apprecio.com/es-es/). Te escribo porque trabajamos con empresas que buscan nuevas formas de motivar a sus equipos comerciales, mejorar sus resultados y reconocer el esfuerzo de sus trabajadores.',
+        'Sabemos que en el sector de contact center, mantener la motivación, alcanzar los objetivos comerciales y reducir la rotación son desafíos constantes.',
+        'Con Apprecio Beat ayudamos a las empresas a gestionar objetivos, crear desafíos comerciales y reconocer los resultados de sus equipos mediante incentivos y recompensas, todo desde una misma plataforma.',
+        'Me gustaría conocer cómo estáis trabajando actualmente estos aspectos en [Empresa] y explorar si podemos aportar algo interesante.',
+        '¿Te encajaría una reunión de 15 minutos la próxima semana?',
+        'AGENDA TU REUNION ACÁ – (https://meetings.hubspot.com/ljamasmie)',
+        'Un saludo,'
+      ].join('\n\n')
+    },
+    'retail-belleza': {
+      label: 'Retail Belleza · RRHH y Sales',
+      match: /retail|belleza/,
+      subject: 'Reconocimiento e incentivos para vuestros equipos de tienda',
+      body: [
+        'Hola [Nombre], ¿cómo estás?',
+        'Soy Lorenzo, de Apprecio España – (https://apprecio.com/es-es/). Te contacto porque estamos acercando nuestras soluciones de reconocimiento e incentivos a empresas del sector retail y belleza.',
+        'En un sector donde la experiencia del cliente depende en gran medida de los equipos de tienda, creemos que reconocer el esfuerzo de los trabajadores y mantener su motivación puede marcar una diferencia importante.',
+        'Con Apprecio ayudamos a las empresas a desarrollar programas de reconocimiento, beneficios e incentivos. Además, a través de Apprecio Beat, es posible crear desafíos comerciales, impulsar objetivos de venta y reconocer los logros individuales y colectivos.',
+        'Me gustaría conocer cómo estáis gestionando actualmente estas iniciativas en [Empresa] y ver si existe alguna oportunidad de colaboración.',
+        '¿Tendrías 15 minutos la próxima semana para que podamos conocernos?',
+        'AGENDA TU REUNION ACÁ – (https://meetings.hubspot.com/ljamasmie)',
+        'Un saludo'
+      ].join('\n\n')
+    },
+    'aseguradoras': {
+      label: 'Aseguradoras · RRHH y Sales',
+      match: /asegurador/,
+      subject: 'Una idea para potenciar el reconocimiento y los incentivos en [Empresa]',
+      body: [
+        'Hola [Nombre], ¿qué tal?',
+        'Soy Lorenzo, de Apprecio España – (https://apprecio.com/es-es/). Te escribo porque ayudamos a empresas a impulsar la motivación de sus trabajadores mediante programas de reconocimiento, beneficios e incentivos.',
+        'En el sector asegurador, donde conviven equipos comerciales, redes de mediadores y áreas de atención al cliente, contar con herramientas que permitan reconocer el desempeño y mantener alineados a los equipos puede ser especialmente interesante.',
+        'Con Apprecio Rewards facilitamos la entrega de incentivos y recompensas, mientras que Apprecio Beat permite gestionar objetivos, lanzar desafíos comerciales y desarrollar iniciativas de reconocimiento interno.',
+        'Me gustaría conocer cómo estáis abordando actualmente estos temas en [Empresa] y explorar si nuestras soluciones podrían encajar con vuestros objetivos.',
+        '¿Te vendría bien una breve reunión la próxima semana?',
+        'AGENDA TU REUNION ACÁ – (https://meetings.hubspot.com/ljamasmie)',
+        'Un saludo,'
+      ].join('\n\n')
+    },
+    'automotriz': {
+      label: 'Automotriz · RRHH y Sales',
+      match: /automotriz|automoci[oó]n/,
+      subject: 'Incentivos y motivación para vuestros equipos comerciales',
+      body: [
+        'Hola [Nombre], ¿cómo estás?',
+        'Soy Lorenzo, de Apprecio España – (https://apprecio.com/es-es/). Te contacto porque estamos trabajando en acercar nuestras soluciones de reconocimiento e incentivos a empresas del sector de la automoción.',
+        'Sabemos que los equipos comerciales de este sector trabajan con objetivos exigentes, campañas de venta y diferentes indicadores de desempeño. Por eso, creemos que contar con programas de incentivos bien estructurados puede ayudar a mantener la motivación y dar visibilidad a los resultados.',
+        'A través de Apprecio Beat, las empresas pueden crear desafíos comerciales, realizar un seguimiento de objetivos y reconocer los logros de sus trabajadores. Además, con Apprecio Rewards ofrecemos un amplio catálogo de tarjetas regalo, experiencias y beneficios para premiar esos resultados.',
+        'Me gustaría conocer cómo estáis gestionando actualmente vuestros programas de incentivos en [Empresa].',
+        '¿Podríamos agendar una reunión de 15 minutos la próxima semana?',
+        'AGENDA TU REUNION ACÁ – (https://meetings.hubspot.com/ljamasmie)',
+        'Un saludo,'
+      ].join('\n\n')
+    },
+    'outsourcing': {
+      label: 'Outsourcing · RRHH',
+      match: /outsourcing/,
+      subject: '¿Cómo gestionáis el reconocimiento de vuestros trabajadores?',
+      body: [
+        'Hola [Nombre], ¿qué tal?',
+        'Soy Lorenzo, de Apprecio España – (https://apprecio.com/es-es/). Te escribo porque ayudamos a empresas a mejorar la experiencia de sus trabajadores mediante programas de reconocimiento, beneficios e incentivos.',
+        'En el sector del outsourcing, donde los equipos suelen estar distribuidos entre diferentes clientes, centros de trabajo y ubicaciones, mantener una cultura de reconocimiento y fomentar el sentido de pertenencia puede convertirse en un desafío.',
+        'Con Apprecio Beat facilitamos la creación de programas de reconocimiento, encuestas, desafíos y recompensas, permitiendo llegar a los trabajadores independientemente de dónde desarrollen su actividad.',
+        'Además, Apprecio Rewards permite centralizar la entrega de incentivos y beneficios de forma digital.',
+        'Me gustaría conocer cómo estáis abordando actualmente el reconocimiento y la motivación de vuestros equipos en [Empresa].',
+        '¿Tendrías 15 minutos la próxima semana para que podamos conversar?',
+        'AGENDA TU REUNION ACÁ – (https://meetings.hubspot.com/ljamasmie)',
+        'Un saludo,'
+      ].join('\n\n')
+    },
+    'market-research': {
+      label: 'Market Research · Sales',
+      match: /market\s*research|investigaci[oó]n de mercado/,
+      subject: 'Incentivos digitales para vuestros estudios de mercado',
+      body: [
+        'Hola [Nombre], ¿cómo estás?',
+        'Soy Lorenzo, de Apprecio España – (https://apprecio.com/es-es/). Te escribo porque creo que nuestras soluciones de incentivos digitales podrían resultar interesantes para algunas de las iniciativas que desarrolláis en [Empresa].',
+        'En el sector de la investigación de mercados, incentivar la participación en encuestas, estudios y paneles es fundamental para conseguir buenas tasas de respuesta y mantener el interés de los participantes.',
+        'A través de Apprecio Rewards ofrecemos una solución que permite gestionar y entregar tarjetas regalo digitales, experiencias y recompensas de manera sencilla, con un catálogo de diferentes comercios y marcas.',
+        'Creo que podría ser interesante explorar cómo podemos ayudaros a simplificar la gestión de los incentivos para vuestros estudios y programas de participación.',
+        '¿Te encajaría una breve reunión de 15 minutos la próxima semana para conocernos?',
+        'AGENDA TU REUNION ACÁ – (https://meetings.hubspot.com/ljamasmie)',
+        'Un saludo,'
+      ].join('\n\n')
+    }
+  };
+
+  let gmailAccessToken = null;
+  let gmailTokenClient = null;
+  let templateSendState = {}; // { contactId: {status:'pending'|'sent'|'error', error?} }
+
+  function findTemplateForContact(contact){
+    const rubros = (contact.rubros||[]).map(r=> stripAccents(r||'').toLowerCase());
+    for(const rubro of rubros){
+      for(const key of Object.keys(EMAIL_TEMPLATES)){
+        if(EMAIL_TEMPLATES[key].match.test(rubro)) return {id:key, ...EMAIL_TEMPLATES[key]};
+      }
+    }
+    return null;
+  }
+
+  function fillTemplate(template, contact){
+    const firstName = (contact.name||'').trim().split(/\s+/)[0] || contact.name || '';
+    const company = contact.company || '';
+    const subject = template.subject.replace(/\[Nombre\]/g, firstName).replace(/\[Empresa\]/g, company);
+    let body = template.body.replace(/\[Nombre\]/g, firstName).replace(/\[Empresa\]/g, company);
+    if(GMAIL_SIGNATURE) body += '\n\n' + GMAIL_SIGNATURE;
+    return {subject, body};
+  }
+
+  function base64UrlEncode(str){
+    return btoa(unescape(encodeURIComponent(str)))
+      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  }
+
+  function buildRawEmail(to, subject, bodyText){
+    const encodedSubject = '=?utf-8?B?' + btoa(unescape(encodeURIComponent(subject))) + '?=';
+    const message = [
+      `To: ${to}`,
+      'MIME-Version: 1.0',
+      'Content-Type: text/plain; charset="UTF-8"',
+      `Subject: ${encodedSubject}`,
+      '',
+      bodyText
+    ].join('\r\n');
+    return base64UrlEncode(message);
+  }
+
+  function updateGmailConnPill(connected){
+    const dot = document.getElementById('gmail-conn-dot');
+    const label = document.getElementById('gmail-conn-label');
+    if(connected){
+      dot.className = 'hs-conn-dot on';
+      label.textContent = '🟢 Gmail conectado';
+    }else{
+      dot.className = 'hs-conn-dot off';
+      label.textContent = 'Gmail no conectado';
+    }
+  }
+
+  function initGmailAuth(){
+    if(gmailTokenClient) return true;
+    if(!window.google || !google.accounts || !google.accounts.oauth2) return false;
+    if(!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID.indexOf('PON_AQUI') === 0){
+      showToast('⚠ Falta configurar el Client ID de Google en el código (GOOGLE_CLIENT_ID).', 8000);
+      return false;
+    }
+    gmailTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: 'https://www.googleapis.com/auth/gmail.send',
+      callback: (tokenResponse)=>{
+        if(tokenResponse && tokenResponse.access_token){
+          gmailAccessToken = tokenResponse.access_token;
+          updateGmailConnPill(true);
+          showToast('✓ Gmail conectado. Ya puedes enviar plantillas desde Contactos.');
+          renderContactos();
+        }else{
+          showToast('⚠ No se pudo conectar Gmail.');
+        }
+      }
+    });
+    return true;
+  }
+
+  document.getElementById('gmail-connect-btn').addEventListener('click', ()=>{
+    const ready = initGmailAuth();
+    if(ready && gmailTokenClient){
+      gmailTokenClient.requestAccessToken();
+    }else if(!ready){
+      showToast('⚠ Google todavía no ha cargado. Espera unos segundos y vuelve a intentar.');
+    }
+  });
+
+  function templateCellHTML(contact){
+    const template = findTemplateForContact(contact);
+    if(!template){
+      return `<span style="color:var(--ink-soft); font-size:11px;">Sin plantilla</span>`;
+    }
+    const st = templateSendState[contact.id];
+    if(st && st.status === 'pending'){
+      return `<span class="hs-status pending">⏳ Enviando...</span>`;
+    }
+    if(st && st.status === 'sent'){
+      return `<div class="hs-cell"><span class="hs-status ok">✓ Enviado</span><span style="font-size:10px; color:var(--ink-soft);">${template.label}</span></div>`;
+    }
+    if(st && st.status === 'error'){
+      return `<div class="hs-cell">
+        <span class="hs-status err">⚠ Error</span>
+        <span class="hs-err-msg">${(st.error||'Error desconocido').slice(0,90)}</span>
+        <button class="hs-retry template-retry-btn" data-id="${contact.id}">↻ Reintentar</button>
+      </div>`;
+    }
+    return `<button class="hs-btn template-send-btn" data-id="${contact.id}" title="Plantilla: ${template.label}">✉️ Enviar plantilla</button>`;
+  }
+
+  async function sendTemplateEmail(contactId){
+    const contact = contacts.find(x=> x.id === contactId);
+    if(!contact) return;
+    if(!gmailAccessToken){
+      showToast('Primero conecta tu cuenta de Gmail con el botón "Conectar Gmail".');
+      return;
+    }
+    if(!contact.email){
+      showToast('Este contacto no tiene un email registrado.');
+      return;
+    }
+    const template = findTemplateForContact(contact);
+    if(!template){
+      showToast('No hay una plantilla para el rubro de este contacto.');
+      return;
+    }
+    templateSendState[contactId] = {status:'pending'};
+    renderContactos();
+    try{
+      const {subject, body} = fillTemplate(template, contact);
+      const raw = buildRawEmail(contact.email, subject, body);
+      const res = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + gmailAccessToken,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({raw})
+      });
+      if(res.ok){
+        templateSendState[contactId] = {status:'sent'};
+        showToast(`✓ Correo de "${template.label}" enviado a ${contact.name}.`);
+      }else{
+        const errData = await res.json().catch(()=>({}));
+        const msg = (errData.error && errData.error.message) || ('HTTP ' + res.status);
+        templateSendState[contactId] = {status:'error', error: msg};
+        if(res.status === 401){
+          gmailAccessToken = null;
+          updateGmailConnPill(false);
+          showToast('⚠ Tu sesión de Gmail expiró. Vuelve a conectar y reintenta.');
+        }else{
+          showToast('⚠ No se pudo enviar el correo: ' + msg);
+        }
+      }
+    }catch(err){
+      templateSendState[contactId] = {status:'error', error:'Error de red al contactar Gmail'};
+      showToast('⚠ No se pudo conectar con Gmail.');
+    }
+    renderContactos();
+  }
 
   function showToast(html, ms=6000){
     const existing = document.querySelector('.hs-toast');
