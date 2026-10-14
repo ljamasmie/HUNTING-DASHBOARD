@@ -1,17 +1,12 @@
 {
-  "generated_at": "2026-10-06T00:00:00Z",
+  "generated_at": "2026-10-14T00:00:00Z",
   "owner": "Lorenzo Jamasmie",
   "scope": "España",
   "meta": {
-    "total_companies": 11,
-    "total_meetings": 11,
-    "avg_sentiment": 2.78,
-    "sentiment_sample_size": 9,
-    "next_meeting": {
-      "company": "József Gyarmati (proyecto Lupi)",
-      "detail": "Encuentro presencial propuesto en Valencia",
-      "date_hint": "~10 oct 2026"
-    }
+    "total_companies": 16,
+    "total_meetings": 16,
+    "avg_sentiment": 2.85,
+    "sentiment_sample_size": 13
   },
   "companies": [
     {
@@ -618,6 +613,285 @@
             "strengths": [],
             "improvements": []
           }
+        }
+      ]
+    },
+    {
+      "id": "wizink",
+      "name": "WiZink",
+      "domain": "wizink.es",
+      "sector": "Banca / Servicios financieros",
+      "contacts": [
+        {
+          "name": "Alicia Delgado Del Mazo",
+          "role": "People / Reconocimiento"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-08",
+          "summary": "Presentación de Apprecio Beat y Rewards a WiZink. Buscan reconocimiento entre pares sin vincularlo a premios económicos y encuestas trimestrales de compromiso y NPS. Aceptó una demo adaptada y propuesta a 6 y 12 meses.",
+          "success_odds": 4,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Piden propuesta económica para ~550–570 licencias con contratos de 6 meses o 1 año; sin cifra de presupuesto definida."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Alicia lidera la evaluación; falta confirmar quién más decide (compras, tecnología, privacidad)."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Reconocimiento continuo entre colegas sin puntos económicos y encuestas trimestrales de compromiso y NPS como lugar de trabajo."
+            },
+            "timeline": {
+              "status": "definido",
+              "detail": "Quieren decidir antes de fin de año; pendiente demo adaptada y propuesta sin fecha concreta."
+            }
+          },
+          "objections": [
+            "No quiere vincular el reconocimiento entre pares a premios económicos (temor a mal uso de puntos)",
+            "La plataforma no permite contratar solo los módulos de reconocimiento y encuestas",
+            "Necesita evaluar el coste antes de decidir; evalúa otros proveedores para encuestas"
+          ],
+          "commitments": "Apprecio enviará propuesta económica a 6 y 12 meses con tiempos de implementación y preparará una demo personalizada.",
+          "competitors": [],
+          "next_steps": "Enviar propuesta económica (6 y 12 meses, 550–570 licencias), tiempos de implementación y agendar demo adaptada a reconocimiento y encuestas.",
+          "follow_up_suggestion": "Correo con ambos escenarios comerciales y solicitud de las métricas de compromiso que quieren medir para personalizar la demo.",
+          "performance": {
+            "score": 6,
+            "strengths": [
+              "Adaptó la presentación a reconocimiento y encuestas",
+              "Ofreció escenarios de contrato flexibles"
+            ],
+            "improvements": [
+              "Aclarar quién decide y quién evalúa",
+              "Definir indicadores de éxito del piloto"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "orange-espana",
+      "name": "Orange España",
+      "domain": "orange.es",
+      "sector": "Telecomunicaciones",
+      "contacts": [
+        {
+          "name": "Begoña Barrio Sotillo",
+          "role": "Comunicación interna y employer branding"
+        },
+        {
+          "name": "Elena de la Mata",
+          "role": "Responsable (recibirá dossier)"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-14",
+          "summary": "Presentación de Apprecio Beat y Rewards a Orange España, en plena transformación cultural (One Culture). Begoña la valoró como muy completa; trasladará un dossier a Elena de la Mata y María Máñez.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "Sin presupuesto identificado; el de 2027 se cierra en noviembre."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Begoña no decide; el dossier irá a Elena y María, y la contratación debe validarse con Orange Grupo (Francia)."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Reforzar nuevos valores y comportamientos y medir su adopción; hoy lo hacen internamente y tienen un pulso mensual de 3 preguntas."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Colaboración probable para 2027; sin fecha de siguiente reunión."
+            }
+          },
+          "objections": [
+            "La contratación depende de la aprobación de Orange Grupo en Francia",
+            "Probablemente habría que esperar a 2027 por calendario presupuestario",
+            "Gestionan la transformación cultural internamente y no evalúan otras herramientas por ahora"
+          ],
+          "commitments": "Lorenzo enviará el dossier de Apprecio Beat; Begoña lo compartirá con Elena y María.",
+          "competitors": [],
+          "next_steps": "Enviar dossier, esperar feedback interno y proponer demo ampliada (oficinas centrales, tiendas, bienestar). Alcance: 4.000 personas en oficinas y 8.000 en total.",
+          "follow_up_suggestion": "Correo con dossier y resumen enfocado en One Culture; preguntar qué equipo conviene invitar a la demo y confirmar el proceso de aprobación con el grupo.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Presentación completa de la plataforma",
+              "Mostró encuestas recurrentes e integración"
+            ],
+            "improvements": [
+              "Aclarar quién aprueba la compra en Orange Grupo",
+              "Delimitar un caso de uso inicial"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "uriach",
+      "name": "Uriach",
+      "domain": "uriach.com",
+      "sector": "Farmacéutico y productos naturales",
+      "contacts": [
+        {
+          "name": "Yuns Jaghou Akaddar",
+          "role": "People"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-14",
+          "summary": "Presentación de Apprecio Beat a Uriach (~1.200 colaboradores, ~400 en España). Yuns ve el reconocimiento como lo que más encaja para reforzar 4 comportamientos prioritarios del plan del CEO; lo comentará en su reunión de equipo del viernes.",
+          "success_odds": 4,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se habló de presupuesto."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Yuns evalúa y presentará la propuesta en su reunión de equipo; faltan los demás decisores."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Comunicar y reforzar 4 comportamientos clave ligados a sus 6 valores; no tienen plataforma para visualizar el avance cultural entre países."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Posible evaluación en el último trimestre; sin fecha de demo ni decisión."
+            }
+          },
+          "objections": [],
+          "commitments": "Lorenzo y Maria Eugenia enviarán información de la plataforma y ofrecieron demo con el resto del equipo.",
+          "competitors": [],
+          "next_steps": "Enviar información antes del viernes y coordinar demo con el equipo, centrada en reconocimiento y los 4 comportamientos.",
+          "follow_up_suggestion": "Correo de resumen con reconocimiento, módulo de desempeño y recompensas; proponer demo tras su reunión del viernes.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Detectó bien la necesidad cultural",
+              "Explicó el alcance multi-país"
+            ],
+            "improvements": [
+              "Aterrizar los 4 comportamientos y cómo medirán éxito",
+              "Identificar quién aprueba presupuesto"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sociograph",
+      "name": "SocioGraph",
+      "domain": "sociograph.es",
+      "sector": "Estudios de mercado / neurociencia",
+      "contacts": [
+        {
+          "name": "María Ángeles Fernández Durantes",
+          "role": "Contacto principal"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-05",
+          "summary": "Presentación de Apprecio Rewards para incentivos a participantes de estudios. La solución le parece factible e intuitiva, pero hoy trabajan con agencias de captación y crear base propia es un plan futuro sin fecha.",
+          "success_odds": 2,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Volumen estacional (p. ej. ~200 participantes en una semana, incentivos como 5 € por 15 min); sin presupuesto definido."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "María Ángeles es la interlocutora; no se confirmó quién decide."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Gestionar incentivos de forma más sencilla si crean su base propia de participantes; necesidad no inmediata."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin fecha; contactará si surge un estudio con captación directa."
+            }
+          },
+          "objections": [
+            "La necesidad no es inmediata: trabajan con agencias de captación",
+            "Volumen variable por estacionalidad (verano y enero casi sin estudios)"
+          ],
+          "commitments": "Lorenzo enviará información; SocioGraph contactará si surge una oportunidad.",
+          "competitors": [],
+          "next_steps": "Enviar información y mantener contacto; retomar cuando gestionen captación directa. Explorar también México.",
+          "follow_up_suggestion": "Correo con resumen de Rewards (sin costes, carga masiva por Excel, puntos en máx. 2 h) y disponibilidad para proyectos puntuales.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Explicación clara del funcionamiento y condiciones",
+              "Resolvió el caso de uso de 5 € por estudio"
+            ],
+            "improvements": [
+              "Identificar el primer caso de uso y su momento",
+              "Validar control de participantes repetidos"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "dia-group",
+      "name": "Grupo DIA",
+      "domain": "diacorporate.com",
+      "sector": "Distribución alimentaria · Proveedor / partnership (cupones monedero de Club Día)",
+      "contacts": [
+        {
+          "name": "Laura Rodríguez",
+          "role": "Responsable Club Día"
+        },
+        {
+          "name": "Martin Luna",
+          "role": "Grupo DIA"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-06",
+          "summary": "Reunión de proveedor para concretar un piloto: Grupo DIA ofrece 100 códigos únicos de cupón monedero (5, 10 y 20 €) para usuarios de Apprecio; solo cobra el saldo redimido. Inicio previsto el 1 de noviembre.",
+          "success_odds": null,
+          "sentiment": null,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "DIA cobraría solo el saldo redimido; rappel por volumen a definir tras el piloto."
+            },
+            "authority": {
+              "status": "definido",
+              "detail": "Laura (DIA) y el equipo de Apprecio acuerdan las condiciones del piloto."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Incorporar cupones monedero de Club Día al catálogo de Apprecio (posible alcance de ~1.000 usuarios)."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Piloto previsto el 1 de noviembre (alternativa 1 de diciembre); caducidad al 31 de diciembre, pendiente de contrato."
+            }
+          },
+          "objections": [],
+          "commitments": "Apprecio enviará información y su modelo de contrato la semana siguiente; DIA preparará códigos y caducidad tras acordar contrato y fechas.",
+          "competitors": [],
+          "next_steps": "Cerrar contrato, fecha de inicio y caducidad; enviar a Laura los materiales pendientes.",
+          "follow_up_suggestion": "Enviar el modelo de contrato y confirmar la fecha de inicio del piloto (1 de noviembre).",
+          "performance": null
         }
       ]
     }
