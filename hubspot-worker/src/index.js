@@ -20,6 +20,8 @@
  */
 
 const HUBSPOT_API = "https://api.hubapi.com";
+// Lorenzo Jamasmie (propietario en HubSpot)
+const DEFAULT_OWNER_ID = 76017021;
 const PROPERTY_GROUP = "apollo_dashboard";
 
 const CONTACT_PROPS = [
@@ -351,12 +353,14 @@ async function handleDeal(request, env) {
         amount: String(b.amount ?? 500),
         pipeline: pipe.id,
         dealstage: stage.id,
+        hubspot_owner_id: String(env.DEAL_OWNER_ID || DEFAULT_OWNER_ID),
         description: (b.description || "").slice(0, 60000) || undefined,
       }),
     }),
   });
 
   // 4) asociar a empresa por dominio (opcional)
+  let companyId = null;
   if (b.domain) {
     try {
       const c = await hubspotFetch("/crm/v3/objects/companies/search", env, {
@@ -367,11 +371,45 @@ async function handleDeal(request, env) {
         }),
       });
       if (c.results && c.results.length) {
-        await hubspotFetch(`/crm/v4/objects/deals/${deal.id}/associations/default/companies/${c.results[0].id}`, env, { method: "PUT" });
+        companyId = c.results[0].id;
+        await hubspotFetch(`/crm/v4/objects/deals/${deal.id}/associations/default/companies/${companyId}`, env, { method: "PUT" });
       }
     } catch { /* asociación opcional */ }
   }
-  return { status: "created", id: deal.id, url: mkUrl(deal.id) };
+
+  // 5) asociar los contactos de la reunión (buscar por nombre; crear si no existen)
+  const contactsAssociated = [];
+  for (const name of (Array.isArray(b.contacts) ? b.contacts : []).slice(0, 5)) {
+    try {
+      const full = String(name || "").trim();
+      if (!full) continue;
+      const parts = full.split(/\s+/);
+      const firstname = parts.shift();
+      const lastname = parts.join(" ");
+      let contactId = null;
+      const f = [{ propertyName: "firstname", operator: "EQ", value: firstname }];
+      if (lastname) f.push({ propertyName: "lastname", operator: "EQ", value: lastname });
+      const found = await hubspotFetch("/crm/v3/objects/contacts/search", env, {
+        method: "POST",
+        body: JSON.stringify({ filterGroups: [{ filters: f }], limit: 1 }),
+      });
+      if (found.results && found.results.length) {
+        contactId = found.results[0].id;
+      } else {
+        const created = await hubspotFetch("/crm/v3/objects/contacts", env, {
+          method: "POST",
+          body: JSON.stringify({ properties: stripUndefined({ firstname, lastname, company: b.company, hubspot_owner_id: String(env.DEAL_OWNER_ID || DEFAULT_OWNER_ID) }) }),
+        });
+        contactId = created.id;
+        if (companyId) {
+          await hubspotFetch(`/crm/v4/objects/contacts/${contactId}/associations/default/companies/${companyId}`, env, { method: "PUT" }).catch(() => {});
+        }
+      }
+      await hubspotFetch(`/crm/v4/objects/deals/${deal.id}/associations/default/contacts/${contactId}`, env, { method: "PUT" });
+      contactsAssociated.push(full);
+    } catch { /* un contacto que falle no debe tumbar el negocio */ }
+  }
+  return { status: "created", id: deal.id, url: mkUrl(deal.id), contacts: contactsAssociated };
 }
 
 export default {
