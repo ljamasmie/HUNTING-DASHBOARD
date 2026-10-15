@@ -9,6 +9,7 @@
  *   GET  /health            -> { connected, portalId, hubId }
  *   GET  /status            -> { "<apolloContactId>": {status, hubspot_contact_id, ...}, ... }
  *   POST /setup-properties  -> crea (idempotente) las propiedades personalizadas en HubSpot
+ *   POST /deal              -> body: { dealname, amount, domain, description } crea un negocio
  *   POST /upsert            -> body: { contacts: [ {...contactObjectFromDataJson} ] }
  *                               devuelve { results: { "<id>": {status, ...} } }
  *
@@ -317,6 +318,62 @@ async function handleUpsert(request, env) {
   return results;
 }
 
+async function handleDeal(request, env) {
+  const b = await request.json();
+  if (!b.dealname) return { status: "error", error: "Falta dealname" };
+  const portalId = await getPortalId(env);
+  const mkUrl = (id) => (portalId ? `https://app.hubspot.com/contacts/${portalId}/record/0-3/${id}` : null);
+
+  // 1) evitar duplicados por nombre
+  const found = await hubspotFetch("/crm/v3/objects/deals/search", env, {
+    method: "POST",
+    body: JSON.stringify({
+      filterGroups: [{ filters: [{ propertyName: "dealname", operator: "EQ", value: b.dealname }] }],
+      limit: 1,
+    }),
+  });
+  if (found.results && found.results.length) {
+    const id = found.results[0].id;
+    return { status: "already_exists", id, url: mkUrl(id) };
+  }
+
+  // 2) pipeline por defecto y su primera etapa
+  const pl = await hubspotFetch("/crm/v3/pipelines/deals", env);
+  const pipe = pl.results.find((p) => p.default) || pl.results[0];
+  const stage = [...pipe.stages].sort((a, c) => a.displayOrder - c.displayOrder)[0];
+
+  // 3) crear negocio
+  const deal = await hubspotFetch("/crm/v3/objects/deals", env, {
+    method: "POST",
+    body: JSON.stringify({
+      properties: stripUndefined({
+        dealname: b.dealname,
+        amount: String(b.amount ?? 500),
+        pipeline: pipe.id,
+        dealstage: stage.id,
+        description: (b.description || "").slice(0, 60000) || undefined,
+      }),
+    }),
+  });
+
+  // 4) asociar a empresa por dominio (opcional)
+  if (b.domain) {
+    try {
+      const c = await hubspotFetch("/crm/v3/objects/companies/search", env, {
+        method: "POST",
+        body: JSON.stringify({
+          filterGroups: [{ filters: [{ propertyName: "domain", operator: "EQ", value: b.domain }] }],
+          limit: 1,
+        }),
+      });
+      if (c.results && c.results.length) {
+        await hubspotFetch(`/crm/v4/objects/deals/${deal.id}/associations/default/companies/${c.results[0].id}`, env, { method: "PUT" });
+      }
+    } catch { /* asociación opcional */ }
+  }
+  return { status: "created", id: deal.id, url: mkUrl(deal.id) };
+}
+
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
@@ -334,6 +391,9 @@ export default {
       }
       if (url.pathname === "/setup-properties" && request.method === "POST") {
         return json(await handleSetupProperties(env), env);
+      }
+      if (url.pathname === "/deal" && request.method === "POST") {
+        return json(await handleDeal(request, env), env);
       }
       if (url.pathname === "/upsert" && request.method === "POST") {
         return json({ results: await handleUpsert(request, env) }, env);
