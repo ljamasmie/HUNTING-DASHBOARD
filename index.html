@@ -1851,6 +1851,56 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
     renderDiio();
   });
 
+
+  // ---------- Crear negocio en HubSpot desde una reunión DIIO ----------
+  const DIIO_DEFAULT_AMOUNT = 500; // € si la reunión no trae monto calculado
+  function loadDiioDeals(){ try{ return JSON.parse(localStorage.getItem('apprecio_diio_deals')||'{}'); }catch(e){ return {}; } }
+  function saveDiioDeals(o){ try{ localStorage.setItem('apprecio_diio_deals', JSON.stringify(o)); }catch(e){} }
+  let diioDeals = loadDiioDeals();
+  function diioDealKey(c,m){ return c.id+'|'+m.date; }
+  function diioDealAmount(m){ const a = Number(m.deal_amount); return (isFinite(a) && a>0) ? a : DIIO_DEFAULT_AMOUNT; }
+  function diioDealButtonHTML(c,m){
+    const k = diioDealKey(c,m), st = diioDeals[k];
+    const attr = `data-company="${c.id}" data-date="${m.date}"`;
+    if(st && st.status==='pending') return `<span class="hs-btn" style="opacity:.7;">Creando negocio…</span>`;
+    if(st && (st.status==='created' || st.status==='already_exists')){
+      const link = st.url ? ` <a href="${st.url}" target="_blank" rel="noopener" style="font-size:12px;">Abrir ↗</a>` : '';
+      return `<span class="badge verified">✓ Negocio en HubSpot${st.status==='already_exists'?' (ya existía)':''} · ${diioDealAmount(m).toLocaleString('es-ES')} €</span>${link}`;
+    }
+    const err = (st && st.status==='error') ? `<span style="color:var(--red,#c0392b); font-size:12px; margin-left:8px;">⚠ ${String(st.error||'Error').slice(0,90)}</span>` : '';
+    return `<button class="hs-btn hs-create-btn diio-deal-btn" ${attr}>Crear negocio en HubSpot (${diioDealAmount(m).toLocaleString('es-ES')} €)</button>${err}`;
+  }
+  async function createDiioDeal(companyId, date){
+    const c = diioCompanies.find(x=> x.id===companyId);
+    const m = c && (c.meetings||[]).find(x=> x.date===date);
+    if(!m) return;
+    const k = diioDealKey(c,m);
+    diioDeals[k] = {status:'pending'}; openDiioModal(companyId);
+    try{
+      const res = await fetch(HUBSPOT_WORKER_URL + '/deal', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          dealname: c.name, amount: diioDealAmount(m), company: c.name, domain: c.domain || null,
+          meeting_date: m.date, description: (m.summary||'') + (m.next_steps ? '\n\nPróximos pasos: '+m.next_steps : ''),
+          source: 'DIIO'
+        })
+      });
+      const data = await res.json();
+      if(!res.ok || data.status==='error') throw new Error(data.error || ('HTTP '+res.status));
+      diioDeals[k] = {status: data.status || 'created', id: data.id, url: data.url};
+      showToast(data.status==='already_exists' ? `El negocio "${c.name}" ya existía en HubSpot.` : `Negocio "${c.name}" creado en HubSpot (${diioDealAmount(m)} €).`);
+    }catch(err){
+      diioDeals[k] = {status:'error', error: err.message || 'No se pudo contactar con el Worker'};
+      showToast('⚠ No se pudo crear el negocio: '+(err.message||'error'));
+    }
+    saveDiioDeals(Object.fromEntries(Object.entries(diioDeals).filter(([,v])=> v.status!=='pending')));
+    openDiioModal(companyId);
+  }
+  document.addEventListener('click', (e)=>{
+    const b = e.target.closest && e.target.closest('.diio-deal-btn');
+    if(b) createDiioDeal(b.dataset.company, b.dataset.date);
+  });
+
   function openDiioModal(companyId){
     const c = diioCompanies.find(x=> x.id === companyId);
     if(!c) return;
@@ -1869,6 +1919,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
             <b>${fmtDate(m.date)}</b>
             <span class="success-pill ${successBadgeClass(m.success_odds)}">Éxito: ${m.success_odds!=null ? m.success_odds+'/5' : '—'}</span>
           </div>
+          <div style="margin-bottom:10px;">${diioDealButtonHTML(c, m)}</div>
           <div style="font-size:12.5px; color:var(--ink); margin-bottom:12px;">${m.summary||''}</div>
           ${BANT_ORDER.map(k=>{
             const b = (m.bant && m.bant[k]) || {status:'no_identificado', detail:'Sin información en esta reunión.'};
