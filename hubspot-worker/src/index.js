@@ -22,6 +22,8 @@
 const HUBSPOT_API = "https://api.hubapi.com";
 // Lorenzo Jamasmie (propietario en HubSpot)
 const DEFAULT_OWNER_ID = 76017021;
+// Producto "Apprecio Beat" de la biblioteca de productos de HubSpot
+const BEAT_PRODUCT_ID = "45054778029";
 const PROPERTY_GROUP = "apollo_dashboard";
 
 const CONTACT_PROPS = [
@@ -410,7 +412,24 @@ async function handleDeal(request, env) {
       contactsAssociated.push(full);
     } catch { /* un contacto que falle no debe tumbar el negocio */ }
   }
-  return { status: "created", id: deal.id, url: mkUrl(deal.id), contacts: contactsAssociated };
+  // 6) añadir el producto Apprecio Beat como línea del negocio
+  let product = null;
+  try {
+    const li = await hubspotFetch("/crm/v3/objects/line_items", env, {
+      method: "POST",
+      body: JSON.stringify({
+        properties: {
+          hs_product_id: BEAT_PRODUCT_ID,
+          quantity: "1",
+          price: String(b.amount ?? 500),
+          hs_line_item_currency_code: "EUR",
+        },
+      }),
+    });
+    await hubspotFetch(`/crm/v4/objects/line_items/${li.id}/associations/default/deals/${deal.id}`, env, { method: "PUT" });
+    product = "Apprecio Beat";
+  } catch { /* el negocio ya existe; el producto es complementario */ }
+  return { status: "created", id: deal.id, url: mkUrl(deal.id), contacts: contactsAssociated, product };
 }
 
 export default {
