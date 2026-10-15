@@ -1881,7 +1881,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({
           dealname: c.name, amount: diioDealAmount(m), company: c.name, domain: c.domain || null,
-          meeting_date: m.date, description: (m.summary||'') + (m.next_steps ? '\n\nPróximos pasos: '+m.next_steps : ''),
+          contacts: (c.contacts||[]).map(p=>p.name).filter(Boolean), meeting_date: m.date, description: (m.summary||'') + (m.next_steps ? '\n\nPróximos pasos: '+m.next_steps : ''),
           source: 'DIIO'
         })
       });
