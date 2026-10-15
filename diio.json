@@ -1,12 +1,12 @@
 {
-  "generated_at": "2026-10-14T00:00:00Z",
+  "generated_at": "2026-10-15T00:00:00Z",
   "owner": "Lorenzo Jamasmie",
   "scope": "España",
   "meta": {
-    "total_companies": 16,
-    "total_meetings": 16,
-    "avg_sentiment": 2.85,
-    "sentiment_sample_size": 13
+    "total_companies": 17,
+    "total_meetings": 17,
+    "avg_sentiment": 2.86,
+    "sentiment_sample_size": 14
   },
   "companies": [
     {
@@ -892,6 +892,69 @@
           "next_steps": "Cerrar contrato, fecha de inicio y caducidad; enviar a Laura los materiales pendientes.",
           "follow_up_suggestion": "Enviar el modelo de contrato y confirmar la fecha de inicio del piloto (1 de noviembre).",
           "performance": null
+        }
+      ]
+    },
+    {
+      "id": "attindas",
+      "name": "Attindas",
+      "domain": "attindas.com",
+      "sector": "Productos de higiene (fábrica, logística y red comercial · ~650 personas, oficinas en Pozuelo)",
+      "contacts": [
+        {
+          "name": "Rebeca Molina Pereira",
+          "role": "Recursos Humanos"
+        },
+        {
+          "name": "Laura",
+          "role": "Recursos Humanos"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-15",
+          "summary": "Presentación de Apprecio Rewards y Beat a Attindas (~650 personas: 480 en fábrica, 80 en oficinas, 100 comerciales remotos). Una encuesta anual detectó una brecha en reconocimiento directo. Rebeca pidió presentación resumida y propuesta económica para 650 personas.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Piden propuesta económica para ~650 personas; sin presupuesto definido."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Rebeca (RRHH) evalúa y compartirá la propuesta con una compañera de transformación cultural y con el equipo de fábrica."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Reconocimiento directo entre empleados / desde RRHH y catálogo de beneficios internos (WorkLife). Encuestas y desempeño ya cubiertos con Workday."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin fecha de envío, demo ni decisión."
+            }
+          },
+          "objections": [
+            "Ya cuentan con Workday (encuestas, reconocimientos y desempeño) y no ven necesidad de duplicar esas funciones",
+            "No tienen problemas actuales con la participación en encuestas"
+          ],
+          "commitments": "Lorenzo enviará presentación resumida y propuesta económica para 650 personas; Maria Eugenia ofreció demo adaptada por áreas.",
+          "competitors": [
+            "Workday"
+          ],
+          "next_steps": "Enviar presentación y propuesta (650 personas); aclarar encaje con Workday; definir caso de uso principal y cómo accederán fábrica y comerciales remotos.",
+          "follow_up_suggestion": "Correo con presentación y propuesta, enfocado en reconocimiento directo, gamificación y retos para fábrica y ventas; proponer demo con las áreas implicadas.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Ejemplos concretos de retos comerciales, logísticos y de oficina",
+              "Presentó Rewards y Beat adaptados a su necesidad de reconocimiento"
+            ],
+            "improvements": [
+              "Aclarar el encaje con Workday para evitar percepción de duplicidad",
+              "Entender cómo se decide la compra y quién valida presupuesto"
+            ]
+          }
         }
       ]
     }
