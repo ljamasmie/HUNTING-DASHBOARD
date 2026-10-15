@@ -351,6 +351,7 @@ async function handleDeal(request, env) {
       properties: stripUndefined({
         dealname: b.dealname,
         amount: String(b.amount ?? 500),
+        deal_currency_code: "EUR", // la cuenta es CLP; los negocios de España van en euros
         pipeline: pipe.id,
         dealstage: stage.id,
         hubspot_owner_id: String(env.DEAL_OWNER_ID || DEFAULT_OWNER_ID),
