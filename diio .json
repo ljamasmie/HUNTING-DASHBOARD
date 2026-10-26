@@ -1,0 +1,1023 @@
+{
+  "generated_at": "2026-10-26T00:00:00Z",
+  "owner": "Lorenzo Jamasmie",
+  "scope": "España",
+  "meta": {
+    "total_companies": 18,
+    "total_meetings": 18,
+    "avg_sentiment": 2.87,
+    "sentiment_sample_size": 15
+  },
+  "companies": [
+    {
+      "id": "bdf-integral",
+      "name": "BDF Integral",
+      "domain": "bdfintegral.es",
+      "sector": "Correduría de seguros",
+      "contacts": [
+        {
+          "name": "Francisco Calderón Saura",
+          "role": "Tomador de decisión"
+        },
+        {
+          "name": "David Fleta",
+          "role": "Tomador de decisión"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-22",
+          "summary": "Presentación de las soluciones de incentivos de Apprecio. BDF Integral, correduría de seguros, busca optimizar su plan de incentivos para agencias distribuidoras de cara a 2027.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Destinan ~2% de sus 700.000€ en ventas anuales (~14.000€) a incentivos para agencias distribuidoras, pero sin presupuesto cerrado todavía para una solución digital."
+            },
+            "authority": {
+              "status": "definido",
+              "detail": "Dos tomadores de decisión identificados en la reunión: Francisco Calderón Saura y David Fleta."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Digitalizar y dar trazabilidad al plan de incentivos a agencias distribuidoras para 2027. Rewards es la opción que más encaja por su sencillez."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Plan pensado para 2027. Próximo paso acordado: una carga piloto de 10€ para validar la funcionalidad, sin fecha de decisión cerrada."
+            }
+          },
+          "objections": [
+            "Desconocimiento de la marca Apprecio en el mercado español",
+            "Incertidumbre sobre la adopción por parte del usuario final",
+            "Falta de automatización directa con sus procesos de venta actuales",
+            "Penalización del 15% por reversa de puntos"
+          ],
+          "commitments": "Envío de la presentación formal, brochure y enlaces de acceso a la plataforma. Se plantea una carga de prueba de 10€ para validar el proceso de canje antes de decidir sobre el presupuesto de 2027.",
+          "competitors": [],
+          "next_steps": "Lorenzo enviará la presentación formal y un brochure. Se propuso una carga piloto de 10€ para verificar la funcionalidad antes de avanzar.",
+          "follow_up_suggestion": "Correo de agradecimiento resumiendo los beneficios clave (gestión simple, coste cero, flexibilidad) y reiterando la propuesta de la carga de prueba de 10€.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Buena presentación de las líneas de negocio de Apprecio",
+              "Adaptó bien la oferta de Rewards a la necesidad de incentivos externos del cliente"
+            ],
+            "improvements": [
+              "Preparar una guía rápida de implementación para reducir la incertidumbre por ser una marca nueva en España",
+              "Precisar las condiciones de transferibilidad de las tarjetas de regalo"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "conversia",
+      "name": "Conversia",
+      "domain": null,
+      "sector": "Servicios corporativos (550 empleados · grupo Wilmington)",
+      "contacts": [
+        {
+          "name": "Oriol Fabregas",
+          "role": "Tomador de decisión"
+        },
+        {
+          "name": "Ana Paula Diez",
+          "role": "Equipo Apprecio"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-09",
+          "summary": "Presentación de Apprecio Rewards y Apprecio Beat. Conversia (550 empleados, recientemente adquirida por el grupo inglés Wilmington) está en 'fase 0' de evaluación de proveedores. Interés inicial solo en Rewards para incentivos a personal no comercial; descartaron Beat por ahora.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se definió un presupuesto cerrado. Rewards tiene coste de administración cero para el cliente; el margen viene de los proveedores de tarjetas de regalo."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Oriol Fabregas fue identificado como tomador de decisión, aunque el proceso depende también de las políticas de compras del grupo Wilmington."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Diseñar esquemas de premios para personal no comercial. Por ahora solo les interesa Rewards."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Oriol está en 'fase 0' de evaluación de proveedores, sin plazo de decisión definido."
+            }
+          },
+          "objections": [
+            "Desconocimiento sobre la utilidad inicial del producto",
+            "Confusión sobre el coste del servicio",
+            "Falta de un plan de proyecto definido",
+            "Dudas sobre la integración técnica del módulo de formación"
+          ],
+          "commitments": "Lorenzo se compromete a enviar los brochures de Rewards y Beat junto con una orientación de precios estimada para Beat.",
+          "competitors": [
+            "Amazon (mencionado como opción dentro del marketplace de incentivos)"
+          ],
+          "next_steps": "Consultar requisitos fiscales locales, validar políticas de compras con el grupo Wilmington y presentar casos de uso concretos. Lorenzo enviará materiales y precios de referencia.",
+          "follow_up_suggestion": "Correo formal con el material prometido y la información de costes, dejando la puerta abierta para cuando el proyecto de Conversia avance.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Buena capacidad para aclarar dudas sobre el modelo de negocio ante las objeciones iniciales del cliente"
+            ],
+            "improvements": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "gyarmati-lupi",
+      "name": "József Gyarmati (proyecto Lupi)",
+      "domain": null,
+      "sector": "Proyecto Lupi",
+      "contacts": [
+        {
+          "name": "József Gyarmati",
+          "role": "Rol de decisión sin confirmar"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-09",
+          "summary": "Lorenzo presentó Apprecio Vid a József Gyarmati: reconocimiento, objetivos, recompensas y desarrollo profesional, con los tres tipos de puntos (económicos, de reconocimiento y de experiencia) y uso de IA para encuestas y capacitaciones. Gyarmati mostró interés para el proyecto Lupi y preguntó por la integración con plataformas educativas externas (Coursera, edX).",
+          "success_odds": null,
+          "sentiment": null,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se mencionó presupuesto en la reunión."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "No se confirmó si Gyarmati es el tomador de decisión final para el proyecto Lupi."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Interés en implementar Apprecio Vid para activar cultura organizacional (reconocimiento, objetivos, recompensas) en el proyecto Lupi. Dudas sobre integración con plataformas educativas externas."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Se habló de coordinar un encuentro presencial en Valencia alrededor del 10 de octubre de 2026."
+            }
+          },
+          "objections": [],
+          "commitments": null,
+          "competitors": [],
+          "next_steps": "Mantenerse en contacto para coordinar un posible encuentro presencial en Valencia (~10 oct 2026) y seguir avanzando en la colaboración.",
+          "follow_up_suggestion": null,
+          "performance": null
+        }
+      ]
+    },
+    {
+      "id": "phone-house",
+      "name": "Phone House",
+      "domain": "phonehouse.es",
+      "sector": "Retail de telefonía",
+      "contacts": [
+        {
+          "name": "Eduardo Diaz",
+          "role": "Sin confirmar como decisor"
+        },
+        {
+          "name": "Roberto Restrepo",
+          "role": "Sin confirmar como decisor"
+        },
+        {
+          "name": "Almudena Saez",
+          "role": "Sin confirmar como decisor"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-04",
+          "summary": "Reunión de venta sobre Apprecio Rewards para incentivar al equipo de ventas en tienda de Phone House. El cliente busca centralizar la gestión de premios, mejorar el análisis de datos por sucursal y optimizar el retorno de su inversión anual en incentivos.",
+          "success_odds": 5,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "No se definió una cifra exacta; el cliente hará una estimación de su gasto anual para evaluar un acuerdo de volumen."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Participaron tres personas del lado del cliente (Eduardo Diaz, Roberto Restrepo, Almudena Saez), pero ninguna fue confirmada como tomadora de decisión final; la propuesta se revisará internamente."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Centralizar la gestión de premios para el equipo de ventas en tienda, mejorar el análisis de datos por sucursal y optimizar el retorno de la inversión anual en incentivos."
+            },
+            "timeline": {
+              "status": "definido",
+              "detail": "La decisión se tomará en el transcurso de una semana, tras revisar la propuesta internamente."
+            }
+          },
+          "objections": [
+            "Incertidumbre sobre posibles costes ocultos",
+            "Dudas sobre cláusulas de permanencia",
+            "Piden condiciones especiales por volumen"
+          ],
+          "commitments": "Lorenzo enviará la presentación comercial. Los clientes realizarán una estimación de su gasto anual en incentivos para evaluar beneficios por volumen. Ambas partes acordaron retomar el contacto la próxima semana.",
+          "competitors": [],
+          "next_steps": "Lorenzo enviará la presentación comercial para revisión interna. Retomarán el contacto la semana siguiente.",
+          "follow_up_suggestion": "Correo destacando la gratuidad del modelo, la inmediatez de la carga de puntos, la gestión simplificada vía panel administrativo, y apertura a negociar un rebate por volumen.",
+          "performance": {
+            "score": null,
+            "strengths": [
+              "Excelente detección de necesidades (foco en ventas en tienda)",
+              "Transparencia explicando el modelo de valor",
+              "Buena empatía liderando la conversación"
+            ],
+            "improvements": [
+              "Liderar el compromiso de seguimiento proponiendo fechas concretas en vez de esperar al cliente",
+              "Profundizar en los KPIs del cliente antes de negociar beneficios por volumen"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "grupo-saona",
+      "name": "Grupo Saona",
+      "domain": null,
+      "sector": "Restauración (~1.200 colaboradores)",
+      "contacts": [
+        {
+          "name": "Melissa Solano Bravo",
+          "role": "Punto de contacto principal (escala a su directora)"
+        },
+        {
+          "name": "Erika",
+          "role": "Sin confirmar"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-02",
+          "summary": "Reunión de seguimiento a una propuesta comercial de plataforma de reconocimiento para 1.200 colaboradores, con tres pilares (reconocimiento, recompensa y crecimiento) adaptados a la cultura de Saona.",
+          "success_odds": 4,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "El fee mensual de 2.700€ se percibe como elevado; la empresa no tiene actualmente una partida presupuestaria para este tipo de programa. Se planteó un piloto con descuento para validar la herramienta."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Melissa Solano Bravo es el punto de contacto principal, pero debe presentar la propuesta a su directora, quien tiene la aprobación presupuestaria final."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Implementar una plataforma de reconocimiento para 1.200 colaboradores, con foco en reconocimiento, recompensa y crecimiento, adaptada a los valores culturales de Saona."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin plazo definido; queda sujeto a la revisión interna que Melissa hará con su dirección."
+            }
+          },
+          "objections": [
+            "No hay partida presupuestaria asignada para una inversión mensual de esta magnitud",
+            "El fee se percibe como elevado frente a su situación actual"
+          ],
+          "commitments": null,
+          "competitors": [],
+          "next_steps": "Se enviaron los materiales comerciales. Se evaluó hacer un piloto con descuento antes de un despliegue total, con disponibilidad para ajustar el modelo.",
+          "follow_up_suggestion": null,
+          "performance": null
+        }
+      ]
+    },
+    {
+      "id": "loom",
+      "name": "LOOM",
+      "domain": null,
+      "sector": "Servicios (32 \"hosts\" en 14 centros, Madrid y Barcelona)",
+      "contacts": [
+        {
+          "name": "Nicolás Asta",
+          "role": "Interlocutor (escala a su jefa directa)"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-04",
+          "summary": "Presentación de Apprecio Bit como solución de cultura organizacional, comunicación y gamificación. LOOM busca motivar a sus 32 \"hosts\" en 14 centros, premiando hitos como reseñas positivas en Google, usando puntos canjeables e IA para retos y encuestas.",
+          "success_odds": 4,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Modelo de fee mensual por usuario, con puntos equivalentes a 1€. No se definió presupuesto cerrado; depende de la propuesta que Nicolás presente a su jefa."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Nicolás Asta es el interlocutor, pero debe escalar la propuesta a su jefa directa para decidir."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Motivar a sus 32 'hosts' en 14 centros, premiando hitos como reseñas positivas en Google."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "No se definió un plazo estricto; depende de que la jefatura de Nicolás apruebe internamente."
+            }
+          },
+          "objections": [
+            "Claridad en los costos del modelo",
+            "Temor a manipulación del sistema (abuso entre pares)",
+            "Necesidad de integración automática con Google",
+            "Dependencia de aprobación de su jefatura"
+          ],
+          "commitments": "Lorenzo enviará una propuesta formal con el desglose de costes mensuales por usuario y material informativo, para que Nicolás Asta la presente a su jefa.",
+          "competitors": [],
+          "next_steps": "Envío de propuesta detallada y material informativo; posible reunión conjunta con la jefatura de LOOM.",
+          "follow_up_suggestion": "Correo reforzando el valor de Apprecio Bit (reconocimiento, incentivos económicos, gestión con IA), adjuntando presentación y costes, e invitando a coordinar una reunión conjunta con la jefa de Nicolás.",
+          "performance": {
+            "score": null,
+            "strengths": [
+              "Excelente capacidad de conexión y enfoque consultivo",
+              "Buen diagnóstico del dolor del cliente con solución a medida",
+              "Manejo transparente de dudas técnicas"
+            ],
+            "improvements": [
+              "Liderar la agenda proponiendo fechas y horas concretas en vez de aceptar los plazos del cliente",
+              "Profundizar en los KPIs del cliente antes de mostrar toda la plataforma"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "leroy-merlin",
+      "name": "Leroy Merlin",
+      "domain": "leroymerlin.es",
+      "sector": "Retail de bricolaje (Grupo Adeo)",
+      "contacts": [
+        {
+          "name": "Ainara Martín",
+          "role": "Interlocutora (decisión sujeta al Grupo Adeo)"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-02",
+          "summary": "Reunión de partnership: Apprecio propone incorporar las gift cards de Leroy Merlin a su catálogo de beneficios y ofrecer soporte tecnológico para digitalizar sus activos. Ainara Martín se mostró abierta, aunque el Grupo Adeo (matriz) ya desarrolla herramientas internas propias.",
+          "success_odds": null,
+          "sentiment": null,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No aplica un presupuesto tradicional: es un modelo de integración/comisión sobre sus propias gift cards, aún sin condiciones comerciales cerradas."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Ainara Martín es la interlocutora y se mostró abierta a la propuesta, pero la decisión final depende de los desarrollos internos del Grupo Adeo (matriz)."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Evaluar la incorporación de sus gift cards al catálogo de Apprecio y el soporte tecnológico para digitalizar sus activos, aunque el Grupo Adeo ya desarrolla herramientas internas propias."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin fecha para la reunión presencial en Madrid; Lorenzo gestionará la relación local durante los próximos dos meses."
+            }
+          },
+          "objections": [
+            "El Grupo Adeo (matriz) ya desarrolla herramientas internas propias, lo que podría competir con la propuesta de Apprecio"
+          ],
+          "commitments": "Sebastian Gajardo enviará una propuesta formal (modelo económico/operativo + propuesta tecnológica) que Ainara Martín revisará internamente. Lorenzo gestionará la relación en Madrid y buscará organizar una visita presencial.",
+          "competitors": [],
+          "next_steps": "Presentar una propuesta con dos pilares (condiciones comerciales + oferta tecnológica) y coordinar una reunión presencial en Madrid.",
+          "follow_up_suggestion": null,
+          "performance": null
+        }
+      ]
+    },
+    {
+      "id": "airtificial",
+      "name": "Airtificial A&D",
+      "domain": "airtificial.com",
+      "sector": "Aeroespacial y defensa",
+      "contacts": [
+        {
+          "name": "Carla",
+          "role": "Sin confirmar como decisora"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-29",
+          "summary": "Lorenzo presentó Apprecio Beat a Carla para explorar si la plataforma podía complementar sus herramientas de RRHH. Airtificial A&D acaba de confirmar la colaboración con Sesame, que centraliza fichajes y comunicaciones internas, por lo que Carla evaluaba qué valor adicional podía aportar Apprecio sin duplicar herramientas.",
+          "success_odds": 2,
+          "sentiment": 2,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se mencionó presupuesto en la reunión."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Carla revisará la propuesta con su equipo; no se confirmó si es la tomadora de decisión final."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Buscan mejorar la comunicación interna corporativa y medir a quién llegan los mensajes y quién interactúa, pero ya cuentan con Sesame centralizando gestión de RRHH y les preocupa sumar otra herramienta."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "No se fijó fecha para una segunda reunión; queda pendiente de que revisen la demo internamente."
+            }
+          },
+          "objections": [
+            "La plataforma parece demasiado compleja para operarios e ingenieros, perfiles difíciles de mantener conectados",
+            "La necesidad principal es comunicación interna, no encuestas ni retos",
+            "No está claro que puedan gestionar bien los objetivos comerciales en la plataforma",
+            "Temor a que sumar otra herramienta descentralice la información y confunda a los empleados (ya tienen Sesame)"
+          ],
+          "commitments": "Lorenzo enviará un acceso a un entorno demo (sandbox) enfocado en comunicación y feed social, además de un brochure. Carla lo revisará internamente antes de valorar una segunda reunión.",
+          "competitors": [
+            "Sesame (herramienta de RRHH que ya centraliza fichajes y comunicaciones en la empresa)"
+          ],
+          "next_steps": "Aterrizar el caso de uso prioritario (qué comunicaciones y reportes esperan), validar la adopción con los distintos perfiles (operarios/ingenieros) e identificar quién más participa en la evaluación interna.",
+          "follow_up_suggestion": "Correo agradeciendo el tiempo, reconociendo que Sesame ya cubre la parte administrativa, y posicionando Apprecio Beat como complemento centrado en reconocimiento y cultura (con módulos activables por separado). Incluye envío de acceso a demo y brochure.",
+          "performance": {
+            "score": 5,
+            "strengths": [],
+            "improvements": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "molecor",
+      "name": "Molecor",
+      "domain": null,
+      "sector": "Fabricación de tuberías (~600 empleados, 5 centros en España)",
+      "contacts": [
+        {
+          "name": "Silvia Vazquez",
+          "role": "Sin confirmar como decisora"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-28",
+          "summary": "Lorenzo presentó la plataforma de puntos e incentivos de Apprecio. Silvia explicó que Molecor entrega actualmente cestas físicas de Navidad y consideró que la plataforma encajaría mejor en otro tipo de campañas, como '0 accidentes' o incentivos comerciales.",
+          "success_odds": 2,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se especificó presupuesto ni coste actual de las campañas de incentivos."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Silvia no es la responsable de decisión; indicó que otra compañera gestiona la próxima campaña y luego informaría a Lorenzo."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Simplificar la gestión de incentivos y explorar alternativas para campañas distintas de Navidad (seguridad laboral, incentivos comerciales)."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin plazo definido; depende de que la compañera de Silvia retome el contacto para la próxima campaña."
+            }
+          },
+          "objections": [
+            "Para Navidad prefieren cestas o productos físicos en lugar de puntos o dinero",
+            "El incentivo en formato de puntos/dinero les parece poco atractivo para esa campaña en particular"
+          ],
+          "commitments": "Lorenzo enviará un correo de seguimiento. Ambos quedaron en mantener el contacto de cara a una campaña futura (no navideña).",
+          "competitors": [],
+          "next_steps": "Averiguar quién gestiona las otras campañas (no navideñas), aclarar los costos actuales y explorar los requisitos para una posible campaña piloto.",
+          "follow_up_suggestion": null,
+          "performance": null
+        }
+      ]
+    },
+    {
+      "id": "ikerfel",
+      "name": "IKERFEL",
+      "domain": "ikerfel.es",
+      "sector": "Estudios de mercado / investigación cualitativa (oficinas en Bilbao y Madrid)",
+      "contacts": [
+        {
+          "name": "Idoya (aparece como \"Isabel\" en videollamada)",
+          "role": "Responsable de campo cualitativo, sin confirmar como decisora"
+        },
+        {
+          "name": "Mónica Campo",
+          "role": "Sin confirmar"
+        },
+        {
+          "name": "Maribel",
+          "role": "Sin confirmar"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-28",
+          "summary": "Lorenzo presentó Apprecio Rewards para gratificar participantes de focus groups, mystery shopping y entrevistas en profundidad. IKERFEL usa hoy principalmente tarjetas de regalo (antes físicas, ahora más online tras la pandemia). El equipo mostró interés pero identificó fricciones entre el modelo de puntos acumulables y su forma de trabajar con participantes.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se mencionó presupuesto ni costes actuales de las gratificaciones."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Ninguna de las tres asistentes fue confirmada como decisora final; dijeron que revisarían la información con calma."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Gratificar participantes de estudios cualitativos con tarjetas de regalo, pero la acumulación de puntos no encaja del todo: buscan evitar que los participantes se 'profesionalicen' y normalmente no repiten antes de un año."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "No se fijó una fecha para una próxima reunión."
+            }
+          },
+          "objections": [
+            "La acumulación de puntos no encaja con participantes que solo colaboran de forma puntual (no vuelven a participar hasta pasado ~1 año)",
+            "El catálogo no incluye Amazon, una de las opciones más solicitadas por sus participantes",
+            "Los importes predeterminados de algunas tarjetas limitan la libertad para elegir cuánto gastar"
+          ],
+          "commitments": "Lorenzo enviará un folleto informativo y el enlace para consultar el catálogo y el proceso de registro. Ofreció también una explicación adicional o reunión presencial en Madrid si lo necesitan.",
+          "competitors": [],
+          "next_steps": "Validar si el catálogo (comercios y montos mínimos) encaja con sus participantes, aclarar el proceso y coste de devolución de puntos no usados (cargo del 15%), e identificar quién aprueba proveedores y si otro equipo además del cualitativo entrega incentivos de forma recurrente.",
+          "follow_up_suggestion": "Correo agradeciendo el tiempo, resumiendo que la plataforma no tiene costos de mantención, que los puntos equivalen a euros y duran 2 años, y comprometiéndose a revisar con proveedores montos menores (ej. 5€) en los comercios de mayor interés. Incluye enlace al catálogo y brochure.",
+          "performance": {
+            "score": 7,
+            "strengths": [],
+            "improvements": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "girbau",
+      "name": "Girbau",
+      "domain": null,
+      "sector": "Fabricación de equipos de lavandería industrial (~650 empleados en España, sede en Barcelona, presencia en más de 10 países)",
+      "contacts": [
+        {
+          "name": "Laura",
+          "role": "Equipo de Personas, sin confirmar como decisora (depende de dirección)"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-09-29",
+          "summary": "Lorenzo presentó Apprecio Rewards y Apprecio Beat a Laura. Girbau tiene presencia en numerosos países y percibe desconexión entre sus delegaciones, ya que las iniciativas de reconocimiento suelen ser locales. Laura no tenía una necesidad concreta definida, pero quería evaluar si la plataforma podía dar más visibilidad y conexión entre sedes, y también exploraba alternativas a la cesta de Navidad tradicional.",
+          "success_odds": 3,
+          "sentiment": 2,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se discutió presupuesto cerrado. Lorenzo enviará cotizaciones para los escenarios de 300 y 600 usuarios de Apprecio Beat."
+            },
+            "authority": {
+              "status": "no_identificado",
+              "detail": "Laura es del equipo de Personas, pero la decisión sobre el beneficio de Navidad y sobre adoptar la plataforma depende de la dirección."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Busca mejorar la conexión y visibilidad entre las delegaciones internacionales, pero sin una necesidad concreta definida; también evalúan alternativas a la cesta de Navidad tradicional para que cada persona elija su regalo."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin plazo definido; depende de que la dirección decida sobre el beneficio de Navidad y de que revisen las cotizaciones enviadas."
+            }
+          },
+          "objections": [
+            "La plataforma podría no cubrir las necesidades de todos los países donde opera la empresa",
+            "No hay una necesidad concreta ni está claro qué uso tendría más allá de las iniciativas actuales",
+            "El coste de licenciar a toda la plantilla podría ser alto si la participación y el uso son bajos (más de 300 de 600 personas trabajan en producción)",
+            "La empresa todavía no ha decidido si cambiará su beneficio de Navidad (depende de dirección)"
+          ],
+          "commitments": "Lorenzo enviará una demo, un brochure, cotizaciones de Apprecio Beat para 300 y 600 usuarios, y una propuesta de Apprecio Rewards para la cesta de Navidad.",
+          "competitors": [],
+          "next_steps": "Validar el alcance internacional (qué países y sedes deberían incluirse), definir qué colectivos usarían la plataforma (especialmente en planta, donde la participación puede ser baja), y averiguar quiénes participan en la decisión sobre la plataforma y sobre las alternativas a la cesta de Navidad.",
+          "follow_up_suggestion": "Correo agradeciendo el tiempo, adjuntando el brochure y cotizaciones para 300 y 600 usuarios de Apprecio Beat, y la información de Apprecio Rewards como alternativa a la cesta de Navidad tradicional, dejando abierta la puerta a una llamada de seguimiento una vez que lo revisen.",
+          "performance": {
+            "score": 6,
+            "strengths": [],
+            "improvements": []
+          }
+        }
+      ]
+    },
+    {
+      "id": "wizink",
+      "name": "WiZink",
+      "domain": "wizink.es",
+      "sector": "Banca / Servicios financieros",
+      "contacts": [
+        {
+          "name": "Alicia Delgado Del Mazo",
+          "role": "People / Reconocimiento"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-08",
+          "summary": "Presentación de Apprecio Beat y Rewards a WiZink. Buscan reconocimiento entre pares sin vincularlo a premios económicos y encuestas trimestrales de compromiso y NPS. Aceptó una demo adaptada y propuesta a 6 y 12 meses.",
+          "success_odds": 4,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Piden propuesta económica para ~550–570 licencias con contratos de 6 meses o 1 año; sin cifra de presupuesto definida."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Alicia lidera la evaluación; falta confirmar quién más decide (compras, tecnología, privacidad)."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Reconocimiento continuo entre colegas sin puntos económicos y encuestas trimestrales de compromiso y NPS como lugar de trabajo."
+            },
+            "timeline": {
+              "status": "definido",
+              "detail": "Quieren decidir antes de fin de año; pendiente demo adaptada y propuesta sin fecha concreta."
+            }
+          },
+          "objections": [
+            "No quiere vincular el reconocimiento entre pares a premios económicos (temor a mal uso de puntos)",
+            "La plataforma no permite contratar solo los módulos de reconocimiento y encuestas",
+            "Necesita evaluar el coste antes de decidir; evalúa otros proveedores para encuestas"
+          ],
+          "commitments": "Apprecio enviará propuesta económica a 6 y 12 meses con tiempos de implementación y preparará una demo personalizada.",
+          "competitors": [],
+          "next_steps": "Enviar propuesta económica (6 y 12 meses, 550–570 licencias), tiempos de implementación y agendar demo adaptada a reconocimiento y encuestas.",
+          "follow_up_suggestion": "Correo con ambos escenarios comerciales y solicitud de las métricas de compromiso que quieren medir para personalizar la demo.",
+          "performance": {
+            "score": 6,
+            "strengths": [
+              "Adaptó la presentación a reconocimiento y encuestas",
+              "Ofreció escenarios de contrato flexibles"
+            ],
+            "improvements": [
+              "Aclarar quién decide y quién evalúa",
+              "Definir indicadores de éxito del piloto"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "orange-espana",
+      "name": "Orange España",
+      "domain": "orange.es",
+      "sector": "Telecomunicaciones",
+      "contacts": [
+        {
+          "name": "Begoña Barrio Sotillo",
+          "role": "Comunicación interna y employer branding"
+        },
+        {
+          "name": "Elena de la Mata",
+          "role": "Responsable (recibirá dossier)"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-14",
+          "summary": "Presentación de Apprecio Beat y Rewards a Orange España, en plena transformación cultural (One Culture). Begoña la valoró como muy completa; trasladará un dossier a Elena de la Mata y María Máñez.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "Sin presupuesto identificado; el de 2027 se cierra en noviembre."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Begoña no decide; el dossier irá a Elena y María, y la contratación debe validarse con Orange Grupo (Francia)."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Reforzar nuevos valores y comportamientos y medir su adopción; hoy lo hacen internamente y tienen un pulso mensual de 3 preguntas."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Colaboración probable para 2027; sin fecha de siguiente reunión."
+            }
+          },
+          "objections": [
+            "La contratación depende de la aprobación de Orange Grupo en Francia",
+            "Probablemente habría que esperar a 2027 por calendario presupuestario",
+            "Gestionan la transformación cultural internamente y no evalúan otras herramientas por ahora"
+          ],
+          "commitments": "Lorenzo enviará el dossier de Apprecio Beat; Begoña lo compartirá con Elena y María.",
+          "competitors": [],
+          "next_steps": "Enviar dossier, esperar feedback interno y proponer demo ampliada (oficinas centrales, tiendas, bienestar). Alcance: 4.000 personas en oficinas y 8.000 en total.",
+          "follow_up_suggestion": "Correo con dossier y resumen enfocado en One Culture; preguntar qué equipo conviene invitar a la demo y confirmar el proceso de aprobación con el grupo.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Presentación completa de la plataforma",
+              "Mostró encuestas recurrentes e integración"
+            ],
+            "improvements": [
+              "Aclarar quién aprueba la compra en Orange Grupo",
+              "Delimitar un caso de uso inicial"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "uriach",
+      "name": "Uriach",
+      "domain": "uriach.com",
+      "sector": "Farmacéutico y productos naturales",
+      "contacts": [
+        {
+          "name": "Yuns Jaghou Akaddar",
+          "role": "People"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-14",
+          "summary": "Presentación de Apprecio Beat a Uriach (~1.200 colaboradores, ~400 en España). Yuns ve el reconocimiento como lo que más encaja para reforzar 4 comportamientos prioritarios del plan del CEO; lo comentará en su reunión de equipo del viernes.",
+          "success_odds": 4,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "no_identificado",
+              "detail": "No se habló de presupuesto."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Yuns evalúa y presentará la propuesta en su reunión de equipo; faltan los demás decisores."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Comunicar y reforzar 4 comportamientos clave ligados a sus 6 valores; no tienen plataforma para visualizar el avance cultural entre países."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Posible evaluación en el último trimestre; sin fecha de demo ni decisión."
+            }
+          },
+          "objections": [],
+          "commitments": "Lorenzo y Maria Eugenia enviarán información de la plataforma y ofrecieron demo con el resto del equipo.",
+          "competitors": [],
+          "next_steps": "Enviar información antes del viernes y coordinar demo con el equipo, centrada en reconocimiento y los 4 comportamientos.",
+          "follow_up_suggestion": "Correo de resumen con reconocimiento, módulo de desempeño y recompensas; proponer demo tras su reunión del viernes.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Detectó bien la necesidad cultural",
+              "Explicó el alcance multi-país"
+            ],
+            "improvements": [
+              "Aterrizar los 4 comportamientos y cómo medirán éxito",
+              "Identificar quién aprueba presupuesto"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "sociograph",
+      "name": "SocioGraph",
+      "domain": "sociograph.es",
+      "sector": "Estudios de mercado / neurociencia",
+      "contacts": [
+        {
+          "name": "María Ángeles Fernández Durantes",
+          "role": "Contacto principal"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-05",
+          "summary": "Presentación de Apprecio Rewards para incentivos a participantes de estudios. La solución le parece factible e intuitiva, pero hoy trabajan con agencias de captación y crear base propia es un plan futuro sin fecha.",
+          "success_odds": 2,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Volumen estacional (p. ej. ~200 participantes en una semana, incentivos como 5 € por 15 min); sin presupuesto definido."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "María Ángeles es la interlocutora; no se confirmó quién decide."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Gestionar incentivos de forma más sencilla si crean su base propia de participantes; necesidad no inmediata."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin fecha; contactará si surge un estudio con captación directa."
+            }
+          },
+          "objections": [
+            "La necesidad no es inmediata: trabajan con agencias de captación",
+            "Volumen variable por estacionalidad (verano y enero casi sin estudios)"
+          ],
+          "commitments": "Lorenzo enviará información; SocioGraph contactará si surge una oportunidad.",
+          "competitors": [],
+          "next_steps": "Enviar información y mantener contacto; retomar cuando gestionen captación directa. Explorar también México.",
+          "follow_up_suggestion": "Correo con resumen de Rewards (sin costes, carga masiva por Excel, puntos en máx. 2 h) y disponibilidad para proyectos puntuales.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Explicación clara del funcionamiento y condiciones",
+              "Resolvió el caso de uso de 5 € por estudio"
+            ],
+            "improvements": [
+              "Identificar el primer caso de uso y su momento",
+              "Validar control de participantes repetidos"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "dia-group",
+      "name": "Grupo DIA",
+      "domain": "diacorporate.com",
+      "sector": "Distribución alimentaria · Proveedor / partnership (cupones monedero de Club Día)",
+      "contacts": [
+        {
+          "name": "Laura Rodríguez",
+          "role": "Responsable Club Día"
+        },
+        {
+          "name": "Martin Luna",
+          "role": "Grupo DIA"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-06",
+          "summary": "Reunión de proveedor para concretar un piloto: Grupo DIA ofrece 100 códigos únicos de cupón monedero (5, 10 y 20 €) para usuarios de Apprecio; solo cobra el saldo redimido. Inicio previsto el 1 de noviembre.",
+          "success_odds": null,
+          "sentiment": null,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "DIA cobraría solo el saldo redimido; rappel por volumen a definir tras el piloto."
+            },
+            "authority": {
+              "status": "definido",
+              "detail": "Laura (DIA) y el equipo de Apprecio acuerdan las condiciones del piloto."
+            },
+            "need": {
+              "status": "definido",
+              "detail": "Incorporar cupones monedero de Club Día al catálogo de Apprecio (posible alcance de ~1.000 usuarios)."
+            },
+            "timeline": {
+              "status": "parcial",
+              "detail": "Piloto previsto el 1 de noviembre (alternativa 1 de diciembre); caducidad al 31 de diciembre, pendiente de contrato."
+            }
+          },
+          "objections": [],
+          "commitments": "Apprecio enviará información y su modelo de contrato la semana siguiente; DIA preparará códigos y caducidad tras acordar contrato y fechas.",
+          "competitors": [],
+          "next_steps": "Cerrar contrato, fecha de inicio y caducidad; enviar a Laura los materiales pendientes.",
+          "follow_up_suggestion": "Enviar el modelo de contrato y confirmar la fecha de inicio del piloto (1 de noviembre).",
+          "performance": null
+        }
+      ]
+    },
+    {
+      "id": "attindas",
+      "name": "Attindas",
+      "domain": "attindas.com",
+      "sector": "Productos de higiene (fábrica, logística y red comercial · ~650 personas, oficinas en Pozuelo)",
+      "contacts": [
+        {
+          "name": "Rebeca Molina Pereira",
+          "role": "Recursos Humanos"
+        },
+        {
+          "name": "Laura",
+          "role": "Recursos Humanos"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-15",
+          "summary": "Presentación de Apprecio Rewards y Beat a Attindas (~650 personas: 480 en fábrica, 80 en oficinas, 100 comerciales remotos). Una encuesta anual detectó una brecha en reconocimiento directo. Rebeca pidió presentación resumida y propuesta económica para 650 personas.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Piden propuesta económica para ~650 personas; sin presupuesto definido."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Rebeca (RRHH) evalúa y compartirá la propuesta con una compañera de transformación cultural y con el equipo de fábrica."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Reconocimiento directo entre empleados / desde RRHH y catálogo de beneficios internos (WorkLife). Encuestas y desempeño ya cubiertos con Workday."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin fecha de envío, demo ni decisión."
+            }
+          },
+          "objections": [
+            "Ya cuentan con Workday (encuestas, reconocimientos y desempeño) y no ven necesidad de duplicar esas funciones",
+            "No tienen problemas actuales con la participación en encuestas"
+          ],
+          "commitments": "Lorenzo enviará presentación resumida y propuesta económica para 650 personas; Maria Eugenia ofreció demo adaptada por áreas.",
+          "competitors": [
+            "Workday"
+          ],
+          "next_steps": "Enviar presentación y propuesta (650 personas); aclarar encaje con Workday; definir caso de uso principal y cómo accederán fábrica y comerciales remotos.",
+          "follow_up_suggestion": "Correo con presentación y propuesta, enfocado en reconocimiento directo, gamificación y retos para fábrica y ventas; proponer demo con las áreas implicadas.",
+          "performance": {
+            "score": 7,
+            "strengths": [
+              "Ejemplos concretos de retos comerciales, logísticos y de oficina",
+              "Presentó Rewards y Beat adaptados a su necesidad de reconocimiento"
+            ],
+            "improvements": [
+              "Aclarar el encaje con Workday para evitar percepción de duplicidad",
+              "Entender cómo se decide la compra y quién valida presupuesto"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "automat-it",
+      "name": "Automat-it",
+      "domain": "automat-it.com",
+      "sector": "Tecnología / Cloud (~270 empleados en varios países; 21 en España)",
+      "contacts": [
+        {
+          "name": "Nataly Adkins",
+          "role": "Recursos Humanos"
+        }
+      ],
+      "meetings": [
+        {
+          "date": "2026-10-19",
+          "summary": "Presentación de Rewards y Beat a Automat-it. Hoy usan Gifted para tarjetas de cumpleaños (50 en moneda local) y cestas de Navidad en España. Su equipo de Europa y EE. UU. son ~55 personas, pero Beat tendría sentido para toda la compañía (~270). Pidió información de Rewards y Beat.",
+          "success_odds": 3,
+          "sentiment": 3,
+          "bant": {
+            "budget": {
+              "status": "parcial",
+              "detail": "Se ofreció cotización de Beat para 55 personas; Nataly valoraría la plataforma para ~270. Sin presupuesto definido."
+            },
+            "authority": {
+              "status": "parcial",
+              "detail": "Nataly (RRHH) gestionaría Rewards para su equipo; no es decisora de la compañía completa y faltan más decisores."
+            },
+            "need": {
+              "status": "parcial",
+              "detail": "Regalos de cumpleaños y eventos en varios países, cestas de Navidad en España y un espacio común de reconocimiento entre países; duda en sumar otra aplicación."
+            },
+            "timeline": {
+              "status": "no_identificado",
+              "detail": "Sin fecha de envío, siguiente reunión ni decisión."
+            }
+          },
+          "objections": [
+            "Beat podría ser demasiado amplio para implementarlo solo en su grupo regional (55 de ~270 personas)",
+            "Les preocupa sumar otra aplicación con equipos dispersos en varios países; ya evaluaron plataformas similares sin avanzar",
+            "Apprecio no opera en EE. UU., donde tienen empleados"
+          ],
+          "commitments": "Lorenzo enviará la presentación de Rewards y la información de Beat (plazo 22 oct); Maria Fernanda preparará cotización de Beat para 55 personas.",
+          "competitors": [
+            "Gifted"
+          ],
+          "next_steps": "Enviar información de Rewards y Beat; validar cobertura por país (EE. UU. sin operación); aclarar si buscan reemplazar Gifted o cubrir cestas navideñas; identificar otros decisores.",
+          "follow_up_suggestion": "Correo con presentación de Rewards, información de Beat y cotización; preguntar qué países y cuántas personas cubriría Rewards y quién más decide.",
+          "performance": {
+            "score": 5,
+            "strengths": [
+              "Explicación clara de Rewards (puntos 2 años, 45 opciones en España, sin costes)",
+              "Disposición a habilitar otros países europeos"
+            ],
+            "improvements": [
+              "Validar cobertura real por país antes de cotizar",
+              "Identificar quién decide y los criterios de evaluación",
+              "Aclarar alcance (reemplazar Gifted, cestas o ambos)"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

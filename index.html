@@ -116,6 +116,29 @@
   .btn-reset:hover{border-color:var(--fuchsia); color:var(--fuchsia-dark);}
   .result-count{font-size:12px; color:var(--ink-soft); margin-bottom:10px;}
 
+  /* ---- Filtro global (dueño / secuencia) ---- */
+  .global-filters{
+    background:var(--lavender-light); border-bottom:1px solid var(--line);
+    padding:10px 32px; display:flex; flex-wrap:wrap; align-items:center; gap:10px;
+    position:sticky; top:126px; z-index:39; font-size:12.5px;
+  }
+  .global-filters .gf-label{font-weight:700; color:var(--ink); font-size:12px; text-transform:uppercase; letter-spacing:.4px;}
+  .global-filters select{
+    border:1px solid var(--line); background:#fff; border-radius:9px; padding:8px 12px;
+    font-size:12.5px; color:var(--ink); outline:none; min-width:190px; max-width:360px;
+  }
+  .global-filters select:focus{border-color:var(--fuchsia);}
+  .global-filters .gf-active{
+    background:var(--fuchsia); color:#fff; border-radius:999px; padding:4px 10px; font-size:11.5px; font-weight:600;
+  }
+  .global-filters .gf-note{color:var(--ink-soft); font-size:11.5px; margin-left:auto;}
+  .owner-pill{display:inline-block; padding:3px 9px; border-radius:999px; font-size:11px; font-weight:600;
+    background:var(--fuchsia-light); color:var(--fuchsia-dark); white-space:nowrap;}
+  .type-pill{display:inline-block; padding:3px 8px; border-radius:6px; font-size:10.5px; font-weight:600;
+    background:var(--cloud); border:1px solid var(--line); color:var(--ink-soft);}
+  .apollo-link{color:var(--fuchsia-dark); text-decoration:none; font-size:11.5px;}
+  @media(max-width:760px){ .global-filters{position:static; padding:10px 16px;} .global-filters .gf-note{margin-left:0;} }
+
   /* ---- Table ---- */
   table{width:100%; border-collapse:collapse; font-size:12.5px;}
   thead th{
@@ -314,7 +337,7 @@
   </div>
   <div class="owner-chip">
     <div class="owner-avatar">LJ</div>
-    <span>Listas de <b>Lorenzo Jamasmie</b> · última actualización 14 sep 2026</span>
+    <span>Listas de <b>España</b></span>
   </div>
 </div>
 
@@ -327,6 +350,15 @@
   <button class="tab-btn" data-view="respuestas">📩 Respuestas</button>
   <button class="tab-btn" data-view="diio">🗣️ Reuniones</button>
   <button class="tab-btn" data-view="secuencias">📈 Secuencias</button>
+</div>
+
+<div class="global-filters" id="global-filters">
+  <span class="gf-label">Filtrar</span>
+  <select id="gf-owner" title="Dueño de la lista (en Secuencias: dueño de la secuencia)"><option value="">Todos los dueños</option></select>
+  <select id="gf-seq" title="Secuencia de Apollo en la que está el contacto"><option value="">Todas las secuencias</option></select>
+  <button class="btn-reset" id="gf-reset">Quitar filtros</button>
+  <span class="gf-active" id="gf-active" style="display:none;"></span>
+  <span class="gf-note">Aplica a Overview, Listas, Empresas, Contactos, Prioridad, Respuestas y Secuencias</span>
 </div>
 
 <div class="wrap">
@@ -361,7 +393,7 @@
       <div class="table-scroll">
         <table id="overview-lists-table">
           <thead>
-            <tr><th>Lista</th><th>Rubro</th><th>Contactos</th><th>Empresas</th><th>Email verificado</th><th>% Verificado</th><th>Con teléfono</th></tr>
+            <tr><th>Lista</th><th>Dueño</th><th>Rubro</th><th>Contactos</th><th>Empresas</th><th>Email verificado</th><th>% Verificado</th><th>Con teléfono</th></tr>
           </thead>
           <tbody></tbody>
         </table>
@@ -369,27 +401,27 @@
     </div>
 
     <footer class="note">
-      Fuente de datos: Apollo — listas de difusión propiedad de Lorenzo Jamasmie (owner_id verificado vía Apollo Users). No se mezclan contactos de otros usuarios del equipo. Los campos "Rubro" se derivan del nombre de cada lista de Apollo, ya que Apollo no expone un campo de industria poblado en estos registros. El estado de contacto usado aquí (verificado / no disponible / extrapolado) corresponde al campo <code>email_status</code> nativo de Apollo — ningún dato ha sido inventado.
+      Fuente de datos: Apollo — todas las listas de difusión de España del equipo (nombre con "ES", "Spain" o "España"), con su dueño según Apollo Users. Usa el filtro "Dueño" para ver solo las de una persona. Los campos "Rubro" se derivan del nombre de cada lista de Apollo, ya que Apollo no expone un campo de industria poblado en estos registros. El estado de contacto usado aquí (verificado / no disponible / extrapolado) corresponde al campo <code>email_status</code> nativo de Apollo — ningún dato ha sido inventado.
     </footer>
   </div>
 
   <!-- ============ LISTAS ============ -->
   <div class="view" id="view-listas">
-    <div class="section-title"><span class="dot"></span>Listas de Difusión de Lorenzo Jamasmie</div>
+    <div class="section-title"><span class="dot"></span>Listas de Difusión — España</div>
     <div class="card">
       <div class="table-scroll">
         <table id="listas-table">
           <thead>
             <tr>
-              <th>Lista</th><th>Rubro</th><th>Nº contactos</th><th>Nº empresas</th>
-              <th>Email verificado</th><th>% verificado</th><th>Con teléfono</th><th>% con teléfono</th>
+              <th>Lista</th><th>Dueño</th><th>Tipo</th><th>Rubro</th><th>Nº contactos</th><th>Nº empresas</th>
+              <th>Email verificado</th><th>% verificado</th><th>Con teléfono</th><th>% con teléfono</th><th>Creada</th><th>Apollo</th>
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
       <p style="font-size:11.5px; color:var(--ink-soft); margin-top:12px;">
-        Clic en una fila para filtrar la pestaña "Contactos" por esa lista. Métricas de outreach (contactados, respuestas, interesados, % de respuesta) muestran "No data available" — Apollo no reporta actividad de secuencia para estas listas en el snapshot actual.
+        Clic en una fila para filtrar la pestaña "Contactos" por esa lista. Las listas de tipo "Empresas" son listas de cuentas en Apollo (no tienen contactos); su nº de empresas es el que reporta Apollo. Las métricas de envío por secuencia están en la pestaña "Secuencias".
       </p>
     </div>
   </div>
@@ -450,7 +482,7 @@
             <tr>
               <th style="width:28px;"><input type="checkbox" id="hs-select-all"></th>
               <th data-sort="name">Nombre</th><th data-sort="title">Cargo</th><th data-sort="role">Perfil</th>
-              <th data-sort="company">Empresa</th>
+              <th data-sort="company">Empresa</th><th>Dueño</th><th>Secuencias</th>
               <th data-sort="email_status">Email</th><th>Teléfono</th><th>LinkedIn</th><th>HubSpot</th><th>Plantilla</th>
             </tr>
           </thead>
@@ -548,7 +580,7 @@
         <table id="respuestas-table">
           <thead>
             <tr>
-              <th>Contacto</th><th>Empresa</th><th>Lista</th><th>Clasificación</th><th>Asunto</th><th data-sort="date" id="respuestas-th-fecha">Fecha <span id="respuestas-sort-icon">▼</span></th><th>Vista previa</th>
+              <th>Contacto</th><th>Empresa</th><th>Lista</th><th>Dueño</th><th>Secuencia</th><th>Clasificación</th><th>Asunto</th><th data-sort="date" id="respuestas-th-fecha">Fecha <span id="respuestas-sort-icon">▼</span></th><th>Vista previa</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -604,7 +636,7 @@
         <table id="secuencias-table">
           <thead>
             <tr>
-              <th data-sort="name">Secuencia</th><th>Estado</th><th>Pasos</th>
+              <th data-sort="name">Secuencia</th><th>Dueño</th><th>Estado</th><th>Pasos</th>
               <th>Programados</th><th>Entregados</th><th>Abiertos</th><th>Clics</th>
               <th>Respuestas</th><th>Interesados</th><th>% Apertura</th><th>% Respuesta</th>
             </tr>
@@ -657,7 +689,7 @@
 <script>async function boot(){
   let DATA;
   try{
-    const res = await fetch('data.json', {cache:'no-store'});
+    const res = await fetch('data.json', {cache:'no-cache'});
     if(!res.ok) throw new Error('HTTP '+res.status);
     DATA = await res.json();
   }catch(err){
@@ -693,8 +725,267 @@
   }
 
   document.getElementById('load-status').style.display = 'none';
-  document.getElementById('dashboard-root').style.display = 'block';
-  render(DATA, REPLIES, SEQUENCES, DIIO);
+  const root = document.getElementById('dashboard-root');
+  root.style.display = 'block';
+  RAW = { DATA, REPLIES, SEQUENCES, DIIO };
+  ROOT_TEMPLATE = root.innerHTML;
+  setupGlobalFilters();
+  renderFiltered();
+}
+
+// =====================================================================
+// Datos de todas las listas de España + filtro global (dueño / secuencia)
+// =====================================================================
+let RAW = null;            // datos tal cual llegan de los .json
+let ROOT_TEMPLATE = '';    // HTML original del dashboard, para re-renderizar limpio
+let ALL_CONTACTS = null;   // contactos hidratados (se calcula una vez)
+const GF_STORAGE_KEY = 'apprecio_global_filters';
+const LINKEDIN_PREFIX = 'http://www.linkedin.com/in/';
+
+// data.json v2 viene en formato compacto (columnas + diccionarios). Esto lo
+// convierte a la forma de siempre ({name, email, lists, rubros, ...}) y añade
+// owners (dueños de sus listas) y sequences (ids de secuencias de Apollo).
+function hydrateContacts(DATA){
+  const lists = DATA.lists || [];
+  if(DATA.version !== 2){
+    // formato antiguo: todas las listas eran de un solo dueño
+    const ownerByList = {};
+    lists.forEach(l=> ownerByList[l.name] = l.owner || DATA.owner || 'Lorenzo Jamasmie');
+    return (DATA.contacts||[]).map(c=> Object.assign({}, c, {
+      owners: [...new Set((c.lists||[]).map(n=> ownerByList[n]).filter(Boolean))],
+      sequences: c.sequences || [],
+    }));
+  }
+  const cols = DATA.contact_columns;
+  const ix = {}; cols.forEach((k,i)=> ix[k]=i);
+  const d = DATA.dict;
+  const seqRefs = DATA.sequence_refs || [];
+  return DATA.contacts.map(row=>{
+    const org = row[ix.org_idx] != null ? d.orgs[row[ix.org_idx]] : [null,null,null,null,null];
+    const myLists = (row[ix.list_idxs]||[]).map(i=> lists[i]);
+    let li = row[ix.linkedin];
+    if(li && !/^https?:/.test(li)) li = LINKEDIN_PREFIX + li;
+    const listNames = myLists.map(l=> l.name);
+    return {
+      id: row[ix.id],
+      name: row[ix.name] || '—',
+      title: row[ix.title] || 'N/A',
+      role: d.roles[row[ix.role_idx]],
+      company: org[0] || 'N/A',
+      city: d.cities[row[ix.city_idx]],
+      country: d.countries[row[ix.country_idx]],
+      email: row[ix.email],
+      email_status: d.email_statuses[row[ix.email_status_idx]],
+      phone: row[ix.phone],
+      linkedin_url: li,
+      lists: listNames,
+      rubros: [...new Set(myLists.map(l=> l.rubro))],
+      owners: [...new Set(myLists.map(l=> l.owner))],
+      sequences: (row[ix.seq_idxs]||[]).map(i=> seqRefs[i].id),
+      apollo_organization_id: org[4],
+      company_website: org[1],
+      company_industry: org[2],
+      company_size: org[3],
+      contact_source: 'Apollo — ' + (listNames.join(', ') || 'N/A'),
+    };
+  });
+}
+
+function getGlobalFilters(){
+  let f = {owner:'', seq:''};
+  try{ f = Object.assign(f, JSON.parse(localStorage.getItem(GF_STORAGE_KEY) || '{}')); }catch(e){}
+  return f;
+}
+function saveGlobalFilters(f){
+  try{ localStorage.setItem(GF_STORAGE_KEY, JSON.stringify(f)); }catch(e){}
+}
+
+// Nombre legible de cada secuencia (sequences.json trae nombre y dueño)
+function sequenceCatalog(){
+  const byId = {};
+  ((RAW.SEQUENCES && RAW.SEQUENCES.sequences) || []).forEach(s=> byId[s.id] = s);
+  (RAW.DATA.sequence_refs || []).forEach(r=>{
+    if(!byId[r.id]) byId[r.id] = { id:r.id, name:'Secuencia '+r.id.slice(-6), owner:'' };
+  });
+  return byId;
+}
+function sequenceLabel(id){
+  const s = sequenceCatalog()[id];
+  return s ? s.name : ('Secuencia '+String(id).slice(-6));
+}
+
+function setupGlobalFilters(){
+  const f = getGlobalFilters();
+  const ownerSel = document.getElementById('gf-owner');
+  const seqSel = document.getElementById('gf-seq');
+  const owners = new Set();
+  (RAW.DATA.owners || []).forEach(o=> owners.add(o.name));
+  (RAW.DATA.lists || []).forEach(l=> l.owner && owners.add(l.owner));
+  if(!owners.size) owners.add(RAW.DATA.owner || 'Lorenzo Jamasmie');
+  ((RAW.SEQUENCES && RAW.SEQUENCES.sequences) || []).forEach(s=> s.owner && s.owner!=='Desconocido' && owners.add(s.owner));
+  [...owners].sort().forEach(o=> ownerSel.insertAdjacentHTML('beforeend', `<option value="${o}">${o}</option>`));
+
+  const cat = sequenceCatalog();
+  Object.values(cat).sort((a,b)=> (a.name||'').localeCompare(b.name||''))
+    .forEach(s=> seqSel.insertAdjacentHTML('beforeend',
+      `<option value="${s.id}">${s.name}${s.owner && s.owner!=='Desconocido' ? ' — '+s.owner : ''}${s.active===false ? ' (pausada)' : ''}</option>`));
+
+  if(f.owner && [...ownerSel.options].some(o=> o.value===f.owner)) ownerSel.value = f.owner;
+  if(f.seq && [...seqSel.options].some(o=> o.value===f.seq)) seqSel.value = f.seq;
+
+  const onChange = ()=>{
+    saveGlobalFilters({owner: ownerSel.value, seq: seqSel.value});
+    renderFiltered();
+  };
+  ownerSel.addEventListener('change', onChange);
+  seqSel.addEventListener('change', onChange);
+  document.getElementById('gf-reset').addEventListener('click', ()=>{
+    ownerSel.value = ''; seqSel.value = '';
+    onChange();
+  });
+}
+
+function classifyList(l){ return l.modality === 'accounts' ? 'accounts' : 'contacts'; }
+
+// Construye un DATA/REPLIES/SEQUENCES con la forma que espera render(),
+// ya filtrado por dueño y secuencia.
+function buildFilteredData(f){
+  const DATA = RAW.DATA;
+  if(!ALL_CONTACTS) ALL_CONTACTS = hydrateContacts(DATA);
+  const defaultOwner = DATA.owner || 'Lorenzo Jamasmie';
+  const allLists = (DATA.lists || []).map(l=> Object.assign({ owner: l.owner || defaultOwner, modality: l.modality || 'contacts' }, l));
+
+  // listas visibles según el dueño
+  const visibleLists = allLists.filter(l=> !f.owner || l.owner === f.owner);
+  const visibleListNames = new Set(visibleLists.map(l=> l.name));
+  const rubroByList = {}; allLists.forEach(l=> rubroByList[l.name] = l.rubro);
+
+  // contactos: deben estar en alguna lista visible y, si hay secuencia, en esa secuencia
+  const contacts = [];
+  ALL_CONTACTS.forEach(c=>{
+    if(f.seq && !(c.sequences||[]).includes(f.seq)) return;
+    if(!f.owner){ contacts.push(c); return; }
+    const myLists = c.lists.filter(n=> visibleListNames.has(n));
+    if(!myLists.length) return;
+    contacts.push(Object.assign({}, c, {
+      lists: myLists,
+      rubros: [...new Set(myLists.map(n=> rubroByList[n]))],
+    }));
+  });
+
+  // métricas por lista, recalculadas sobre los contactos filtrados
+  const agg = {};
+  visibleLists.forEach(l=> agg[l.name] = {contacts:0, companies:new Set(), verified_email:0, with_phone:0});
+  contacts.forEach(c=> c.lists.forEach(n=>{
+    const a = agg[n]; if(!a) return;
+    a.contacts++; a.companies.add(c.company);
+    if(c.email_status==='verified') a.verified_email++;
+    if(c.phone) a.with_phone++;
+  }));
+  let lists = visibleLists.map(l=>{
+    if(classifyList(l)==='accounts') return Object.assign({}, l);
+    const a = agg[l.name];
+    return Object.assign({}, l, {contacts:a.contacts, companies:a.companies.size, verified_email:a.verified_email, with_phone:a.with_phone});
+  });
+  if(f.seq) lists = lists.filter(l=> classifyList(l)==='contacts' && l.contacts>0);
+  lists.sort((a,b)=> b.contacts - a.contacts || (b.companies - a.companies));
+
+  // empresas (misma agregación que hacía refresh_data.py)
+  const compMap = new Map();
+  contacts.forEach(c=>{
+    let ca = compMap.get(c.company);
+    if(!ca){
+      ca = {name:c.company, contacts:0, rubros:new Set(), city:null, country:null, titles:new Map(),
+            verified_email:0, with_phone:0, website:null, industry:null, size:null, apollo_organization_id:null};
+      compMap.set(c.company, ca);
+    }
+    ca.contacts++;
+    (c.rubros||[]).forEach(r=> ca.rubros.add(r));
+    ca.city = ca.city || c.city; ca.country = ca.country || c.country;
+    ca.titles.set(c.title, (ca.titles.get(c.title)||0)+1);
+    ca.website = ca.website || c.company_website; ca.industry = ca.industry || c.company_industry;
+    ca.size = ca.size || c.company_size; ca.apollo_organization_id = ca.apollo_organization_id || c.apollo_organization_id;
+    if(c.email_status==='verified') ca.verified_email++;
+    if(c.phone) ca.with_phone++;
+  });
+  const companies = [...compMap.values()].map(ca=>{
+    let top='N/A', topN=0; ca.titles.forEach((n,t)=>{ if(n>topN){topN=n; top=t;} });
+    return {name:ca.name, contacts:ca.contacts, rubros:[...ca.rubros].sort(), city:ca.city||'N/A', country:ca.country||'N/A',
+            top_title:top, verified_email:ca.verified_email, with_phone:ca.with_phone, website:ca.website,
+            industry:ca.industry, size:ca.size, apollo_organization_id:ca.apollo_organization_id};
+  }).sort((a,b)=> b.contacts - a.contacts);
+
+  const count = (arr, fn)=>{ const m={}; arr.forEach(x=>{ [].concat(fn(x)).forEach(k=>{ m[k]=(m[k]||0)+1; }); }); return m; };
+  const countryAll = count(contacts, c=> c.country);
+  const meta = {
+    role_counts: count(contacts, c=> c.role),
+    rubro_counts: count(contacts, c=> [...new Set(c.rubros)]),
+    country_counts: Object.fromEntries(Object.entries(countryAll).sort((a,b)=> b[1]-a[1]).slice(0,10)),
+    total_contacts: contacts.length,
+    total_companies: companies.length,
+  };
+
+  // respuestas: dueño por lista, secuencia por contacto
+  const ownerByListName = {}; allLists.forEach(l=> ownerByListName[l.name] = l.owner);
+  const contactByEmail = {};
+  ALL_CONTACTS.forEach(c=>{ if(c.email) contactByEmail[c.email.toLowerCase()] = c; });
+  const allReplies = ((RAW.REPLIES && RAW.REPLIES.replies) || []).map(r=>{
+    const c = contactByEmail[(r.contact_email||'').toLowerCase()];
+    const owners = r.owners && r.owners.length ? r.owners
+      : [...new Set((r.lists||[]).map(n=> ownerByListName[n]).filter(Boolean))];
+    const seqs = r.sequences && r.sequences.length ? r.sequences : (c ? c.sequences : []);
+    return Object.assign({}, r, {owners, sequences: seqs || []});
+  });
+  const replies = allReplies.filter(r=>{
+    if(f.owner && !r.owners.includes(f.owner)) return false;
+    if(f.seq && !r.sequences.includes(f.seq)) return false;
+    return true;
+  });
+  const repMeta = Object.assign({}, (RAW.REPLIES && RAW.REPLIES.meta) || {});
+  if(f.owner || f.seq){
+    repMeta.total_replies = replies.length;
+    repMeta.unique_contacts_replied = new Set(replies.map(r=> (r.contact_email||'').toLowerCase())).size;
+  }
+
+  // secuencias: por dueño de la secuencia y por la secuencia elegida
+  const allSeqs = (RAW.SEQUENCES && RAW.SEQUENCES.sequences) || [];
+  const sequences = allSeqs.filter(s=>{
+    if(f.seq && s.id !== f.seq) return false;
+    if(f.owner && s.owner && s.owner !== 'Desconocido' && s.owner !== f.owner) return false;
+    return true;
+  });
+  const seqMeta = {
+    total_sequences: sequences.length,
+    active_sequences: sequences.filter(s=> s.active).length,
+    total_delivered: sequences.reduce((t,s)=> t+(s.delivered||0), 0),
+    total_replied: sequences.reduce((t,s)=> t+(s.replied||0), 0),
+  };
+
+  const ownersShown = f.owner ? [f.owner] : [...new Set(allLists.map(l=> l.owner))];
+  return {
+    DATA: { contacts, companies, lists, meta, generated_at: DATA.generated_at, owner: DATA.owner, owners_shown: ownersShown },
+    REPLIES: { replies, meta: repMeta, generated_at: RAW.REPLIES && RAW.REPLIES.generated_at },
+    SEQUENCES: Object.assign({}, RAW.SEQUENCES, { sequences, meta: seqMeta }),
+    DIIO: RAW.DIIO,
+  };
+}
+
+function renderFiltered(){
+  const f = getGlobalFilters();
+  const activeTab = (document.querySelector('.tab-btn.active') || {}).dataset;
+  const root = document.getElementById('dashboard-root');
+  root.innerHTML = ROOT_TEMPLATE;   // vuelve al HTML limpio (sin listeners ni gráficos viejos)
+  const built = buildFilteredData(f);
+  render(built.DATA, built.REPLIES, built.SEQUENCES, built.DIIO);
+  if(activeTab && activeTab.view){
+    document.querySelectorAll('.view').forEach(v=> v.classList.toggle('active', v.id==='view-'+activeTab.view));
+  }
+  const badge = document.getElementById('gf-active');
+  const parts = [];
+  if(f.owner) parts.push('Dueño: '+f.owner);
+  if(f.seq) parts.push('Secuencia: '+sequenceLabel(f.seq));
+  badge.style.display = parts.length ? 'inline-block' : 'none';
+  badge.textContent = parts.join(' · ') + (parts.length ? ' · '+built.DATA.contacts.length.toLocaleString('es-ES')+' contactos' : '');
 }
 
 function render(DATA, REPLIES, SEQUENCES, DIIO){
@@ -711,7 +1002,8 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
   Chart.defaults.font.size = 11.5;
 
   // ---------- Tabs ----------
-  document.querySelectorAll('.tab-btn').forEach(btn=>{
+  if(!window.__tabsBound) document.querySelectorAll('.tab-btn').forEach(btn=>{
+    window.__tabsBound = true;
     btn.addEventListener('click', ()=>{
       document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
       document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
@@ -733,13 +1025,14 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
   const verifiedEmail = contacts.filter(c=>c.email_status==='verified').length;
   const withPhone = contacts.filter(c=>c.phone).length;
 
+  function pctOf(n, d){ return d ? Math.round(n/d*100) : 0; }
   const kpis = [
     {label:'Total contactos', value: totalContacts, sub: 'Contactos únicos (Apollo Contact ID)', hi:true},
     {label:'Empresas únicas', value: totalCompanies, sub: rubros.length+' rubros detectados'},
-    {label:'Listas de difusión', value: totalLists, sub: 'Propiedad de Lorenzo Jamasmie'},
-    {label:'Con email', value: withEmail, sub: (Math.round(withEmail/totalContacts*100))+'% del total'},
-    {label:'Email verificado', value: verifiedEmail, sub: (Math.round(verifiedEmail/totalContacts*100))+'% verificados'},
-    {label:'Con teléfono', value: withPhone, sub: (Math.round(withPhone/totalContacts*100))+'% del total'},
+    {label:'Listas de difusión', value: totalLists, sub: (DATA.owners_shown||[]).length===1 ? 'De '+DATA.owners_shown[0] : (DATA.owners_shown||[]).length+' dueños: '+(DATA.owners_shown||[]).join(', ')},
+    {label:'Con email', value: withEmail, sub: pctOf(withEmail,totalContacts)+'% del total'},
+    {label:'Email verificado', value: verifiedEmail, sub: pctOf(verifiedEmail,totalContacts)+'% verificados'},
+    {label:'Con teléfono', value: withPhone, sub: pctOf(withPhone,totalContacts)+'% del total'},
   ];
   const kpiGrid = document.getElementById('kpi-grid');
   kpiGrid.innerHTML = kpis.map(k=>`
@@ -777,29 +1070,45 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
   });
 
   // ---------- Overview lists table ----------
+  const isAccountList = l=> l.modality === 'accounts';
+  const fmtN = n=> (n||0).toLocaleString('es-ES');
   function listRow(l){
-    const pctV = Math.round(l.verified_email/l.contacts*100);
-    const pctP = Math.round(l.with_phone/l.contacts*100);
+    if(isAccountList(l)){
+      return `<tr>
+        <td><b>${l.name}</b> <span class="type-pill">Empresas</span></td><td><span class="owner-pill">${l.owner||'—'}</span></td>
+        <td><span class="pill">${l.rubro}</span></td>
+        <td>—</td><td>${fmtN(l.companies)}</td><td>—</td><td>—</td><td>—</td>
+      </tr>`;
+    }
+    const pctV = pctOf(l.verified_email, l.contacts);
+    const pctP = pctOf(l.with_phone, l.contacts);
     return `<tr>
-      <td><b>${l.name}</b></td><td><span class="pill">${l.rubro}</span></td>
-      <td>${l.contacts}</td><td>${l.companies}</td>
-      <td>${l.verified_email}</td><td>${pctV}%</td><td>${l.with_phone} (${pctP}%)</td>
+      <td><b>${l.name}</b></td><td><span class="owner-pill">${l.owner||'—'}</span></td><td><span class="pill">${l.rubro}</span></td>
+      <td>${fmtN(l.contacts)}</td><td>${fmtN(l.companies)}</td>
+      <td>${fmtN(l.verified_email)}</td><td>${pctV}%</td><td>${fmtN(l.with_phone)} (${pctP}%)</td>
     </tr>`;
   }
   document.querySelector('#overview-lists-table tbody').innerHTML = lists.map(listRow).join('');
 
+  const fmtShortDate = iso=>{ if(!iso) return '—'; const d=new Date(iso); return isNaN(d)?'—':d.toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'}); };
   document.querySelector('#listas-table tbody').innerHTML = lists.map(l=>{
-    const pctV = Math.round(l.verified_email/l.contacts*100);
-    const pctP = Math.round(l.with_phone/l.contacts*100);
-    return `<tr class="lista-row" data-list="${l.name}" style="cursor:pointer;">
-      <td><b>${l.name}</b></td><td><span class="pill">${l.rubro}</span></td>
-      <td>${l.contacts}</td><td>${l.companies}</td>
-      <td>${l.verified_email}</td><td>${pctV}%</td>
-      <td>${l.with_phone}</td><td>${pctP}%</td>
+    const acc = isAccountList(l);
+    const pctV = pctOf(l.verified_email, l.contacts);
+    const pctP = pctOf(l.with_phone, l.contacts);
+    const url = l.app_url || ('https://app.apollo.io/#/lists/'+l.id);
+    return `<tr class="${acc ? '' : 'lista-row'}" data-list="${l.name}" style="cursor:${acc?'default':'pointer'};">
+      <td><b>${l.name}</b></td><td><span class="owner-pill">${l.owner||'—'}</span></td>
+      <td><span class="type-pill">${acc ? 'Empresas' : 'Contactos'}</span></td><td><span class="pill">${l.rubro}</span></td>
+      <td>${acc ? '—' : fmtN(l.contacts)}</td><td>${fmtN(l.companies)}</td>
+      <td>${acc ? '—' : fmtN(l.verified_email)}</td><td>${acc ? '—' : pctV+'%'}</td>
+      <td>${acc ? '—' : fmtN(l.with_phone)}</td><td>${acc ? '—' : pctP+'%'}</td>
+      <td>${fmtShortDate(l.created_at)}</td>
+      <td>${l.id ? `<a class="apollo-link" href="${url}" target="_blank" rel="noopener">Abrir ↗</a>` : '—'}</td>
     </tr>`;
-  }).join('');
+  }).join('') || `<tr><td colspan="12" class="empty-state">Sin listas con estos filtros</td></tr>`;
   document.querySelectorAll('.lista-row').forEach(row=>{
-    row.addEventListener('click', ()=>{
+    row.addEventListener('click', (e)=>{
+      if(e.target.closest('a')) return;
       goTo('contactos');
       document.getElementById('contactos-lista').value = row.dataset.list;
       renderContactos();
@@ -843,7 +1152,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
 
   // ---------- Contactos tab ----------
   const listaSel = document.getElementById('contactos-lista');
-  lists.forEach(l=> listaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
+  lists.filter(l=> !isAccountList(l)).forEach(l=> listaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
   const rubroSel = document.getElementById('contactos-rubro');
   rubros.forEach(r=> rubroSel.innerHTML += `<option value="${r}">${r}</option>`);
   const roleSel = document.getElementById('contactos-role');
@@ -873,6 +1182,8 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         <td>${c.title}</td>
         <td><span class="pill">${c.role}</span></td>
         <td class="company-link" data-company="${encodeURIComponent(c.company)}">${c.company}</td>
+        <td>${(c.owners||[]).map(o=>`<span class="owner-pill">${o}</span>`).join(' ') || '—'}</td>
+        <td style="min-width:170px; max-width:240px;">${(c.sequences||[]).map(id=>`<span class="pill">${sequenceLabel(id)}</span>`).join(' ') || '<span style="color:var(--ink-soft);">Sin secuencia</span>'}</td>
         <td>
           ${c.email ? `<a href="mailto:${c.email}" style="color:var(--ink); text-decoration:none;">${c.email}</a><br>` : '<span style="color:var(--ink-soft);">—</span><br>'}
           <span class="badge ${c.email_status}" style="margin-top:3px;">${c.email_status}</span>
@@ -881,7 +1192,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         <td>${c.linkedin_url ? `<a href="${c.linkedin_url}" target="_blank" style="color:var(--fuchsia-dark); text-decoration:none;">Perfil ↗</a>` : '—'}</td>
         <td>${hubspotCellHTML(c.id)}</td>
         <td>${templateCellHTML(c)}</td>
-      </tr>`).join('') || `<tr><td colspan="10" class="empty-state">Sin resultados con estos filtros</td></tr>`;
+      </tr>`).join('') || `<tr><td colspan="12" class="empty-state">Sin resultados con estos filtros</td></tr>`;
     document.querySelectorAll('#contactos-table .company-link').forEach(el=>{
       el.addEventListener('click', ()=> openCompanyModal(decodeURIComponent(el.dataset.company)));
     });
@@ -1022,7 +1333,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
     }
   };
 
-  let gmailAccessToken = null;
+  let gmailAccessToken = window.__gmailAccessToken || null;
   let gmailTokenClient = null;
   let templateSendState = {}; // { contactId: {status:'pending'|'sent'|'error', error?} }
 
@@ -1087,7 +1398,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
       scope: 'https://www.googleapis.com/auth/gmail.send',
       callback: (tokenResponse)=>{
         if(tokenResponse && tokenResponse.access_token){
-          gmailAccessToken = tokenResponse.access_token;
+          gmailAccessToken = window.__gmailAccessToken = tokenResponse.access_token;
           updateGmailConnPill(true);
           showToast('✓ Gmail conectado. Ya puedes enviar plantillas desde Contactos.');
           renderContactos();
@@ -1167,7 +1478,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         const msg = (errData.error && errData.error.message) || ('HTTP ' + res.status);
         templateSendState[contactId] = {status:'error', error: msg};
         if(res.status === 401){
-          gmailAccessToken = null;
+          gmailAccessToken = window.__gmailAccessToken = null;
           updateGmailConnPill(false);
           showToast('⚠ Tu sesión de Gmail expiró. Vuelve a conectar y reintenta.');
         }else{
@@ -1440,7 +1751,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
   document.getElementById('respuestas-days').textContent = repliesMeta.days_scanned || 30;
 
   const repListaSel = document.getElementById('respuestas-lista');
-  lists.forEach(l=> repListaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
+  lists.filter(l=> !isAccountList(l)).forEach(l=> repListaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
   const repRubroSel = document.getElementById('respuestas-rubro');
   rubros.forEach(r=> repRubroSel.innerHTML += `<option value="${r}">${r}</option>`);
 
@@ -1517,6 +1828,8 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         <td><b>${r.contact_name||r.contact_email}</b><br><span style="color:var(--ink-soft); font-size:11px;">${r.contact_title||''}</span></td>
         <td>${r.company||'N/A'}</td>
         <td>${(r.lists||[]).map(l=>`<span class="pill">${l}</span>`).join('')}</td>
+        <td>${(r.owners||[]).map(o=>`<span class="owner-pill">${o}</span>`).join(' ') || '—'}</td>
+        <td>${(r.sequences||[]).map(id=>`<span class="pill">${sequenceLabel(id)}</span>`).join(' ') || '—'}</td>
         <td>
           <span class="badge ${REPLY_CLASS_BADGE[cls.key]}">${cls.label}</span>
           ${cls.auto ? '' : '<div class="class-manual-tag">Corregido manualmente</div>'}
@@ -1530,7 +1843,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         <td>${fmtDate(r.date)}</td>
         <td style="color:var(--ink-soft); max-width:280px;">${(r.snippet||'').slice(0,90)}${(r.snippet||'').length>90?'…':''}</td>
       </tr>`;
-    }).join('') || `<tr><td colspan="7" class="empty-state">Sin respuestas con estos filtros</td></tr>`;
+    }).join('') || `<tr><td colspan="9" class="empty-state">Sin respuestas con estos filtros</td></tr>`;
     document.querySelectorAll('.reply-row').forEach(row=>{
       row.addEventListener('click', (e)=>{
         if(e.target.closest('.reclass-select-js')) return;
@@ -1666,7 +1979,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
   }
 
   const prioListaSel = document.getElementById('prioridad-lista');
-  lists.forEach(l=> prioListaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
+  lists.filter(l=> !isAccountList(l)).forEach(l=> prioListaSel.innerHTML += `<option value="${l.name}">${l.name}</option>`);
   document.getElementById('prioridad-tier').value = 'alto';
 
   // ---------- "Contactado" tick: se guarda en este navegador (localStorage) ----------
@@ -1896,10 +2209,14 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
     saveDiioDeals(Object.fromEntries(Object.entries(diioDeals).filter(([,v])=> v.status!=='pending')));
     openDiioModal(companyId);
   }
-  document.addEventListener('click', (e)=>{
-    const b = e.target.closest && e.target.closest('.diio-deal-btn');
-    if(b) createDiioDeal(b.dataset.company, b.dataset.date);
-  });
+  window.__createDiioDeal = createDiioDeal;
+  if(!window.__diioDealBound){
+    window.__diioDealBound = true;
+    document.addEventListener('click', (e)=>{
+      const b = e.target.closest && e.target.closest('.diio-deal-btn');
+      if(b) window.__createDiioDeal(b.dataset.company, b.dataset.date);
+    });
+  }
 
   function openDiioModal(companyId){
     const c = diioCompanies.find(x=> x.id === companyId);
@@ -2011,6 +2328,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
     document.querySelector('#secuencias-table tbody').innerHTML = rows.map((s,i)=>`
       <tr class="seq-row" data-idx="${sequences.indexOf(s)}">
         <td><b>${s.name}</b></td>
+        <td>${s.owner && s.owner!=='Desconocido' ? `<span class="owner-pill">${s.owner}</span>` : '—'}</td>
         <td>${s.active ? '<span class="badge verified">Activa</span>' : '<span class="badge unavailable">Pausada</span>'}</td>
         <td>${s.num_steps}</td>
         <td>${s.scheduled.toLocaleString('es-ES')}</td>
@@ -2021,7 +2339,7 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
         <td>${s.interested.toLocaleString('es-ES')}</td>
         <td>${s.open_pct}%</td>
         <td>${s.reply_pct}%</td>
-      </tr>`).join('') || `<tr><td colspan="11" class="empty-state">Sin secuencias con estos filtros</td></tr>`;
+      </tr>`).join('') || `<tr><td colspan="12" class="empty-state">Sin secuencias con estos filtros</td></tr>`;
     document.querySelectorAll('.seq-row').forEach(row=>{
       row.addEventListener('click', ()=> openSequenceModal(sequences[parseInt(row.dataset.idx)]));
     });
@@ -2064,12 +2382,17 @@ function render(DATA, REPLIES, SEQUENCES, DIIO){
   renderDiio();
   renderSecuencias();
 
+  if(gmailAccessToken) updateGmailConnPill(true);
+
   // ---------- last update badge ----------
   const ownerChip = document.querySelector('.owner-chip');
   if(ownerChip && DATA.generated_at){
     const d = new Date(DATA.generated_at);
     const fecha = d.toLocaleDateString('es-ES', {day:'2-digit', month:'short', year:'numeric'});
-    ownerChip.innerHTML = `<div class="owner-avatar">LJ</div><span>Listas de <b>${DATA.owner || 'Lorenzo Jamasmie'}</b> · datos al ${fecha}</span>`;
+    const shown = DATA.owners_shown || [];
+    const who = shown.length===1 ? shown[0] : 'España ('+shown.length+' dueños)';
+    const initials = shown.length===1 ? shown[0].split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() : 'ES';
+    ownerChip.innerHTML = `<div class="owner-avatar">${initials}</div><span>Listas de <b>${who}</b> · datos al ${fecha}</span>`;
   }
 }
 
